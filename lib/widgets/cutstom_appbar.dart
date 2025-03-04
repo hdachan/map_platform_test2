@@ -131,3 +131,55 @@ Widget custom_mypage_AppBar({
     },
   );
 }
+
+// 돟의하기 화면 상단바
+Widget CustomAppBar({required String title, required BuildContext context}) {
+  return LayoutBuilder(
+    builder: (context, constraints) {
+      return Container(
+        width: ResponsiveUtils.getResponsiveWidth(360, 360, constraints),
+        height: 56.h,
+        color: const Color(0xFF1A1A1A),
+        padding: EdgeInsets.only(
+          right: ResponsiveUtils.getResponsiveWidth(16, 360, constraints),
+        ),
+        child: Row(
+          children: [
+            // 뒤로가기 버튼
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                width: ResponsiveUtils.getResponsiveWidth(56, 360, constraints),
+                height: 56.h,
+                padding: const EdgeInsets.all(16),
+                child: Icon(
+                  Icons.chevron_left,
+                  size: 24.sp,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            Container(
+              width: ResponsiveUtils.getResponsiveWidth(280, 360, constraints),
+              height: 56.h,
+              padding: const EdgeInsets.only(left: 14, top: 14),
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20.sp,
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.w700,
+                  height: 1.40,
+                  letterSpacing: -0.50,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}

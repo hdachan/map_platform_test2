@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../utils/designSize.dart';
 import '../widgets/login_item.dart';
 import 'login_screen.dart';
-import 'todo_screen.dart';
+import 'signup_agree_screen.dart';
 
 class login_total_screen extends StatefulWidget {
   @override
@@ -43,13 +43,13 @@ class _login_totalscreen extends State<login_total_screen>
                         CustomInkWell(
                           context: context, // 현재 context를 전달
                           imagePath: 'assets/image/kakaoh_icon.svg',
-                          targetScreen: TodoScreen(), // LoginScreen으로 이동
+                          targetScreen: LoginScreen(), // LoginScreen으로 이동
                         ),
                         SizedBox(height: 16.h),
                         CustomInkWell(
                           context: context, // 현재 context를 전달
                           imagePath: 'assets/image/modir_logo_icon.svg',
-                          targetScreen: TodoScreen(), // LoginScreen으로 이동
+                          targetScreen: LoginScreen(), // LoginScreen으로 이동
                         ),
                       ],
                     ),
@@ -80,7 +80,14 @@ class _login_totalscreen extends State<login_total_screen>
                           width: 73.w,
                           height: 32.h,
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AgreePage(),
+                                ),
+                              );
+                            },
                             child: Text(
                               '회원가입',
                               textAlign: TextAlign.center,
@@ -95,6 +102,7 @@ class _login_totalscreen extends State<login_total_screen>
                             ),
                           ),
                         ),
+
                       ],
                     ),
                   ),

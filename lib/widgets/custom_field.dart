@@ -32,7 +32,7 @@ class _CustomEmailFieldState extends State<CustomEmailField> {
         return Container(
           width: double.infinity,
           height: 80.h,
-          padding: const EdgeInsets.only(left: 16, right: 16, top: 24),
+          padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 24),
           child: Container(
             width: ResponsiveUtils.getResponsiveWidth(328, 360, constraints),
             height: 56.h,
@@ -116,7 +116,7 @@ class _CustomPasswordFieldState extends State<CustomPasswordField> {
     return Container(
       width: 360.w,
       height: 80.h,
-      padding: const EdgeInsets.only(left: 16, right: 16, top: 24),
+      padding:  EdgeInsets.only(left: 16.w, right: 16.w, top: 24),
       child: Container(
         width: 328.w,
         height: 56.h,
