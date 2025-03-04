@@ -8,9 +8,9 @@ import 'viewmodels/data_viewmodel.dart';
 import 'viewmodels/login_viewmodel.dart';
 import 'viewmodels/map_viewmodel.dart';
 import 'viewmodels/setting_viewmodel.dart';
-import 'viewmodels/todo_viewmodel.dart';
 import 'views/home_screen.dart';
 import 'utils/constants.dart';
+import 'views/login_selection_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +29,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => TodoViewModel()),
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
         ChangeNotifierProvider(create: (_) => SettingState()),
         ChangeNotifierProvider(create: (_) => MapProvider()),
@@ -38,7 +37,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: appTitle,
         theme: ThemeData(primarySwatch: Colors.blue),
-        home: HomeScreen(),
+        home: login_total_screen(),
       ),
     );
   }

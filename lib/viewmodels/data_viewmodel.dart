@@ -4,6 +4,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/modir.dart';
 import '../services/supabase_service.dart';
 
+
+// 마커 데이터 관리
 class DataViewModel with ChangeNotifier {
   final SupabaseService _supabaseService;
   List<Modir> dataList = [];
