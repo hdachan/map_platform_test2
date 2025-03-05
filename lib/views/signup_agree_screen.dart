@@ -356,7 +356,7 @@ class _AgreePageState extends State<AgreePage> {
                             if (isButtonPressed) {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => SignUp_screen()),
+                                MaterialPageRoute(builder: (context) => SignUpScreen()),
                               );
                             }
                           },

@@ -1,9 +1,102 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../utils/designSize.dart';
 
+class BirthdateTextField extends StatelessWidget {
+  final TextEditingController controller;
+  final String hintText;
+  final VoidCallback? onChanged; // 상태 갱신을 위한 콜백
 
+  const BirthdateTextField({
+    required this.controller,
+    required this.hintText,
+    this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          width: ResponsiveUtils.getResponsiveWidth(360, 360, constraints),
+          height: 64.h, // 높이는 .h 단위 유지
+          padding: EdgeInsets.only(
+            left: 16.w,
+            right: 16.w,
+            bottom: 8, // 세로 패딩은 고정값 유지
+          ),
+          child: Container(
+            width: ResponsiveUtils.getResponsiveWidth(328, 360, constraints),
+            height: 56.h, // 높이는 .h 단위 유지
+            padding: EdgeInsets.only(left: 16,right: 16), // 패딩을 반응형으로 통일
+            decoration: ShapeDecoration(
+              color: Color(0xFF242424),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: controller,
+                    style: TextStyle(color: Colors.white, fontSize: 14.sp),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(8),
+                      BirthdateInputFormatter(),
+                    ],
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: hintText,
+                      hintStyle: TextStyle(color: Color(0xFF888888), fontSize: 14.sp),
+                    ),
+                    onChanged: (value) {
+                      if (onChanged != null) onChanged!();
+                    },
+                  ),
+                ),
+                if (controller.text.isNotEmpty)
+                  IconButton(
+                    icon: Icon(Icons.cancel, color: Color(0xFF888888)),
+                    onPressed: () {
+                      controller.clear();
+                      if (onChanged != null) onChanged!();
+                    },
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+// BirthdateInputFormatter 클래스 (예시로 포함)
+class BirthdateInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    String text = newValue.text.replaceAll('-', '');
+    if (text.length > 8) {
+      text = text.substring(0, 8);
+    }
+    String formatted = '';
+    for (int i = 0; i < text.length; i++) {
+      formatted += text[i];
+      if (i == 3 || i == 5) {
+        if (text.length > i + 1) formatted += '-';
+      }
+    }
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
+    );
+  }
+}
 
 class CustomEmailField extends StatefulWidget {
   final TextEditingController controller;
@@ -175,3 +268,4 @@ class _CustomPasswordFieldState extends State<CustomPasswordField> {
     );
   }
 }
+

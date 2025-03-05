@@ -79,3 +79,30 @@ Widget Signuptext(String title, String subtitle) {
   );
 }
 
+//회원가입_서브텍스트
+Widget Subtext(String nickname, BoxConstraints constraints) {
+  return Container(
+    width: ResponsiveUtils.getResponsiveWidth(360, 360, constraints),
+    height: 20.h,
+    padding: EdgeInsets.only(
+      left: 16.w,
+      right: 16.w,
+    ),
+    child: Container(
+      width: ResponsiveUtils.getResponsiveWidth(328, 360, constraints),
+      height: 20.h,
+      child: Text(
+        nickname, // 전달받은 닉네임 텍스트 사용
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 14.sp,
+          fontFamily: 'Pretendard',
+          fontWeight: FontWeight.w500,
+          height: 1.40.h,
+          letterSpacing: -0.35,
+        ),
+      ),
+    ),
+  );
+}
+

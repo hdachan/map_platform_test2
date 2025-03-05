@@ -26,7 +26,7 @@ class LoginButton extends StatelessWidget {
           child: Container(
             width: double.infinity,
             height: 68.h,
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12),
             child: InkWell(
               onTap: onTap,
               child: Container(
@@ -83,8 +83,54 @@ Widget emailInputLabel(String text) {
     ),
   );
 }
+// 버튼 선택 위젯 (성별, 카테고리 공용)
 
 
+Widget buildSelectionButtons(
+    List<String> labels, int selectedIndex, Function(int) onPressed, BoxConstraints constraints) {
+  return Container(
+    width: ResponsiveUtils.getResponsiveWidth(360, 360, constraints),
+    height: 48.h,
+    padding: EdgeInsets.only(left: 16.w,right: 16.w),
+    child: Container(
+      width: ResponsiveUtils.getResponsiveWidth(328, 360, constraints),
+      height: 48.h,
+      color: Colors.cyan,
+      child: Row(
+        children: List.generate(labels.length, (index) {
+          return Padding(
+            padding: EdgeInsets.only(right: index == 0 ? 10 : 0),
+            child: InkWell(
+              onTap: () => onPressed(index),
+              child: Container(
+                width: ResponsiveUtils.getResponsiveWidth(156, 360, constraints),
+                height: 48.h,
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      width: 1,
+                      color: selectedIndex == index ? Color(0xFF05FFF7) : Color(0xFF888888),
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    labels[index],
+                    style: TextStyle(
+                      color: selectedIndex == index ? Color(0xFF05FFF7) : Color(0xFF888888),
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }),
+      ),
+    ),
+  );
+}
 
 ///마이페이지
 //마이 페이지 버튼
