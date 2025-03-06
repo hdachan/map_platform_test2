@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb; // kIsWeb를 사용하기 위해 추가
 import '../../viewmodels/setting_viewmodel.dart';
 import '../../utils/designSize.dart';
 import 'Mypage.dart';
+import 'home_main.dart'; // HomeMain1이 포함된 파일
 import 'home_navermap_screen.dart';
-import 'test.dart'; // MYPage 파일 import
+import 'home_web_main.dart';
+import 'test.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -36,10 +39,10 @@ class HomeScreen extends StatelessWidget {
                       },
                       children: [
                         MapScreen(),
-                        mmmm(),
-                        const Center(child: Text("탭 3")),
-                        const Center(child: Text("탭 4")),
                         MYPage(key: _myPageKey),
+                        kIsWeb ? HomeMain2() : HomeMain1(), // 웹이면 HomeMain2, 앱이면 HomeMain1
+                        const Center(child: Text("탭 4")),
+                        mmmm(),
                       ],
                     ),
                   ),
