@@ -123,9 +123,9 @@ class _CustomEmailFieldState extends State<CustomEmailField> {
     return LayoutBuilder(
       builder: (context, constraints) {
         return Container(
-          width: double.infinity,
+          width: ResponsiveUtils.getResponsiveWidth(360, 360, constraints),
           height: 80.h,
-          padding: EdgeInsets.only(left: 16.w, right: 16.w, top: 24),
+          padding: EdgeInsets.only(left: 16.w, right: 16.w,bottom: 24),
           child: Container(
             width: ResponsiveUtils.getResponsiveWidth(328, 360, constraints),
             height: 56.h,

@@ -91,36 +91,33 @@ Widget buildSelectionButtons(
   return Container(
     width: ResponsiveUtils.getResponsiveWidth(360, 360, constraints),
     height: 48.h,
-    padding: EdgeInsets.only(left: 16.w,right: 16.w),
+    padding: EdgeInsets.only(left: 16.w, right: 16.w), // 최상위 패딩 유지
     child: Container(
       width: ResponsiveUtils.getResponsiveWidth(328, 360, constraints),
       height: 48.h,
-      color: Colors.cyan,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween, // 양옆으로 배치
         children: List.generate(labels.length, (index) {
-          return Padding(
-            padding: EdgeInsets.only(right: index == 0 ? 10 : 0),
-            child: InkWell(
-              onTap: () => onPressed(index),
-              child: Container(
-                width: ResponsiveUtils.getResponsiveWidth(156, 360, constraints),
-                height: 48.h,
-                decoration: ShapeDecoration(
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                      width: 1,
-                      color: selectedIndex == index ? Color(0xFF05FFF7) : Color(0xFF888888),
-                    ),
-                    borderRadius: BorderRadius.circular(8),
+          return InkWell(
+            onTap: () => onPressed(index),
+            child: Container(
+              width: ResponsiveUtils.getResponsiveWidth(146, 360, constraints),
+              height: 48.h,
+              decoration: ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(
+                    width: 1,
+                    color: selectedIndex == index ? Color(0xFF05FFF7) : Color(0xFF888888),
                   ),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: Center(
-                  child: Text(
-                    labels[index],
-                    style: TextStyle(
-                      color: selectedIndex == index ? Color(0xFF05FFF7) : Color(0xFF888888),
-                      fontSize: 16.sp,
-                    ),
+              ),
+              child: Center(
+                child: Text(
+                  labels[index],
+                  style: TextStyle(
+                    color: selectedIndex == index ? Color(0xFF05FFF7) : Color(0xFF888888),
+                    fontSize: 16.sp,
                   ),
                 ),
               ),

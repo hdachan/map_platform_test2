@@ -183,3 +183,111 @@ Widget CustomAppBar({required String title, required BuildContext context}) {
     },
   );
 }
+
+
+//홈화면 상단바
+Widget buildAppBar() {
+  return LayoutBuilder(
+    builder: (context, constraints) {
+      return Container(
+        width: ResponsiveUtils.getResponsiveWidth(360, 360, constraints),
+        height: 56.h,
+        color: Color(0xFF1A1A1A),
+        child: Row(
+          children: [
+            Container(
+              width: ResponsiveUtils.getResponsiveWidth(56, 360, constraints),
+              height: 56.h,
+            ),
+            Expanded(
+              child: Center(
+                child: Container(
+                  width: ResponsiveUtils.getResponsiveWidth(100, 360, constraints),
+                  height: 20.h,
+                  child: SvgPicture.asset(
+                    'assets/image/logo_primary.svg',
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              width: ResponsiveUtils.getResponsiveWidth(56, 360, constraints),
+              height: 56.h,
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+
+//테스트 필터
+Widget buildHeaderBar(BuildContext context, {required String filterText, required String resetText,}) {
+  return Container(
+    width: 360.w,
+    height: 56.h,
+    child: Row(
+      children: [
+        GestureDetector(
+          onTap: () {
+            Navigator.pop(context); // 뒤로가기 기능
+          },
+          child: Container(
+            width: 56.w,
+            height: 56.h,
+            padding: EdgeInsets.all(16),
+            child: Icon(
+              Icons.chevron_left,
+              size: 24,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        Container(
+          width: 252.w,
+          height: 56.h,
+          padding: EdgeInsets.only(top: 14, bottom: 14),
+          child: Text(
+            filterText, // 전달받은 필터 텍스트 사용
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20.sp,
+              fontFamily: 'Pretendard',
+              fontWeight: FontWeight.w700,
+              height: 1.40.h,
+              letterSpacing: -0.50,
+            ),
+          ),
+        ),
+        Container(
+          width: 36.w,
+          height: 56.h,
+          padding: EdgeInsets.only(top: 18, bottom: 18),
+          child: TextButton(
+            onPressed: () {
+              print("$resetText 버튼이 눌렸습니다. 선택된 필터 목록이 비워졌습니다.");
+            },
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              backgroundColor: Colors.transparent,
+            ),
+            child: Text(
+              resetText, // 전달받은 초기화 텍스트 사용
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                color: Color(0xFF05FFF7),
+                fontSize: 14.sp,
+                fontFamily: 'Pretendard',
+                fontWeight: FontWeight.w500,
+                height: 1.40.h,
+                letterSpacing: -0.35,
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
