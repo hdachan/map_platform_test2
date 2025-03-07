@@ -183,7 +183,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
               width: ResponsiveUtils.getResponsiveWidth(24, 360, constraints),
               height: ResponsiveUtils.getResponsiveWidth(24, 360, constraints),
               child: Image.asset(
-                'assets/image/Onbluecheck_icon.png',
+                'assets/image/check_icon.png',
                 fit: BoxFit.contain,
               ),
             ),

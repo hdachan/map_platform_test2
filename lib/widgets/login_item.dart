@@ -107,7 +107,7 @@ class _LoginOptionsRowState extends State<LoginOptionsRow> {
         return Container(
           width: double.infinity,
           height: 24.h,
-          padding: const EdgeInsets.only(left: 16, right: 16),
+          padding:  EdgeInsets.only(left: 16.w, right: 16),
           child: Row(
             children: [
               InkWell(

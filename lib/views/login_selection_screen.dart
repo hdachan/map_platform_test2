@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../utils/designSize.dart';
 import '../widgets/login_item.dart';
+import 'login_password_find_screen.dart';
 import 'login_screen.dart';
 import 'signup_agree_screen.dart';
 
@@ -37,7 +38,7 @@ class _login_totalscreen extends State<login_total_screen>
                         CustomInkWell(
                           context: context, // 현재 context를 전달
                           imagePath: 'assets/image/goole_icon.svg',
-                          targetScreen: LoginScreen(), // LoginScreen으로 이동
+                          targetScreen: password_findScreen(), // LoginScreen으로 이동
                         ),
                         SizedBox(height: 16.h),
                         CustomInkWell(

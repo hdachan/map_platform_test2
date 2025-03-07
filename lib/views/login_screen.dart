@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -67,20 +68,27 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   CustomloginAppBar(title: '로그인', context: context),
                   SizedBox(height: 20.h),
-                  CustomEmailField(controller: _emailController),
+                  CustomEmailField1(controller: _emailController),
                   CustomPasswordField(controller: _passwordController),
                   SizedBox(height: 24.h),
                   LoginOptionsRow(),
+                  if (kIsWeb)
+                    LoginButton(
+                      buttonText: '로그인',
+                      onTap: () => _handleSignIn(),
+                    ),
                 ],
               ),
             ),
           ),
         ),
       ),
-      bottomNavigationBar: LoginButton(
+      bottomNavigationBar: !kIsWeb
+          ? LoginButton(
         buttonText: '로그인',
-        onTap: _handleSignIn,
-      ),
+        onTap: () => _handleSignIn(),
+      )
+          : null,
     );
   }
 }

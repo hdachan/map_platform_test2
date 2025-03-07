@@ -187,6 +187,95 @@ class _CustomEmailFieldState extends State<CustomEmailField> {
   }
 }
 
+class CustomEmailField1 extends StatefulWidget {
+  final TextEditingController controller;
+  const CustomEmailField1({Key? key, required this.controller}) : super(key: key);
+
+  @override
+  _CustomEmailFieldState1 createState() => _CustomEmailFieldState1();
+}
+class _CustomEmailFieldState1 extends State<CustomEmailField1> {
+  bool _isTextFieldEmpty = true;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(() {
+      setState(() {
+        _isTextFieldEmpty = widget.controller.text.isEmpty;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          width: ResponsiveUtils.getResponsiveWidth(360, 360, constraints),
+          height: 80.h,
+          padding: EdgeInsets.only(left: 16.w, right: 16.w,top: 24),
+          child: Container(
+            width: ResponsiveUtils.getResponsiveWidth(328, 360, constraints),
+            height: 56.h,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: ShapeDecoration(
+              color: const Color(0xFF242424),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: widget.controller,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14.sp,
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w500,
+                      height: 1.40,
+                      letterSpacing: -0.35,
+                    ),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: '이메일',
+                      hintStyle: TextStyle(
+                        color: const Color(0xFF888888),
+                        fontSize: 14.sp,
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w500,
+                        height: 1.40,
+                        letterSpacing: -0.35,
+                      ),
+                    ),
+                  ),
+                ),
+                if (!_isTextFieldEmpty)
+                  SizedBox(
+                    width: 24.w,
+                    height: 24.h,
+                    child: IconButton(
+                      padding: EdgeInsets.zero,
+                      icon: const Icon(Icons.cancel, color: Color(0xFF888888)),
+                      onPressed: () {
+                        widget.controller.clear();
+                        setState(() {
+                          _isTextFieldEmpty = true;
+                        });
+                      },
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
 
 class CustomPasswordField extends StatefulWidget {
   final TextEditingController controller;

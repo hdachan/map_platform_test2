@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -88,6 +89,28 @@ class InformationScreen extends StatelessWidget {
                           },
                         ),
                         SizedBox(height: 32.h),
+
+                        if (kIsWeb)
+                        Consumer<InformationViewModel>(
+                          builder: (context, viewModel, child) {
+                            return LoginButton(
+                              buttonText: '완료',
+                              onTap: () async {
+                                final errorMessage = await viewModel.signUp(email, password);
+                                if (errorMessage == null) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(errorMessage)),
+                                  );
+                                }
+                              },
+                            );
+                          },
+                        ),
                       ],
                     );
                   },
@@ -96,7 +119,8 @@ class InformationScreen extends StatelessWidget {
             ),
           ),
         ),
-        bottomNavigationBar: Consumer<InformationViewModel>(
+        bottomNavigationBar: !kIsWeb
+            ? Consumer<InformationViewModel>(
           builder: (context, viewModel, child) {
             return LoginButton(
               buttonText: '완료',
@@ -115,7 +139,8 @@ class InformationScreen extends StatelessWidget {
               },
             );
           },
-        ),
+        )
+            : null,
       ),
     );
   }

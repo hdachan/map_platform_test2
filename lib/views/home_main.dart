@@ -568,7 +568,6 @@ class _HomeMainState1 extends State<HomeMain1> {
 
                   Container(
                     height: 246.h,
-                    color: Colors.cyan,
                     padding:
                     EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 20),
                     child: SingleChildScrollView(
@@ -578,52 +577,232 @@ class _HomeMainState1 extends State<HomeMain1> {
                           Container(
                             width: 150.w,
                             height: 218.h,
-                            color: Colors.pink,
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: 150.w,
+                                  height: 150.h,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFF797777),
+                                    borderRadius: BorderRadius.circular(4),
+                                    image: DecorationImage(
+                                      image: AssetImage('assets/image/test_image.png'),
+                                      fit: BoxFit.cover, // 이미지가 컨테이너를 어떻게 채울지 설정 (선택 사항)
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 8.h),
+                                Container(
+                                  width: 150.w,
+                                  height: 60.h,
+                                  padding: EdgeInsets.only(left: 4,right: 8),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        width: 138.w,
+                                        height: 20.h,
+                                        child: Text(
+                                          'Nice Weather',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14.sp,
+                                            fontFamily: 'Pretendard',
+                                            fontWeight: FontWeight.w700,
+                                            height: 1.40,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 4),
+                                      Container(
+                                        width: 138.w,
+                                        height: 16.h,
+                                        child: Text(
+                                          '서울 강남구 신사동',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12.sp,
+                                            fontFamily: 'Pretendard',
+                                            fontWeight: FontWeight.w500,
+                                            height: 1.30,
+                                            letterSpacing: -0.30,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 4),
+                                      Container(
+                                        width: 138.w,
+                                        height: 16.h,
+                                        child: Text(
+                                          '영업 마감 · 10 : 00 | 24 : 00',
+                                          style: TextStyle(
+                                            color: Color(0xFF888888),
+                                            fontSize: 12.sp,
+                                            fontFamily: 'Pretendard',
+                                            fontWeight: FontWeight.w400,
+                                            height: 1.30,
+                                            letterSpacing: -0.30,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           SizedBox(width: 8.w),
                           Container(
                             width: 150.w,
                             height: 218.h,
-                            color: Colors.pink,
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: 150.w,
+                                  height: 150.h,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFF797777),
+                                    borderRadius: BorderRadius.circular(4),
+                                    image: DecorationImage(
+                                      image: AssetImage('assets/image/test_image.png'),
+                                      fit: BoxFit.cover, // 이미지가 컨테이너를 어떻게 채울지 설정 (선택 사항)
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 8.h),
+                                Container(
+                                  width: 150.w,
+                                  height: 60.h,
+                                  padding: EdgeInsets.only(left: 4,right: 8),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        width: 138.w,
+                                        height: 20.h,
+                                        child: Text(
+                                          'Nice Weather',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14.sp,
+                                            fontFamily: 'Pretendard',
+                                            fontWeight: FontWeight.w700,
+                                            height: 1.40,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 4),
+                                      Container(
+                                        width: 138.w,
+                                        height: 16.h,
+                                        child: Text(
+                                          '서울 강남구 신사동',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12.sp,
+                                            fontFamily: 'Pretendard',
+                                            fontWeight: FontWeight.w500,
+                                            height: 1.30,
+                                            letterSpacing: -0.30,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 4),
+                                      Container(
+                                        width: 138.w,
+                                        height: 16.h,
+                                        child: Text(
+                                          '영업 마감 · 10 : 00 | 24 : 00',
+                                          style: TextStyle(
+                                            color: Color(0xFF888888),
+                                            fontSize: 12.sp,
+                                            fontFamily: 'Pretendard',
+                                            fontWeight: FontWeight.w400,
+                                            height: 1.30,
+                                            letterSpacing: -0.30,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           SizedBox(width: 8.w),
                           Container(
                             width: 150.w,
                             height: 218.h,
-                            color: Colors.pink,
-                          ),
-                          SizedBox(width: 8.w),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  middleText('매장에서 구매한 옷'),
-                  Container(
-                    height: 280.h,
-                    color: Colors.cyan,
-                    padding:
-                    EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 20),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 128.w,
-                            height: 252.h,
-                            color: Colors.pink,
-                          ),
-                          SizedBox(width: 8.w),
-                          Container(
-                            width: 128.w,
-                            height: 252.h,
-                            color: Colors.pink,
-                          ),
-                          SizedBox(width: 8.w),
-                          Container(
-                            width: 128.w,
-                            height: 252.h,
-                            color: Colors.pink,
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: 150.w,
+                                  height: 150.h,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFF797777),
+                                    borderRadius: BorderRadius.circular(4),
+                                    image: DecorationImage(
+                                      image: AssetImage('assets/image/test_image.png'),
+                                      fit: BoxFit.cover, // 이미지가 컨테이너를 어떻게 채울지 설정 (선택 사항)
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 8.h),
+                                Container(
+                                  width: 150.w,
+                                  height: 60.h,
+                                  padding: EdgeInsets.only(left: 4,right: 8),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        width: 138.w,
+                                        height: 20.h,
+                                        child: Text(
+                                          'Nice Weather',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14.sp,
+                                            fontFamily: 'Pretendard',
+                                            fontWeight: FontWeight.w700,
+                                            height: 1.40,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 4),
+                                      Container(
+                                        width: 138.w,
+                                        height: 16.h,
+                                        child: Text(
+                                          '서울 강남구 신사동',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12.sp,
+                                            fontFamily: 'Pretendard',
+                                            fontWeight: FontWeight.w500,
+                                            height: 1.30,
+                                            letterSpacing: -0.30,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 4),
+                                      Container(
+                                        width: 138.w,
+                                        height: 16.h,
+                                        child: Text(
+                                          '영업 마감 · 10 : 00 | 24 : 00',
+                                          style: TextStyle(
+                                            color: Color(0xFF888888),
+                                            fontSize: 12.sp,
+                                            fontFamily: 'Pretendard',
+                                            fontWeight: FontWeight.w400,
+                                            height: 1.30,
+                                            letterSpacing: -0.30,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           SizedBox(width: 8.w),
                         ],
