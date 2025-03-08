@@ -5,6 +5,7 @@ import '../utils/designSize.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
 import '../widgets/cutstom_appbar.dart';
+import 'home_mypage_edit.dart';
 
 class mmmm extends StatefulWidget {
   const mmmm({Key? key}) : super(key: key);
@@ -37,7 +38,12 @@ class mmmm1 extends State<mmmm> with SingleTickerProviderStateMixin {
                   LayoutBuilder(
                     builder: (BuildContext context, BoxConstraints constraints) {
                       return GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ProfileEditScreen()), // Mmmm4는 이동할 화면의 위젯입니다.
+                          );
+                        },
                         child: Container(
                           width: double.infinity,
                           height: 132.h,
