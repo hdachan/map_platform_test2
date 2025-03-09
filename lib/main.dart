@@ -12,6 +12,7 @@ import 'viewmodels/profile_view_model.dart';
 import 'viewmodels/setting_viewmodel.dart';
 import 'utils/constants.dart';
 import 'views/filter_provider.dart';
+import 'views/web/home_navermap_wevscreen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -39,7 +40,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: appTitle,
         theme: ThemeData(primarySwatch: Colors.blue),
-        home: login_total_screen(),
+        home: WebMapScreen(),
       ),
     );
   }

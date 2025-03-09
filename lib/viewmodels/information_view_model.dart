@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../services/information_service.dart';
 
+
+/// 홈화면_마이페이지_수정하기 뷰모델
 class InformationViewModel extends ChangeNotifier {
   final InformationService _authService = InformationService(); // 이름 변경
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import '../utils/designSize.dart';
-import '../utils/donut_chart_painter.dart';
-import '../widgets/cutstom_appbar.dart';
+import '../../utils/designSize.dart';
+import '../../utils/donut_chart_painter.dart';
+import '../../widgets/cutstom_appbar.dart';
 
 class HomeMain2 extends StatefulWidget {
   @override

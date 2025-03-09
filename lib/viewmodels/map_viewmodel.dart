@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 
+/// 지도 프로바이더
 
 class MapProvider with ChangeNotifier {
   NaverMapController? _mapController;

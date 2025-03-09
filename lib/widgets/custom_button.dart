@@ -182,7 +182,58 @@ Widget customButton(String title, VoidCallback onPressed) {
   );
 }
 
-
+Widget customPushButton(String title, VoidCallback onPressed, {required bool toggleValue, required ValueChanged<bool> onToggleChanged}) {
+  return LayoutBuilder(
+    builder: (BuildContext context, BoxConstraints constraints) {
+      return Container(
+        width: ResponsiveUtils.getResponsiveWidth(360, 360, constraints),
+        height: 48.h,
+        child: TextButton(
+          onPressed: onPressed,
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.zero,
+            backgroundColor: Colors.transparent,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.zero,
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                width: ResponsiveUtils.getResponsiveWidth(312, 360, constraints),
+                height: 48.h,
+                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: const Color(0xFF888888),
+                    fontSize: 14.sp,
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w500,
+                    height: 1.40,
+                    letterSpacing: -0.35,
+                  ),
+                ),
+              ),
+              Container(
+                width: ResponsiveUtils.getResponsiveWidth(48, 360, constraints),
+                height: 48.h,
+                padding: const EdgeInsets.all(12), // Switch 크기에 맞게 패딩 조정
+                child: Switch(
+                  value: toggleValue,
+                  onChanged: onToggleChanged,
+                  activeColor: Color(0xFF43FFE8),
+                  inactiveThumbColor: Color(0xFF454545),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
 
 ///네이버지도
 // 네이버지도 새로고침 버튼

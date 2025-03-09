@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../utils/designSize.dart';
-import '../viewmodels/PasswordViewModel.dart';
+import '../viewmodels/login_viewmodel.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_field.dart';
 import '../widgets/custom_text.dart';

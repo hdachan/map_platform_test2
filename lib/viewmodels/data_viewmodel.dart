@@ -5,7 +5,7 @@ import '../models/modir.dart';
 import '../services/supabase_service.dart';
 
 
-// 마커 데이터 관리
+/// 마커 데이터 블로오기
 class DataViewModel with ChangeNotifier {
   final SupabaseService _supabaseService;
   List<Modir> dataList = [];

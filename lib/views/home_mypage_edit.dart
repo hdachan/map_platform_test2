@@ -52,6 +52,54 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   return Column(
                     children: [
                       CustomAppBar(title: '프로필 수정', context: context),
+                      Container(
+                        width: 360.w,
+                        height: 104.h,
+                        child: Center(
+                          child: Container(
+                            width: 80.w,
+                            height: 80.h,
+                              decoration: ShapeDecoration(
+                                color: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                              ),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  width: 80.w,
+                                  height: 80.h,
+                                  decoration: ShapeDecoration(
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  right: 0,
+                                  bottom: 0,
+                                  child: Container(
+                                    width: 24,
+                                    height: 24,
+                                    padding: EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.black, // 배경색은 필요에 따라 조정
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Icon(
+                                      Icons.camera_alt_outlined,
+                                      color: Colors.white,
+                                      size: 16, // 아이콘 크기 조정
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                       SizedBox(height: 16.h),
 
                       // 닉네임 입력 (✅ 수정된 부분)

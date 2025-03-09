@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:untitled114/views/home_mypage_setting.dart';
 
 import '../utils/designSize.dart';
 import '../widgets/custom_button.dart';
@@ -32,7 +33,10 @@ class mmmm1 extends State<mmmm> with SingleTickerProviderStateMixin {
                       print("알림 버튼 클릭됨");
                     },
                     onSettingsTap: () {
-                      print("설정 버튼 클릭됨");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Setting1()), // Mmmm4는 이동할 화면의 위젯입니다.
+                      );
                     },
                   ),
                   LayoutBuilder(
