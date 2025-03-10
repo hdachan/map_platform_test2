@@ -1,212 +1,195 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(360, 690),
-      builder: (context, child) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: WebMapScreen(),
-        );
-      },
-    );
-  }
-}
-
-class WebMapScreen extends StatefulWidget {
-  @override
-  _WebMapScreenState createState() => _WebMapScreenState();
-}
-
-class _WebMapScreenState extends State<WebMapScreen> with SingleTickerProviderStateMixin {
-  OverlayEntry? _overlayEntry;
-  late AnimationController _animationController;
-  late Animation<double> _heightAnimation;
-  double _dragStartHeight = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300),
-    );
-    _heightAnimation = Tween<double>(begin: 0, end: 324.h).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
-  }
-
-  void _showCustomOverlay() {
-    _removeOverlay();
-
-    _overlayEntry = OverlayEntry(
-      builder: (context) => GestureDetector(
-        onTap: _closeOverlayWithAnimation,
-        child: Stack(
-          children: [
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: GestureDetector(
-                onTap: () {},
-                onVerticalDragStart: (details) {
-                  _dragStartHeight = _heightAnimation.value;
-                },
-                onVerticalDragUpdate: (details) {
-                  double newHeight = _dragStartHeight - details.delta.dy;
-                  newHeight = newHeight.clamp(0, 324.h);
-                  _animationController.value = newHeight / 324.h;
-                },
-                onVerticalDragEnd: (details) {
-                  if (details.primaryVelocity! > 500) {
-                    // 빠르게 아래로 스와이프 -> 빨간색까지
-                    _closeOverlayWithAnimation();
-                  } else if (details.primaryVelocity! < -500) {
-                    // 빠르게 위로 스와이프 -> 완전히 열기
-                    _animationController.forward();
-                  } else {
-                    // 천천히 내릴 때 -> 빨간색까지
-                    _closeOverlayWithAnimation();
-                  }
-                },
-                child: Material(
-                  color: Colors.transparent,
-                  child: AnimatedBuilder(
-                    animation: _heightAnimation,
-                    builder: (context, child) {
-                      return Container(
-                        width: 360.w,
-                        height: _heightAnimation.value,
-                        child: Column(
-                          children: [
-                            Container(
-                              width: 360.w,
-                              height: 40.h,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF1A1A1A),
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(25.w),
-                                  topRight: Radius.circular(25.w),
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 16.h),
-                              child: Center(
-                                child: Container(
-                                  width: 48.w,
-                                  height: 4.h,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 360.w,
-                              height: 56.h,
-                              color: Colors.red,
-                            ),
-                            if (_heightAnimation.value > 96.h)
-                              Container(
-                                width: 360.w,
-                                height: 32.h,
-                                color: Colors.yellow,
-                              ),
-                            if (_heightAnimation.value > 128.h)
-                              Container(
-                                width: 360.w,
-                                height: 128.h,
-                                color: Colors.cyanAccent,
-                              ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+    return MaterialApp(
+      title: 'DraggableScrollableSheet Example',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      home: MyHomePage(),
     );
-
-    Overlay.of(context).insert(_overlayEntry!);
-    _animationController.forward(from: 0);
   }
+}
 
-  void _closeOverlayWithAnimation() {
-    if (_overlayEntry != null) {
-      if (_animationController.value > 96.h / 324.h) {
-        _animationController.animateTo(96.h / 324.h);
-      } else {
-        _animationController.reverse().then((_) => _removeOverlay());
-      }
-    }
-  }
-
-  void _removeOverlay() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-    _animationController.reset();
-  }
-
+class MyHomePage extends StatefulWidget {
   @override
-  void dispose() {
-    _removeOverlay();
-    _animationController.dispose();
-    super.dispose();
-  }
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  double _sheetExtent = 0.2; // 초기 바텀시트 크기
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    // 바텀시트 상단 위치 계산
+    double sheetTop = screenHeight * (1 - _sheetExtent);
+    double buttonTop = sheetTop - 95; // 버튼을 시트 바로 위에 배치
+
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 600),
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: _showCustomOverlay,
-                    child: Container(
-                      width: 150.w,
-                      height: 150.h,
-                      color: Colors.cyan,
-                      child: const Center(
-                        child: Text(
-                          '오버레이 열기',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
+      appBar: AppBar(
+        title: Text('DraggableScrollableSheet Example'),
+      ),
+      body: Stack(
+        children: [
+          // 배경 콘텐츠
+          Center(
+            child: Text(
+              '메인 콘텐츠',
+              style: TextStyle(fontSize: 24),
+            ),
+          ),
+          // DraggableScrollableSheet (현재 크기를 감지하여 버튼 이동)
+          NotificationListener<DraggableScrollableNotification>(
+            onNotification: (notification) {
+              setState(() {
+                _sheetExtent = notification.extent;
+              });
+              return true;
+            },
+            child: DraggableScrollableSheet(
+              initialChildSize: 0.2,
+              minChildSize: 0.1,
+              maxChildSize: 1.0,
+              builder: (BuildContext context, ScrollController scrollController) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1A1A1A),
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                  ),
+                  child: CustomScrollView(
+                    controller: scrollController,
+                    slivers: [
+                      // ✅ 필터 영역 (고정되지만 DraggableScrollableSheet 드래그에 반응)
+                      SliverPersistentHeader(
+                        pinned: true,
+                        floating: false,
+                        delegate: _SliverAppBarDelegate(
+                          minHeight: 60,
+                          maxHeight: 60,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            color: Colors.blue,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "필터 옵션",
+                                  style: TextStyle(color: Colors.white, fontSize: 18),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    // 필터 버튼 동작
+                                  },
+                                  child: Text("필터 적용"),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                      // ✅ 리스트 영역 (DraggableScrollableSheet과 함께 스크롤됨)
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                            return Container(
+                              width: 360,
+                              height: 168,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: 360,
+                                    height: 128,
+                                    color: Colors.cyan,
+                                    padding: EdgeInsets.all(12),
+                                    child: Container(
+                                      width: 328,
+                                      height: 108,
+                                      color: Colors.cyanAccent,
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 212,
+                                            height: 68,
+                                            color: Colors.red,
+                                          ),
+                                          SizedBox(width: 8),
+                                          Container(
+                                            width: 108,
+                                            height: 108,
+                                            color: Colors.red,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 360,
+                                    height: 40,
+                                    color: Colors.red,
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          childCount: 20,
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 20.h),
-                  ElevatedButton(
-                    onPressed: () {
-                      print("뒤 화면 버튼 클릭됨!");
-                      _closeOverlayWithAnimation();
-                    },
-                    child: const Text("뒤 화면 버튼"),
-                  ),
-                ],
-              ),
+                );
+              },
             ),
           ),
-        ),
+          // 움직이는 버튼 (DraggableScrollableSheet 위쪽에 위치)
+          Positioned(
+            top: buttonTop,
+            left: MediaQuery.of(context).size.width / 2 - 50, // 중앙 정렬
+            child: ElevatedButton(
+              onPressed: () {
+                // 버튼 클릭 시 실행할 동작
+              },
+              child: Text('이동 버튼'),
+            ),
+          ),
+        ],
       ),
     );
+  }
+}
+
+// ✅ SliverPersistentHeader용 delegate 클래스 (오류 해결)
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  final double minHeight;
+  final double maxHeight;
+  final Widget child;
+
+  _SliverAppBarDelegate({
+    required this.minHeight,
+    required this.maxHeight,
+    required this.child,
+  });
+
+  @override
+  double get minExtent => minHeight;
+
+  @override
+  double get maxExtent => maxHeight;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return SizedBox.expand(child: child);
+  }
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
   }
 }

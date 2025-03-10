@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: appTitle,
         theme: ThemeData(primarySwatch: Colors.blue),
-        home: WebMapScreen(),
+        home: login_total_screen(),
       ),
     );
   }
