@@ -12,17 +12,17 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: WebMapScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class WebMapScreen extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _webMyHomePageState createState() => _webMyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _webMyHomePageState extends State<WebMapScreen> {
   double _sheetExtent = 0.2; // 초기 바텀시트 크기
 
   @override

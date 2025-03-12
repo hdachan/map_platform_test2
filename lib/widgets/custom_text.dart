@@ -18,7 +18,7 @@ Widget middleText(String text) {
             text,
             style: TextStyle(
               color: Colors.white,
-              fontSize: 20.sp,
+              fontSize: 14.sp,
               fontFamily: 'Pretendard',
               fontWeight: FontWeight.w700,
               height: 1.40,

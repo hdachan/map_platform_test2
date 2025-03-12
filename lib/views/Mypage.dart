@@ -346,107 +346,107 @@ class mmmm1 extends State<mmmm> with SingleTickerProviderStateMixin {
                       );
                     },
                   ),
-                  middleText('활동'),
-                  LayoutBuilder(
-                    builder: (BuildContext context, BoxConstraints constraints) {
-                      return Container(
-                        width: ResponsiveUtils.getResponsiveWidth(360, 360, constraints),
-                        height: 228.h,
-                        padding: EdgeInsets.only(left: 16, right: 16, top: 24, bottom: 24),
-                        child: Container(
-                          width: ResponsiveUtils.getResponsiveWidth(328, 360, constraints),
-                          height: 180.h,
-                          decoration: ShapeDecoration(
-                            color: const Color(0xFF242424),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: ResponsiveUtils.getResponsiveWidth(127, 360, constraints),
-                                height: 20.h,
-                                child:  Text(
-                                  '현재 올린 코디가 없어요',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Color(0xFF888888),
-                                    fontSize: 14.sp,
-                                    fontFamily: 'Pretendard',
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.40,
-                                    letterSpacing: -0.35,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 8.h),
-                              Container(
-                                width: ResponsiveUtils.getResponsiveWidth(170, 360, constraints),
-                                height: 17.h,
-                                child: Text(
-                                  '자신이 생각한 스타일을 공유해보세요',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Color(0xFF888888),
-                                    fontSize: 12.sp,
-                                    fontFamily: 'Pretendard',
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.40,
-                                    letterSpacing: -0.30,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  LayoutBuilder(
-                    builder: (BuildContext context, BoxConstraints constraints) {
-                      return Container(
-                        width: ResponsiveUtils.getResponsiveWidth(360, 360, constraints),
-                        height: 60.h,
-                        padding: const EdgeInsets.only(left: 16,right: 16,top: 8,bottom: 8),
-                        child: Container(
-                          width: ResponsiveUtils.getResponsiveWidth(328, 360, constraints),
-                          height: 44.h,
-                          padding: const EdgeInsets.only(left: 16,right: 16,top: 12,bottom: 12),
-                          decoration: ShapeDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment(1.00, -0.08),
-                              end: Alignment(-1, 0.08),
-                              colors: [Color(0xFF242424), Color(0x4C242424)],
-                            ),
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(width: 1, color: Color(0xFF3D3D3D)),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            shadows: [
-                              BoxShadow(
-                                color: Color(0x26000000),
-                                blurRadius: 20,
-                                offset: Offset(0, 4),
-                                spreadRadius: 0,
-                              )
-                            ],
-                          ),
-                          child:  Text(
-                            '코디 올리러 가기',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Color(0xFF05FFF7),
-                              fontSize: 14.sp,
-                              fontFamily: 'Pretendard',
-                              fontWeight: FontWeight.w500,
-                              height: 1.40,
-                              letterSpacing: -0.35,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                  // middleText('활동'),
+                  // LayoutBuilder(
+                  //   builder: (BuildContext context, BoxConstraints constraints) {
+                  //     return Container(
+                  //       width: ResponsiveUtils.getResponsiveWidth(360, 360, constraints),
+                  //       height: 228.h,
+                  //       padding: EdgeInsets.only(left: 16, right: 16, top: 24, bottom: 24),
+                  //       child: Container(
+                  //         width: ResponsiveUtils.getResponsiveWidth(328, 360, constraints),
+                  //         height: 180.h,
+                  //         decoration: ShapeDecoration(
+                  //           color: const Color(0xFF242424),
+                  //           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  //         ),
+                  //         child: Column(
+                  //           mainAxisAlignment: MainAxisAlignment.center,
+                  //           children: [
+                  //             Container(
+                  //               width: ResponsiveUtils.getResponsiveWidth(127, 360, constraints),
+                  //               height: 20.h,
+                  //               child:  Text(
+                  //                 '현재 올린 코디가 없어요',
+                  //                 textAlign: TextAlign.center,
+                  //                 style: TextStyle(
+                  //                   color: Color(0xFF888888),
+                  //                   fontSize: 14.sp,
+                  //                   fontFamily: 'Pretendard',
+                  //                   fontWeight: FontWeight.w700,
+                  //                   height: 1.40,
+                  //                   letterSpacing: -0.35,
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //             SizedBox(height: 8.h),
+                  //             Container(
+                  //               width: ResponsiveUtils.getResponsiveWidth(170, 360, constraints),
+                  //               height: 17.h,
+                  //               child: Text(
+                  //                 '자신이 생각한 스타일을 공유해보세요',
+                  //                 textAlign: TextAlign.center,
+                  //                 style: TextStyle(
+                  //                   color: Color(0xFF888888),
+                  //                   fontSize: 12.sp,
+                  //                   fontFamily: 'Pretendard',
+                  //                   fontWeight: FontWeight.w500,
+                  //                   height: 1.40,
+                  //                   letterSpacing: -0.30,
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
+                  // LayoutBuilder(
+                  //   builder: (BuildContext context, BoxConstraints constraints) {
+                  //     return Container(
+                  //       width: ResponsiveUtils.getResponsiveWidth(360, 360, constraints),
+                  //       height: 60.h,
+                  //       padding: const EdgeInsets.only(left: 16,right: 16,top: 8,bottom: 8),
+                  //       child: Container(
+                  //         width: ResponsiveUtils.getResponsiveWidth(328, 360, constraints),
+                  //         height: 44.h,
+                  //         padding: const EdgeInsets.only(left: 16,right: 16,top: 12,bottom: 12),
+                  //         decoration: ShapeDecoration(
+                  //           gradient: LinearGradient(
+                  //             begin: Alignment(1.00, -0.08),
+                  //             end: Alignment(-1, 0.08),
+                  //             colors: [Color(0xFF242424), Color(0x4C242424)],
+                  //           ),
+                  //           shape: RoundedRectangleBorder(
+                  //             side: BorderSide(width: 1, color: Color(0xFF3D3D3D)),
+                  //             borderRadius: BorderRadius.circular(8),
+                  //           ),
+                  //           shadows: [
+                  //             BoxShadow(
+                  //               color: Color(0x26000000),
+                  //               blurRadius: 20,
+                  //               offset: Offset(0, 4),
+                  //               spreadRadius: 0,
+                  //             )
+                  //           ],
+                  //         ),
+                  //         child:  Text(
+                  //           '코디 올리러 가기',
+                  //           textAlign: TextAlign.center,
+                  //           style: TextStyle(
+                  //             color: Color(0xFF05FFF7),
+                  //             fontSize: 14.sp,
+                  //             fontFamily: 'Pretendard',
+                  //             fontWeight: FontWeight.w500,
+                  //             height: 1.40,
+                  //             letterSpacing: -0.35,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
                   SizedBox(height: 24.h),
                   middleText('기록'),
                   customButton(
@@ -456,49 +456,10 @@ class mmmm1 extends State<mmmm> with SingleTickerProviderStateMixin {
                       print('버튼이 클릭되었습니다!');
                     },
                   ),
-                  customButton(
-                    '최근에 본 코디',
-                        () {
-                      // 버튼 클릭 시 수행할 작업을 여기에 작성하세요.
-                      print('버튼22이 클릭되었습니다!');
-                    },
-                  ),
-                  customButton('최근에 본 라이브', () {print('버튼22이 클릭되었습니다!');
-                  },
-                  ),
-                  customButton(
-                    '이벤트 참여 내역',
-                        () {
-                      // 버튼 클릭 시 수행할 작업을 여기에 작성하세요.
-                      print('버튼22이 클릭되었습니다!');
-                    },
-                  ),
                   middleText('관심'),
                   customButton(
                     '관심 매장',
                         () {
-                    },
-                  ),
-                  customButton(
-                    '관심 코디',
-                        () {
-                      // 버튼 클릭 시 수행할 작업을 여기에 작성하세요.
-                      print('버튼22이 클릭되었습니다!');
-                    },
-                  ),
-                  customButton(
-                    '관심 라이브',
-                        () {
-                      // 버튼 클릭 시 수행할 작업을 여기에 작성하세요.
-                      print('버튼22이 클릭되었습니다!');
-                    },
-                  ),
-                  middleText('댓글'),
-                  customButton(
-                    '댓글단 코디',
-                        () {
-                      // 버튼 클릭 시 수행할 작업을 여기에 작성하세요.
-                      print('버튼22이 클릭되었습니다!');
                     },
                   ),
                   middleText('문의'),

@@ -14,10 +14,10 @@ class Modir {
 
   factory Modir.fromJson(Map<String, dynamic> json) {
     return Modir(
-      id: json['id'],
-      title: json['title'],
-      latitude: json['mapy'],
-      longitude: json['mapx'],
+      id: json['id'] as int,
+      title: json['title'] as String,
+      latitude: (json['mapy'] as num).toDouble(),  // num을 double로 변환
+      longitude: (json['mapx'] as num).toDouble(), // num을 double로 변환
     );
   }
 }
