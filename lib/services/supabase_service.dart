@@ -1,3 +1,4 @@
+import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/modir.dart';
 
@@ -5,10 +6,7 @@ class SupabaseService {
   final SupabaseClient client = Supabase.instance.client;
 
   // 로그인 시도
-  Future<User?> signInWithEmailAndPassword({
-    required String email,
-    required String password,
-  }) async {
+  Future<User?> signInWithEmailAndPassword({required String email, required String password,}) async {
     try {
       final response = await client.auth.signInWithPassword(
         email: email,
@@ -54,6 +52,35 @@ class SupabaseService {
       throw error;
     }
   }
+
+  Future<List<Modir>> fetchModirDataInBounds(NLatLngBounds bounds) async {
+    try {
+      print('Fetching data with bounds: SW(${bounds.southWest.latitude}, ${bounds.southWest.longitude}), NE(${bounds.northEast.latitude}, ${bounds.northEast.longitude})');
+      final response = await client
+          .from('modir')
+          .select()
+          .gte('mapy', bounds.southWest.latitude)
+          .lte('mapy', bounds.northEast.latitude)
+          .gte('mapx', bounds.southWest.longitude)
+          .lte('mapx', bounds.northEast.longitude);
+
+      print('Fetched raw response: $response');
+      if (response.isEmpty) {
+        print('No data found in bounds - check bounds or database');
+      } else {
+        print('Data found: ${response.length} items');
+      }
+
+      return (response as List<dynamic>)
+          .map((json) => Modir.fromJson(json))
+          .toList();
+    } catch (error) {
+      print('Error fetching modir data in bounds: $error');
+      rethrow;
+    }
+  }
+
+
 
   // 실시간 구독 설정
   RealtimeChannel setupRealtimeSubscription(
