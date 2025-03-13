@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../services/auth_service.dart'; // AuthService 임포트
 import '../utils/designSize.dart';
-import '../widgets/custom_button.dart';
 import '../widgets/custom_field.dart';
 import '../widgets/custom_text.dart';
 import '../widgets/cutstom_appbar.dart';
-import 'signup_password_screen.dart';
 
 class password_findScreen extends StatefulWidget {
   @override

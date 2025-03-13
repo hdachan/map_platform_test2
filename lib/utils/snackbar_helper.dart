@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-// 네이버지도 오버레이
+/// 네이버지도 새지도에 마커없을때뜨는 오버레이
 void showCenteredSnackbar(BuildContext context, String message) {
   OverlayEntry? overlayEntry;
 

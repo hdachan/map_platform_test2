@@ -2,6 +2,7 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/modir.dart';
 
+/// 데이터 불러오기
 class SupabaseService {
   final SupabaseClient client = Supabase.instance.client;
 

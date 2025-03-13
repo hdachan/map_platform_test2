@@ -11,7 +11,6 @@ import 'viewmodels/map_viewmodel.dart';
 import 'viewmodels/profile_view_model.dart';
 import 'viewmodels/setting_viewmodel.dart';
 import 'utils/constants.dart';
-import 'views/filter_provider.dart';
 import 'views/web/home_navermap_wevscreen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +33,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SettingState()),
         ChangeNotifierProvider(create: (_) => MapProvider()),
         ChangeNotifierProvider(create: (_) => DataViewModel()),
-        ChangeNotifierProvider(create: (_) => FilterProvider()), ///필터 상태
         ChangeNotifierProvider(create: (_) => ProfileViewModel()), // 추가
       ],
       child: MaterialApp(

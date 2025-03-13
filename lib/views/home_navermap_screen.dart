@@ -8,7 +8,6 @@ import '../viewmodels/data_viewmodel.dart';
 import '../utils/marker_helper.dart';
 import '../utils/snackbar_helper.dart';
 import '../widgets/custom_button.dart';
-import 'home_navermap_filter.dart';
 
 class MapScreen extends StatefulWidget {
   @override
@@ -337,11 +336,11 @@ class _MapScreenState extends State<MapScreen> {
                               SizedBox(width: 8.w),
                               InkWell(
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Filter()),
-                                  );
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //       builder: (context) => Filter()),
+                                  // );
                                 },
                                 child: Container(
                                   width: ResponsiveUtils.getResponsiveWidth(

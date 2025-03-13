@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+///사용자 정보 수정하기
 class ProfileViewModel extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;

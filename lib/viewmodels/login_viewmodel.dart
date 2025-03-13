@@ -3,7 +3,6 @@ import '../services/supabase_service.dart';
 import '../views/login_Information_Screen.dart';
 
 /// 로그인 관련 로직
-
 class AuthViewModel extends ChangeNotifier {
   final SupabaseService _supabaseService = SupabaseService();
 

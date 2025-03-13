@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart' show kIsWeb; // kIsWeb를 사용하기 
 import 'package:untitled114/views/web/home_navermap_wevscreen.dart';
 import '../../viewmodels/setting_viewmodel.dart';
 import '../../utils/designSize.dart';
-import 'Mypage.dart';
 import 'home_main.dart'; // HomeMain1이 포함된 파일
+import 'home_mypage.dart';
 import 'home_navermap_screen.dart';
 import 'web/home_web_main.dart';
 import 'test.dart';
