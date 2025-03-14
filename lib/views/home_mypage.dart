@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:untitled114/views/FavoriteStoresScreen.dart';
 import 'package:untitled114/views/home_mypage_setting.dart';
 
+import '../utils/animation.dart';
 import '../utils/designSize.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
@@ -35,7 +37,7 @@ class mmmm1 extends State<mmmm> with SingleTickerProviderStateMixin {
                     onSettingsTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Setting1()), // Mmmm4는 이동할 화면의 위젯입니다.
+                        createSlideLeftRoute(Setting1()), // ✅ 오른쪽 → 왼쪽 애니메이션 적용
                       );
                     },
                   ),
@@ -45,7 +47,7 @@ class mmmm1 extends State<mmmm> with SingleTickerProviderStateMixin {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => ProfileEditScreen()), // Mmmm4는 이동할 화면의 위젯입니다.
+                            createSlideLeftRoute(ProfileEditScreen()), // ✅ 오른쪽 → 왼쪽 애니메이션 적용
                           );
                         },
                         child: Container(
@@ -460,6 +462,10 @@ class mmmm1 extends State<mmmm> with SingleTickerProviderStateMixin {
                   customButton(
                     '관심 매장',
                         () {
+                          Navigator.push(
+                            context,
+                            createSlideLeftRoute(FavoriteStoresScreen()), // ✅ 오른쪽 → 왼쪽 애니메이션 적용
+                          );
                     },
                   ),
                   middleText('문의'),

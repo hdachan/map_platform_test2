@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../services/FavoriteService.dart';
 import '../utils/designSize.dart';
 
 ///로그인
@@ -338,7 +340,7 @@ void showMarkerBottomSheet(
                   topRight: Radius.circular(25.w),
                 ),
               ),
-              padding: EdgeInsets.only(left: 16,right: 16,top: 12),
+              padding: EdgeInsets.only(left: 16, right: 16, top: 12),
               child: Center(
                 child: Container(
                   width: 48.w,
@@ -605,12 +607,7 @@ void showMarkerBottomSheet(
                       MainAxisAlignment
                           .spaceAround,
                       children: [
-                        Icon(
-                            Icons
-                                .favorite_outline,
-                            color:
-                            Colors.grey,
-                            size: 20.sp),
+                        FavoriteButton(storeId: id),
                         Icon(
                             Icons
                                 .call_outlined,

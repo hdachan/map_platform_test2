@@ -39,7 +39,10 @@ class HomeScreen extends StatelessWidget {
                         }
                       },
                       children: [
-                        kIsWeb ? WebMapScreen() : MapScreen(), // 웹이면 HomeMain2, 앱이면 HomeMain1
+                        KeepAlivePage(
+                          child: kIsWeb ? WebMapScreen() : MapScreen(),
+                        ),
+
                         MYPage(key: _myPageKey),
                         kIsWeb ? HomeMain2() : HomeMain1(), // 웹이면 HomeMain2, 앱이면 HomeMain1
                         const Center(child: Text("탭 4")),
@@ -84,5 +87,28 @@ class HomeScreen extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+
+// 하단바 관리 툴_KeepAlive를 위한 래퍼 위젯 (사용시 메모리에 계속 유지)
+class KeepAlivePage extends StatefulWidget {
+  final Widget child;
+
+  const KeepAlivePage({required this.child});
+
+  @override
+  State<KeepAlivePage> createState() => _KeepAlivePageState();
+}
+
+class _KeepAlivePageState extends State<KeepAlivePage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true; // 메모리에 유지
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context); // AutomaticKeepAliveClientMixin 필수
+    return widget.child;
   }
 }
