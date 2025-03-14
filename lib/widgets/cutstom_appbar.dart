@@ -105,7 +105,7 @@ Widget custom_mypage_AppBar({
                   child: Icon(
                     Icons.notifications_outlined,
                     size: 24.sp,
-                    color: Colors.white,
+                    color: Colors.transparent,
                   ),
                 ),
               ),

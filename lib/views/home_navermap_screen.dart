@@ -32,33 +32,6 @@ class _MapScreenState extends State<MapScreen> {
     _mapController?.dispose();
     super.dispose();
   }
-
-// 필터 옵션 위젯
-  Widget _buildFilterOption(
-      BuildContext context, String title, VoidCallback onTap) {
-    return ListTile(
-      title: Text(
-        title,
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 14.sp,
-          fontFamily: 'Pretendard',
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      onTap: onTap,
-    );
-  }
-
-// 필터 적용 로직
-  void _applyFilter(BuildContext context, String region) {
-    final dataProvider = Provider.of<DataViewModel>(context, listen: false);
-    // 여기서 필터 적용 로직 추가 (예: 지역에 맞는 데이터만 로드)
-    print('Selected region: $region');
-    // 예: dataProvider.fetchDataInBounds(bounds, region: region);
-    Navigator.pop(context); // 선택 후 바텀시트 닫기
-  }
-
   Future<void> _moveToCurrentLocation() async {
     print("버튼이 눌렸습니다!");
 
@@ -125,13 +98,14 @@ class _MapScreenState extends State<MapScreen> {
         );
         showMarkerBottomSheet(
           context,
-          '',
-          '',
-          '',
+          modir.address,
+          modir.roadAddress,
+          modir.type, // ✅ type 추가
           modir.title,
           modir.latitude,
           modir.longitude,
           modir.id,
+          modir.trial,
         );
       },
       () {
