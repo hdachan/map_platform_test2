@@ -52,7 +52,7 @@ class ProfileViewModel extends ChangeNotifier {
         _nicknameController.text = response['username'] ?? '';
         _birthdateController.text = response['birthdate'] ?? '';
         _selectedGenderIndex = response['gender'] == true ? 0 : (response['gender'] == false ? 1 : -1);
-        _selectedCategoryIndex = response['category'] == '빈티지'
+        _selectedCategoryIndex = response['category'] == ''
             ? 0
             : (response['category'] == '아메카지' ? 1 : -1);
       } else {
