@@ -109,7 +109,7 @@ class _MapScreenState extends State<MapScreen> {
         );
       },
       () {
-        showCenteredSnackbar(context, "검색된 마커가 없습니다.");
+        showCenteredSnackbar(context, "현재 지도에는 조건에 맞는 매장이 없어요\n지도 범위를 다시 설정해주세요");
       },
     );
   }
@@ -129,6 +129,7 @@ class _MapScreenState extends State<MapScreen> {
       print('Bounds is null on search');
     }
   }
+  bool _snackbarShown = false; // ✅ 스낵바 상태 추가
 
   @override
   Widget build(BuildContext context) {
@@ -250,39 +251,68 @@ class _MapScreenState extends State<MapScreen> {
                               onMapReady: (controller) async {
                                 _mapController = controller;
                                 Provider.of<MapProvider>(context, listen: false)
-                                    .setMapController(controller); // ✅ 추가
+                                    .setMapController(controller);
                                 print('Map ready');
 
-                                WidgetsBinding.instance
-                                    .addPostFrameCallback((_) async {
-                                  final bounds =
-                                      await _mapController?.getContentBounds();
+                                WidgetsBinding.instance.addPostFrameCallback((_) async {
+                                  final bounds = await _mapController?.getContentBounds();
                                   if (bounds != null) {
                                     print(
                                         'Initial bounds: SW(${bounds.southWest.latitude}, ${bounds.southWest.longitude}), NE(${bounds.northEast.latitude}, ${bounds.northEast.longitude})');
-                                    await dataProvider
-                                        .fetchDataInBounds(bounds);
+                                    await dataProvider.fetchDataInBounds(bounds);
                                     _updateMarkers(dataProvider);
                                   } else {
                                     print('Initial bounds is null');
                                   }
                                 });
                               },
-                              onCameraChange: (position, reason) {
-                                setState(() {
-                                  _showRefreshButton = true;
-                                });
+                              onCameraChange: (position, reason) async {
+                                if (_mapController == null) return;
+
+                                final cameraPosition = await _mapController!.getCameraPosition();
+                                final shouldShowButton = cameraPosition.zoom >= 10;
+
+                                if (_showRefreshButton != shouldShowButton) {
+                                  setState(() {
+                                    _showRefreshButton = shouldShowButton;
+                                  });
+                                }
                               },
-                              onCameraIdle: () {
-                                print('Camera idle, waiting for search');
+                              onCameraIdle: () async {
+                                if (_mapController == null) return;
+
+                                final cameraPosition = await _mapController!.getCameraPosition();
+                                print('📍 현재 줌 레벨: ${cameraPosition.zoom}');
+
+                                final shouldShowButton = cameraPosition.zoom >= 10;
+
+                                if (_showRefreshButton != shouldShowButton) {
+                                  setState(() {
+                                    _showRefreshButton = shouldShowButton;
+                                  });
+                                }
+
+                                // ✅ 줌이 10 이상으로 올라가면 _snackbarShown을 즉시 초기화
+                                if (shouldShowButton) {
+                                  _snackbarShown = false; // 🔥 즉시 반영
+                                } else if (!_snackbarShown) {
+                                  // ✅ 줌이 10 미만이고 스낵바가 안 떴으면 띄우기
+                                  showCenteredSnackbar(context, "지도를 가까이 가주세요!");
+                                  _snackbarShown = true;
+                                }
+
+                                print('🔵 버튼 표시 여부: $_showRefreshButton');
                               },
                               options: const NaverMapViewOptions(
                                 initialCameraPosition: NCameraPosition(
                                   target: NLatLng(36.1234229, 128.1146402),
-                                  zoom: 15,
+                                  zoom: 10,
                                 ),
+                                logoAlign: NLogoAlign.rightTop,
+                                logoMargin: EdgeInsets.only(top: 16, right: 16),
                               ),
                             ),
+
                             if (_showRefreshButton)
                               Positioned(
                                 top: 20,
@@ -292,6 +322,9 @@ class _MapScreenState extends State<MapScreen> {
                                   onTap: () => _onSearchPressed(dataProvider),
                                 ),
                               ),
+
+
+
                             NotificationListener<
                                 DraggableScrollableNotification>(
                               onNotification: (notification) {
@@ -352,7 +385,7 @@ class _MapScreenState extends State<MapScreen> {
                                                         width: 231.w,
                                                         height: 20.h,
                                                         child: Text(
-                                                          '핫플레이스가 궁금하다면 ?',
+                                                          '나에게 맞는 매장을 찾아봐요!',
                                                           style: TextStyle(
                                                             color: Colors.white,
                                                             fontSize: 18.sp,

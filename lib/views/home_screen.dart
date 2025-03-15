@@ -39,10 +39,10 @@ class HomeScreen extends StatelessWidget {
                         }
                       },
                       children: [
-                        KeepAlivePage(
-                          child: kIsWeb ? WebMapScreen() : MapScreen(),
-                        ),
-
+                        // KeepAlivePage(
+                        //   child: kIsWeb ? WebMapScreen() : MapScreen(),
+                        // ),
+                        kIsWeb ? WebMapScreen() : MapScreen(),
                         MYPage(key: _myPageKey),
                         kIsWeb ? HomeMain2() : HomeMain1(), // 웹이면 HomeMain2, 앱이면 HomeMain1
                         const Center(child: Text("탭 4")),

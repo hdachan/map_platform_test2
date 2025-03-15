@@ -21,7 +21,7 @@ Set<NAddableOverlay> buildMarkersFromList(
       position: NLatLng(modir.latitude, modir.longitude),
       caption: NOverlayCaption(text: modir.title),
       icon: NOverlayImage.fromAssetImage(iconPath),
-      size:  Size(40, 40),
+      size:  Size(30, 30),
     );
 
     marker.setOnTapListener((overlay) {

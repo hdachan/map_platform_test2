@@ -1,9 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../services/FavoriteService.dart';
+import '../utils/RouteFinderPage.dart';
 import '../utils/designSize.dart';
 
 ///로그인
@@ -584,145 +587,145 @@ void showMarkerBottomSheet(
                                             return Align(
                                               alignment: Alignment.bottomCenter, // 화면 하단에 배치
                                               child: Container(
-                                                width: 328.w,
-                                                height: 60.h,
-                                                padding: EdgeInsets.only(left: 16,right: 16,top: 8,bottom: 8),
-                                                decoration: ShapeDecoration(
-                                                  color: Color(0xFF242424),
-                                                  shape: RoundedRectangleBorder(
-                                                    side: BorderSide(width: 1, color: Color(0xFF3D3D3D)),
-                                                    borderRadius: BorderRadius.circular(4),
+                                                  width: 328.w,
+                                                  height: 60.h,
+                                                  padding: EdgeInsets.only(left: 16,right: 16,top: 8,bottom: 8),
+                                                  decoration: ShapeDecoration(
+                                                    color: Color(0xFF242424),
+                                                    shape: RoundedRectangleBorder(
+                                                      side: BorderSide(width: 1, color: Color(0xFF3D3D3D)),
+                                                      borderRadius: BorderRadius.circular(4),
+                                                    ),
                                                   ),
-                                                ),
-                                                child: Column(
-                                                  children: [
-                                                    Container(
-                                                      width: 296.w,
-                                                      height: 18.h,
-                                                      child: Row(
-                                                        children: [
-                                                          // 기존 컨테이너
-                                                          Container(
-                                                            width: 34.w,
-                                                            height: 18.h,
-                                                            padding: EdgeInsets.only(left: 4, right: 4, bottom: 2, top: 2),
-                                                            decoration: ShapeDecoration(
-                                                              shape: RoundedRectangleBorder(
-                                                                side: BorderSide(width: 1, color: Color(0xFF888888)),
-                                                                borderRadius: BorderRadius.circular(2),
+                                                  child: Column(
+                                                    children: [
+                                                      Container(
+                                                        width: 296.w,
+                                                        height: 18.h,
+                                                        child: Row(
+                                                          children: [
+                                                            // 기존 컨테이너
+                                                            Container(
+                                                              width: 34.w,
+                                                              height: 18.h,
+                                                              padding: EdgeInsets.only(left: 4, right: 4, bottom: 2, top: 2),
+                                                              decoration: ShapeDecoration(
+                                                                shape: RoundedRectangleBorder(
+                                                                  side: BorderSide(width: 1, color: Color(0xFF888888)),
+                                                                  borderRadius: BorderRadius.circular(2),
+                                                                ),
                                                               ),
-                                                            ),
-                                                            child:         Text(
-                                                              '도로명',
-                                                              textAlign: TextAlign.center,
-                                                              style: TextStyle(
-                                                                color: Color(0xFF888888),
-                                                                fontSize: 10.sp,
-                                                                fontFamily: 'Pretendard',
-                                                                fontWeight: FontWeight.w500,
-                                                                height: 1.40,
-                                                                letterSpacing: -0.25,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(width: 6.w),
-                                                          Row(
-                                                            children: [
-                                                              Text(
-                                                                '$roadAddress',
+                                                              child:         Text(
+                                                                '도로명',
                                                                 textAlign: TextAlign.center,
                                                                 style: TextStyle(
-                                                                  color: Colors.white,
-                                                                  fontSize: 12,
+                                                                  color: Color(0xFF888888),
+                                                                  fontSize: 10.sp,
                                                                   fontFamily: 'Pretendard',
                                                                   fontWeight: FontWeight.w500,
-                                                                  height: 1.30,
-                                                                  letterSpacing: -0.30,
+                                                                  height: 1.40,
+                                                                  letterSpacing: -0.25,
                                                                 ),
                                                               ),
-                                                              SizedBox(width: 4.w), // 아이콘과 텍스트 간격
+                                                            ),
+                                                            SizedBox(width: 6.w),
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  '$roadAddress',
+                                                                  textAlign: TextAlign.center,
+                                                                  style: TextStyle(
+                                                                    color: Colors.white,
+                                                                    fontSize: 12,
+                                                                    fontFamily: 'Pretendard',
+                                                                    fontWeight: FontWeight.w500,
+                                                                    height: 1.30,
+                                                                    letterSpacing: -0.30,
+                                                                  ),
+                                                                ),
+                                                                SizedBox(width: 4.w), // 아이콘과 텍스트 간격
 
-                                                              // 복사 아이콘 버튼
-                                                              GestureDetector(
-                                                                onTap: () {
-                                                                  Clipboard.setData(ClipboardData(text: roadAddress)); // 텍스트 복사
-                                                                },
-                                                                child: Icon(
-                                                                  Icons.copy,
-                                                                  color: Colors.white,
-                                                                  size: 14.sp, // 아이콘 크기 조정
+                                                                // 복사 아이콘 버튼
+                                                                GestureDetector(
+                                                                  onTap: () {
+                                                                    Clipboard.setData(ClipboardData(text: roadAddress)); // 텍스트 복사
+                                                                  },
+                                                                  child: Icon(
+                                                                    Icons.copy,
+                                                                    color: Colors.white,
+                                                                    size: 14.sp, // 아이콘 크기 조정
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 8.h),
+                                                      Container(
+                                                        width: 296.w,
+                                                        height: 18.h,
+                                                        child: Row(
+                                                          children: [
+                                                            // 기존 컨테이너
+                                                            Container(
+                                                              width: 34.w,
+                                                              height: 18.h,
+                                                              padding: EdgeInsets.only(left: 4, right: 4, bottom: 2, top: 2),
+                                                              decoration: ShapeDecoration(
+                                                                shape: RoundedRectangleBorder(
+                                                                  side: BorderSide(width: 1, color: Color(0xFF888888)),
+                                                                  borderRadius: BorderRadius.circular(2),
                                                                 ),
                                                               ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 8.h),
-                                                    Container(
-                                                      width: 296.w,
-                                                      height: 18.h,
-                                                      child: Row(
-                                                        children: [
-                                                          // 기존 컨테이너
-                                                          Container(
-                                                            width: 34.w,
-                                                            height: 18.h,
-                                                            padding: EdgeInsets.only(left: 4, right: 4, bottom: 2, top: 2),
-                                                            decoration: ShapeDecoration(
-                                                              shape: RoundedRectangleBorder(
-                                                                side: BorderSide(width: 1, color: Color(0xFF888888)),
-                                                                borderRadius: BorderRadius.circular(2),
-                                                              ),
-                                                            ),
-                                                            child:         Text(
-                                                              '지번',
-                                                              textAlign: TextAlign.center,
-                                                              style: TextStyle(
-                                                                color: Color(0xFF888888),
-                                                                fontSize: 10.sp,
-                                                                fontFamily: 'Pretendard',
-                                                                fontWeight: FontWeight.w500,
-                                                                height: 1.40,
-                                                                letterSpacing: -0.25,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(width: 6.w),
-                                                          Row(
-                                                            children: [
-                                                              Text(
-                                                                '$address',
+                                                              child:         Text(
+                                                                '지번',
                                                                 textAlign: TextAlign.center,
                                                                 style: TextStyle(
-                                                                  color: Colors.white,
-                                                                  fontSize: 12,
+                                                                  color: Color(0xFF888888),
+                                                                  fontSize: 10.sp,
                                                                   fontFamily: 'Pretendard',
                                                                   fontWeight: FontWeight.w500,
-                                                                  height: 1.30,
-                                                                  letterSpacing: -0.30,
+                                                                  height: 1.40,
+                                                                  letterSpacing: -0.25,
                                                                 ),
                                                               ),
-                                                              SizedBox(width: 4.w), // 아이콘과 텍스트 간격
+                                                            ),
+                                                            SizedBox(width: 6.w),
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                  '$address',
+                                                                  textAlign: TextAlign.center,
+                                                                  style: TextStyle(
+                                                                    color: Colors.white,
+                                                                    fontSize: 12,
+                                                                    fontFamily: 'Pretendard',
+                                                                    fontWeight: FontWeight.w500,
+                                                                    height: 1.30,
+                                                                    letterSpacing: -0.30,
+                                                                  ),
+                                                                ),
+                                                                SizedBox(width: 4.w), // 아이콘과 텍스트 간격
 
-                                                              // 복사 아이콘 버튼
-                                                              GestureDetector(
-                                                                onTap: () {
-                                                                  Clipboard.setData(ClipboardData(text: address)); // 텍스트 복사
-                                                                },
-                                                                child: Icon(
-                                                                  Icons.copy,
-                                                                  color: Colors.white,
-                                                                  size: 14.sp, // 아이콘 크기 조정
+                                                                // 복사 아이콘 버튼
+                                                                GestureDetector(
+                                                                  onTap: () {
+                                                                    Clipboard.setData(ClipboardData(text: address)); // 텍스트 복사
+                                                                  },
+                                                                  child: Icon(
+                                                                    Icons.copy,
+                                                                    color: Colors.white,
+                                                                    size: 14.sp, // 아이콘 크기 조정
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                )
+                                                    ],
+                                                  )
                                               ),
                                             );
                                           },
@@ -786,24 +789,21 @@ void showMarkerBottomSheet(
                           height: 36.h,
                           child: FavoriteButton(storeId: id),
                         ),
-                        Container(
-                          width: 36.w,
-                          height: 36.h,
-                          child: Icon(
-                            Icons.call_outlined,
-                            color: Colors.grey,
-                            size: 20.sp,
+                        GestureDetector(
+                          onTap: () {
+                            navigateToDestination(latitude, longitude, address);
+                          },
+                          child: Container(
+                            width: 36.w,
+                            height: 36.h,
+                            child: Icon(
+                              Icons.subdirectory_arrow_right_rounded,
+                              color: Colors.grey,
+                              size: 20.sp,
+                            ),
                           ),
                         ),
-                        Container(
-                          width: 36.w,
-                          height: 36.h,
-                          child: Icon(
-                            Icons.subdirectory_arrow_right_rounded,
-                            color: Colors.grey,
-                            size: 20.sp,
-                          ),
-                        ),
+
                         Container(
                           width: 36.w,
                           height: 36.h,
@@ -817,15 +817,102 @@ void showMarkerBottomSheet(
                         // 공간을 최대한 차지하여 `more_vert_outlined` 아이콘을 오른쪽으로 밀어냄
                         Spacer(),
 
-                        Container(
-                          width: 36.w,
-                          height: 36.h,
-                          child: Icon(
-                            Icons.more_vert_outlined,
-                            color: Colors.grey,
-                            size: 20.sp,
+                        GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              barrierColor: Colors.transparent, // 배경 투명
+                              builder: (context) {
+                                return Stack(
+                                  children: [
+                                    Positioned(
+                                      bottom: 50, // 현재 위치에서 50만큼 위로 올림
+                                      right: 16, // 오른쪽 정렬
+                                      child:Container(
+                                        width: 133.w,
+                                        height: 88.h,
+                                        padding: EdgeInsets.all(16),
+                                        decoration: ShapeDecoration(
+                                          gradient: LinearGradient(
+                                            begin: Alignment(0.00, 0.00),
+                                            end: Alignment(1.00, 1.00),
+                                            colors: [Color(0xFF242424).withOpacity(0.9), Color(0xFF242424).withOpacity(0.4)],
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(width: 1, color: Color(0xFF3D3D3D)),
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          shadows: [
+                                            BoxShadow(
+                                              color: Color(0x26000000),
+                                              blurRadius: 20,
+                                              offset: Offset(0, 4),
+                                              spreadRadius: 0,
+                                            ),
+                                          ],
+                                        ),
+                                        child: ClipRRect( // 블러 효과를 적용하기 위해 ClipRRect 추가
+                                          borderRadius: BorderRadius.circular(8),
+                                          child: BackdropFilter(
+                                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // 블러 효과 적용
+                                            child: Column(
+                                              children: [
+                                                Container(
+                                                  width: 101.w,
+                                                  height: 20.h,
+                                                  child: Text(
+                                                    '신고하기',
+                                                    style: TextStyle(
+                                                      color: Color(0xFFE7E7E7),
+                                                      fontSize: 14.sp,
+                                                      fontFamily: 'Pretendard',
+                                                      fontWeight: FontWeight.w500,
+                                                      height: 1.40,
+                                                      letterSpacing: -0.35,
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 16.h),
+                                                Container(
+                                                  width: 101.w,
+                                                  height: 20.h,
+                                                  child: Text(
+                                                    '정보 수정 제안하기',
+                                                    style: TextStyle(
+                                                      color: Color(0xFFE7E7E7),
+                                                      fontSize: 14.sp,
+                                                      fontFamily: 'Pretendard',
+                                                      fontWeight: FontWeight.w500,
+                                                      height: 1.40,
+                                                      letterSpacing: -0.35,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                  ],
+                                );
+                              },
+                            );
+                          },
+
+                          child: Container(
+                            width: 36.w,
+                            height: 36.h,
+                            alignment: Alignment.center, // 아이콘 중앙 정렬
+                            child: Icon(
+                              Icons.more_vert_outlined,
+                              color: Colors.grey,
+                              size: 20.sp,
+                            ),
                           ),
                         ),
+
                       ],
                     ),
 

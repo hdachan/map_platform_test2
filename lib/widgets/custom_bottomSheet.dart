@@ -1,25 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../viewmodels/map_viewmodel.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FilterBottomSheet {
   static void show(BuildContext context) {
     String? selectedLocation; // 선택된 지역 저장
+    Map<String, NLatLng> locationCoordinates = {
+      '압구정': NLatLng(37.5271, 127.0286),
+      '홍대': NLatLng(37.5561, 126.9236),
+      '동묘': NLatLng(37.5722, 127.0168),
+      '망원': NLatLng(37.5569, 126.9104),
+      '합정': NLatLng(37.5495, 126.9137),
+      '이태원': NLatLng(37.5345, 126.9946),
+      '성수': NLatLng(37.5444, 127.0563),
+    };
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Color(0xFF1A1A1A),
       builder: (BuildContext context) {
-        return StatefulBuilder( // 상태 변경을 위해 StatefulBuilder 사용
+        return StatefulBuilder(
           builder: (context, setState) {
             return Container(
               width: 360.w,
@@ -167,7 +172,16 @@ class FilterBottomSheet {
                         SizedBox(width: 16.w),
                         GestureDetector(
                           onTap: () {
-                            print("최종 선택된 위치: $selectedLocation");
+                            if (selectedLocation != null && locationCoordinates.containsKey(selectedLocation)) {
+                              final mapProvider = context.read<MapProvider>();
+                              final coords = locationCoordinates[selectedLocation]!;
+
+                              mapProvider.moveToLocation(coords.latitude, coords.longitude);
+                              print("최종 선택된 위치: $selectedLocation -> ${coords.latitude}, ${coords.longitude}");
+                            } else {
+                              print("선택된 위치가 없습니다.");
+                            }
+
                             Navigator.pop(context, selectedLocation);
                           },
                           child: Container(
