@@ -558,72 +558,79 @@ class _MapScreenState extends State<MapScreen> {
                                                         ),
                                                       ),
                                                       SizedBox(width: 12),
-                                                      Container(
-                                                        width: 77.w,
-                                                        height: 32.h,
-                                                        decoration:
-                                                            ShapeDecoration(
-                                                          shape:
-                                                              RoundedRectangleBorder(
-                                                            side: BorderSide(
-                                                                width: 1,
-                                                                color: Color(
-                                                                    0xFF3D3D3D)),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        100),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          bbbbbBottomSheet.show(
+                                                              context); // 바텀시트 표시 함수 호출
+                                                        },
+                                                        child: Container(
+                                                          width: 77.w,
+                                                          height: 32.h,
+                                                          decoration:
+                                                          ShapeDecoration(
+                                                            shape:
+                                                            RoundedRectangleBorder(
+                                                              side: BorderSide(
+                                                                  width: 1,
+                                                                  color: Color(
+                                                                      0xFF3D3D3D)),
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                  100),
+                                                            ),
                                                           ),
-                                                        ),
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                left: 16,
-                                                                right: 12,
-                                                                top: 8,
-                                                                bottom: 8),
-                                                        child: Row(
-                                                          children: [
-                                                            Container(
-                                                              width: 31.w,
-                                                              height: 16.h,
-                                                              child: Text(
-                                                                '브랜드',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize:
-                                                                      12.sp,
-                                                                  fontFamily:
-                                                                      'Pretendard',
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  height: 1.30,
-                                                                  letterSpacing:
-                                                                      -0.30,
+                                                          padding:
+                                                          EdgeInsets.only(
+                                                              left: 16,
+                                                              right: 12,
+                                                              top: 8,
+                                                              bottom: 8),
+                                                          child: Row(
+                                                            children: [
+                                                              Container(
+                                                                width: 31.w,
+                                                                height: 16.h,
+                                                                child: Text(
+                                                                  '브랜드',
+                                                                  textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                                  style:
+                                                                  TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                    12.sp,
+                                                                    fontFamily:
+                                                                    'Pretendard',
+                                                                    fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                    height:
+                                                                    1.30,
+                                                                    letterSpacing:
+                                                                    -0.30,
+                                                                  ),
                                                                 ),
                                                               ),
-                                                            ),
-                                                            SizedBox(
-                                                                width: 2.w),
-                                                            Container(
-                                                              width: 16.w,
-                                                              height: 16.h,
-                                                              child: Center(
-                                                                child: Icon(
-                                                                  Icons
-                                                                      .keyboard_arrow_down_outlined,
-                                                                  size: 16.sp,
-                                                                  color: Colors
-                                                                      .white,
+                                                              SizedBox(
+                                                                  width: 2.w),
+                                                              Container(
+                                                                width: 16.w,
+                                                                height: 16.h,
+                                                                child: Center(
+                                                                  child: Icon(
+                                                                    Icons
+                                                                        .keyboard_arrow_down_outlined,
+                                                                    size: 16.sp,
+                                                                    color: Colors
+                                                                        .white,
+                                                                  ),
                                                                 ),
                                                               ),
-                                                            ),
-                                                          ],
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                       SizedBox(width: 12),
@@ -821,196 +828,150 @@ class _MapScreenState extends State<MapScreen> {
                                                   'Building SliverList item $index: ${modir.title}');
                                               return Container(
                                                 width: 360.w,
-                                                height: 174.h,
-                                                decoration: BoxDecoration(
+                                                height: 226.h,
+                                                decoration: ShapeDecoration(
                                                   color: Color(0xFF1A1A1A),
-                                                  border: Border(
-                                                    bottom: BorderSide(
-                                                        width: 1.w,
-                                                        color:
-                                                            Color(0xFF3D3D3D)),
+                                                  shape: RoundedRectangleBorder(
+                                                    side: BorderSide(width: 1, color: Color(0xFF242424)),
                                                   ),
                                                 ),
+                                                padding: EdgeInsets.only(top: 16,bottom: 16),
                                                 child: Column(
                                                   children: [
                                                     Container(
                                                       width: 360.w,
-                                                      height: 128.h,
-                                                      padding: EdgeInsets.only(
-                                                          left: 16,
-                                                          right: 16,
-                                                          top: 12,
-                                                          bottom: 8),
+                                                      height: 18.h,
+                                                      padding: EdgeInsets.only(left: 16,right: 16),
                                                       child: Row(
                                                         children: [
                                                           Container(
-                                                            width: 212.w,
-                                                            height: 108.h,
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
+                                                            height: 18.h,
+                                                            color: Colors.redAccent,
+                                                            padding: EdgeInsets.only(left: 4,right: 4,bottom: 2,top: 2),
+                                                            child: Row(
                                                               children: [
-                                                                Text(
-                                                                  modir.title,
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        14.sp,
-                                                                    fontFamily:
-                                                                        'Pretendard',
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    height:
-                                                                        1.40,
-                                                                    letterSpacing:
-                                                                        -0.35,
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                    height:
-                                                                        8.h),
-                                                                Text(
-                                                                  '영업 중 · 21:30에 영업 종료',
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        12.sp,
-                                                                    fontFamily:
-                                                                        'Pretendard',
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    height:
-                                                                        1.30,
-                                                                    letterSpacing:
-                                                                        -0.30,
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                    height:
-                                                                        8.h),
-                                                                Text(
-                                                                  '조회 · 1912명',
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        12.sp,
-                                                                    fontFamily:
-                                                                        'Pretendard',
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    height:
-                                                                        1.30,
-                                                                    letterSpacing:
-                                                                        -0.30,
-                                                                  ),
-                                                                ),
-                                                                SizedBox(
-                                                                    height:
-                                                                        8.h),
-                                                                Text(
-                                                                  '위도: ${modir.latitude}, 경도: ${modir.longitude}',
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        12.sp,
-                                                                    fontFamily:
-                                                                        'Pretendard',
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    height:
-                                                                        1.30,
-                                                                    letterSpacing:
-                                                                        -0.30,
-                                                                  ),
+                                                                SizedBox(width: 2.w),
+                                                                Container(
+                                                                  height: 14.h,
+                                                                 child:         Text(
+                                                                   '남여공용',
+                                                                   style: TextStyle(
+                                                                     color: Color(0xFF0B5C1F),
+                                                                     fontSize: 10.sp,
+                                                                     fontFamily: 'Pretendard',
+                                                                     fontWeight: FontWeight.w400,
+                                                                     height: 1.40,
+                                                                     letterSpacing: -0.25,
+                                                                   ),
+                                                                 ),
                                                                 ),
                                                               ],
                                                             ),
                                                           ),
-                                                          SizedBox(width: 8.w),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 8.h),
+                                                    Container(
+                                                      width: 360.w,
+                                                      height: 20.h,
+                                                      padding: EdgeInsets.only(left: 16,right: 16),
+                                                      child: Row(
+                                                        crossAxisAlignment: CrossAxisAlignment.end, // Row 안에서 아래쪽 정렬
+                                                        children: [
                                                           Container(
-                                                            width: 108.w,
-                                                            height: 108.h,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: Color(
-                                                                  0xFF797777),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          4),
-                                                              image:
-                                                                  DecorationImage(
-                                                                image: AssetImage(
-                                                                    'assets/image/test_image.png'),
-                                                                fit: BoxFit
-                                                                    .cover,
+                                                            height: 20.h,
+                                                            child:         Text(
+                                                              modir.title,
+                                                              style: TextStyle(
+                                                                color: Colors.white,
+                                                                fontSize: 14.sp,
+                                                                fontFamily: 'Pretendard',
+                                                                fontWeight: FontWeight.w500,
+                                                                height: 1.40,
+                                                                letterSpacing: -0.35,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 4.w),
+                                                          Container(
+                                                            width: 150.h,
+                                                            height: 16.h,
+                                                            child: Text(
+                                                              modir.type,
+                                                              style: TextStyle(
+                                                                color: Color(0xFF888888),
+                                                                fontSize: 12.sp,
+                                                                fontFamily: 'Pretendard',
+                                                                fontWeight: FontWeight.w500,
+                                                                height: 1.30,
+                                                                letterSpacing: -0.30,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Spacer(),
+                                                          Container(
+                                                            width: 20.h,
+                                                            height: 20.h,
+                                                            child: Center(
+                                                              child: Icon(
+                                                                Icons.favorite_outline, // 채워진 하트 아이콘
+                                                                color: Colors.red, // 하트 색상 (원하는 색으로 변경 가능)
+                                                                size: 16.sp, // 아이콘 크기 (Container 크기에 맞게 조정)
                                                               ),
                                                             ),
                                                           ),
                                                         ],
                                                       ),
                                                     ),
+                                                    SizedBox(height: 8.h),
                                                     Container(
                                                       width: 360.w,
-                                                      height: 44.h,
-                                                      decoration:
-                                                          ShapeDecoration(
-                                                        shape:
-                                                            RoundedRectangleBorder(
-                                                          side: BorderSide(
-                                                              width: 1,
-                                                              color: Color(
-                                                                  0xFF242424)),
+                                                      height: 28.h,
+                                                      padding: EdgeInsets.only(left: 16,right: 16),
+                                                      child: Text(
+                                                        modir.description,
+                                                        style: TextStyle(
+                                                          color: Color(0xFFE7E7E7),
+                                                          fontSize: 10.sp,
+                                                          fontFamily: 'Pretendard',
+                                                          fontWeight: FontWeight.w500,
+                                                          height: 1.40,
+                                                          letterSpacing: -0.25,
                                                         ),
                                                       ),
-                                                      padding: EdgeInsets.only(
-                                                          left: 8,
-                                                          right: 8,
-                                                          top: 4,
-                                                          bottom: 4),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceAround,
-                                                        children: [
-                                                          Icon(
-                                                              Icons
-                                                                  .favorite_outline,
-                                                              color:
-                                                                  Colors.grey,
-                                                              size: 20.sp),
-                                                          Icon(
-                                                              Icons
-                                                                  .call_outlined,
-                                                              color:
-                                                                  Colors.grey,
-                                                              size: 20.sp),
-                                                          Icon(
-                                                              Icons
-                                                                  .subdirectory_arrow_right_rounded,
-                                                              color:
-                                                                  Colors.grey,
-                                                              size: 20.sp),
-                                                          Icon(
-                                                              Icons
-                                                                  .ios_share_outlined,
-                                                              color:
-                                                                  Colors.grey,
-                                                              size: 20.sp),
-                                                        ],
+                                                    ),
+                                                    SizedBox(height: 8.h),
+                                                    Container(
+                                                      width: 360.w,
+                                                      height: 104.h,
+                                                      padding: EdgeInsets.only(left: 16, right: 16),
+                                                      child: SingleChildScrollView(
+                                                        scrollDirection: Axis.horizontal, // 가로 스크롤 설정
+                                                        child: Row(
+                                                          children: [
+                                                            Container(
+                                                              width: 104.w,
+                                                              height: 104.h,
+                                                              color: Colors.cyanAccent,
+                                                            ),
+                                                            Container(
+                                                              width: 104.w,
+                                                              height: 104.h,
+                                                              color: Colors.red,
+                                                            ),
+                                                            Container(
+                                                              width: 104.w,
+                                                              height: 104.h,
+                                                              color: Colors.pink,
+                                                            ),
+                                                            Container(
+                                                              width: 104.w,
+                                                              height: 104.h,
+                                                              color: Colors.indigo,
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
                                                     ),
                                                   ],
