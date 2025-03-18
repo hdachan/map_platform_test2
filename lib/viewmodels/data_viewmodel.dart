@@ -44,6 +44,33 @@ class DataViewModel with ChangeNotifier {
     }
   }
 
+  // 특정 성별에 맞는 데이터만 필터링하여 불러오기
+  Future<void> fetchFilteredDataInBounds(NLatLngBounds bounds, String? gender) async {
+    print('Fetching filtered data in bounds: gender = $gender');
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      // 원본 데이터 불러오기
+      await fetchDataInBounds(bounds);
+
+      // 필터링 적용
+      if (gender != null) {
+        dataList = dataList.where((modir) => modir.clothesgender == gender).toList();
+      }
+
+      print('Filtered data count: ${dataList.length}');
+    } catch (e) {
+      errorMessage = e.toString();
+      print('Error in fetching filtered data: $errorMessage');
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+
   // 실시간 구독 설정
   void setupRealtimeSubscription() {
     _realtimeChannel = _supabaseService.setupRealtimeSubscription(

@@ -3,6 +3,7 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import '../models/modir.dart';
 import '../utils/animation.dart';
 import '../utils/designSize.dart';
 import '../viewmodels/data_viewmodel.dart';
@@ -26,6 +27,47 @@ class _MapScreenState extends State<MapScreen> {
   double _sheetExtent = 0.2;
   final DraggableScrollableController _sheetController =
       DraggableScrollableController();
+  String? currentGender;
+  late DataViewModel dataProvider; // 데이터 제공자
+  List<Modir> filteredData = []; // 필터링된 데이터
+
+  Map<String, String?> filters = { // 다중 필터 맵
+    "gender": null,
+    "style": null,
+    "brand": null,
+    "store": null,
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    dataProvider = DataViewModel();
+    filteredData = dataProvider.dataList; // 초기 데이터 설정
+  }
+
+  void applyFilters() { // 필터링 함수
+    setState(() {
+      filteredData = dataProvider.dataList.where((modir) {
+        return filters.entries.every((entry) { // Map.entries로 변경
+          final key = entry.key;
+          final value = entry.value;
+          if (value == null) return true; // 필터 없으면 통과
+          switch (key) {
+            case "gender":
+              return modir.clothesgender == value; // 오타 수정: clothesgender → clothesGender
+            case "style":
+              return modir.type == value; // 가게 타입 필터 추가
+            case "brand":
+              return true; // 아직 brand 속성 없으니 통과
+            case "store":
+              return true; // 아직 store 속성 없으니 통과
+            default:
+              return true; // 알 수 없는 키는 통과
+          }
+        });
+      }).toList();
+    });
+  }
 
   @override
   void dispose() {
@@ -120,8 +162,17 @@ class _MapScreenState extends State<MapScreen> {
     if (bounds != null) {
       print(
           'Search triggered, bounds: SW(${bounds.southWest.latitude}, ${bounds.southWest.longitude}), NE(${bounds.northEast.latitude}, ${bounds.northEast.longitude})');
-      await dataProvider.fetchDataInBounds(bounds);
+
+      // 필터가 적용된 경우 필터링된 데이터 불러오기
+      if (filters["gender"] != null) {
+        await dataProvider.fetchFilteredDataInBounds(bounds, filters["gender"]!);
+      } else {
+        // 필터가 없으면 기존 방식으로 전체 데이터 불러오기
+        await dataProvider.fetchDataInBounds(bounds);
+      }
+
       _updateMarkers(dataProvider);
+
       setState(() {
         _showRefreshButton = false; // 검색 후 버튼 숨김
       });
@@ -129,6 +180,7 @@ class _MapScreenState extends State<MapScreen> {
       print('Bounds is null on search');
     }
   }
+
   bool _snackbarShown = false; // ✅ 스낵바 상태 추가
 
   @override
@@ -635,73 +687,49 @@ class _MapScreenState extends State<MapScreen> {
                                                       ),
                                                       SizedBox(width: 12),
                                                       GestureDetector(
-                                                        onTap: () {
-                                                          StyleBottomSheet.show(
-                                                              context); // 바텀시트 표시 함수 호출
+                                                        onTap: () async {
+                                                          final selectedType = await StyleBottomSheet.show(context);
+                                                          setState(() {
+                                                            filters["type"] = selectedType; // 스타일 필터 설정
+                                                            applyFilters(); // 필터링 적용
+                                                          });
                                                         },
                                                         child: Container(
                                                           width: 67.w,
                                                           height: 32.h,
-                                                          decoration:
-                                                              ShapeDecoration(
-                                                            shape:
-                                                                RoundedRectangleBorder(
-                                                              side: BorderSide(
-                                                                  width: 1,
-                                                                  color: Color(
-                                                                      0xFF3D3D3D)),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          100),
+                                                          decoration: ShapeDecoration(
+                                                            shape: RoundedRectangleBorder(
+                                                              side: BorderSide(width: 1, color: Color(0xFF3D3D3D)),
+                                                              borderRadius: BorderRadius.circular(100),
                                                             ),
                                                           ),
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  left: 16,
-                                                                  right: 12,
-                                                                  top: 8,
-                                                                  bottom: 8),
+                                                          padding: EdgeInsets.only(left: 16, right: 12, top: 8, bottom: 8),
                                                           child: Row(
                                                             children: [
                                                               Container(
                                                                 width: 21.w,
                                                                 height: 16.h,
                                                                 child: Text(
-                                                                  '매장',
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        12.sp,
-                                                                    fontFamily:
-                                                                        'Pretendard',
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    height:
-                                                                        1.30,
-                                                                    letterSpacing:
-                                                                        -0.30,
+                                                                  filters["type"] ?? '매장',
+                                                                  textAlign: TextAlign.center,
+                                                                  style: TextStyle(
+                                                                    color: Colors.white,
+                                                                    fontSize: 12.sp,
+                                                                    fontWeight: FontWeight.w500,
+                                                                    height: 1.30,
+                                                                    letterSpacing: -0.30,
                                                                   ),
                                                                 ),
                                                               ),
-                                                              SizedBox(
-                                                                  width: 2.w),
+                                                              SizedBox(width: 2.w),
                                                               Container(
                                                                 width: 16.w,
                                                                 height: 16.h,
                                                                 child: Center(
                                                                   child: Icon(
-                                                                    Icons
-                                                                        .keyboard_arrow_down_outlined,
+                                                                    Icons.keyboard_arrow_down_outlined,
                                                                     size: 16.sp,
-                                                                    color: Colors
-                                                                        .white,
+                                                                    color: Colors.white,
                                                                   ),
                                                                 ),
                                                               ),
@@ -709,75 +737,62 @@ class _MapScreenState extends State<MapScreen> {
                                                           ),
                                                         ),
                                                       ),
+
                                                       SizedBox(width: 12),
                                                       GestureDetector(
-                                                        onTap: () {
-                                                          GenderBottomSheet.show(
-                                                              context); // 바텀시트 표시 함수 호출
+                                                        onTap: () async {
+                                                          final selectedGender = await GenderBottomSheet.show(context);
+                                                          setState(() {
+                                                            filters["gender"] = selectedGender; // 필터 값 저장
+                                                            if (selectedGender != null) {
+                                                              context.read<DataViewModel>().fetchFilteredDataInBounds(
+                                                                context.read<DataViewModel>().currentBounds!,
+                                                                selectedGender,
+                                                              );
+                                                            } else {
+                                                              context.read<DataViewModel>().fetchDataInBounds(
+                                                                context.read<DataViewModel>().currentBounds!,
+                                                              );
+                                                            }
+                                                          });
                                                         },
                                                         child: Container(
                                                           width: 67.w,
                                                           height: 32.h,
-                                                          decoration:
-                                                              ShapeDecoration(
-                                                            shape:
-                                                                RoundedRectangleBorder(
-                                                              side: BorderSide(
-                                                                  width: 1,
-                                                                  color: Color(
-                                                                      0xFF3D3D3D)),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          100),
+                                                          decoration: ShapeDecoration(
+                                                            shape: RoundedRectangleBorder(
+                                                              side: BorderSide(width: 1, color: Color(0xFF3D3D3D)),
+                                                              borderRadius: BorderRadius.circular(100),
                                                             ),
                                                           ),
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  left: 16,
-                                                                  right: 12,
-                                                                  top: 8,
-                                                                  bottom: 8),
+                                                          padding: EdgeInsets.only(left: 16, right: 12, top: 8, bottom: 8),
                                                           child: Row(
                                                             children: [
                                                               Container(
                                                                 width: 21.w,
                                                                 height: 16.h,
                                                                 child: Text(
-                                                                  '성별',
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        12.sp,
-                                                                    fontFamily:
-                                                                        'Pretendard',
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    height:
-                                                                        1.30,
-                                                                    letterSpacing:
-                                                                        -0.30,
+                                                                  filters["gender"] ?? '성별', // 필터 값 표시
+                                                                  textAlign: TextAlign.center,
+                                                                  style: TextStyle(
+                                                                    color: Colors.white,
+                                                                    fontSize: 12.sp,
+                                                                    fontFamily: 'Pretendard',
+                                                                    fontWeight: FontWeight.w500,
+                                                                    height: 1.30,
+                                                                    letterSpacing: -0.30,
                                                                   ),
                                                                 ),
                                                               ),
-                                                              SizedBox(
-                                                                  width: 2.w),
+                                                              SizedBox(width: 2.w),
                                                               Container(
                                                                 width: 16.w,
                                                                 height: 16.h,
                                                                 child: Center(
                                                                   child: Icon(
-                                                                    Icons
-                                                                        .keyboard_arrow_down_outlined,
+                                                                    Icons.keyboard_arrow_down_outlined,
                                                                     size: 16.sp,
-                                                                    color: Colors
-                                                                        .white,
+                                                                    color: Colors.white,
                                                                   ),
                                                                 ),
                                                               ),
@@ -846,24 +861,38 @@ class _MapScreenState extends State<MapScreen> {
                                                         children: [
                                                           Container(
                                                             height: 18.h,
-                                                            color: Colors.redAccent,
+                                                            decoration: ShapeDecoration(
+                                                              color: Color(0xFFF6F6F6),
+                                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                                            ),
                                                             padding: EdgeInsets.only(left: 4,right: 4,bottom: 2,top: 2),
                                                             child: Row(
                                                               children: [
                                                                 SizedBox(width: 2.w),
                                                                 Container(
                                                                   height: 14.h,
-                                                                 child:         Text(
-                                                                   '남여공용',
-                                                                   style: TextStyle(
-                                                                     color: Color(0xFF0B5C1F),
-                                                                     fontSize: 10.sp,
-                                                                     fontFamily: 'Pretendard',
-                                                                     fontWeight: FontWeight.w400,
-                                                                     height: 1.40,
-                                                                     letterSpacing: -0.25,
-                                                                   ),
-                                                                 ),
+                                                                  child: Row(
+                                                                    mainAxisSize: MainAxisSize.min, // Row 크기를 내용에 맞춤
+                                                                    children: [
+                                                                      Icon(
+                                                                        Icons.person_outline, // 사람 아이콘
+                                                                        size: 12.sp, // 텍스트와 비슷한 크기
+                                                                        color: Color(0xFF0B5C1F), // 텍스트 색상과 동일
+                                                                      ),
+                                                                      SizedBox(width: 4.w), // 아이콘과 텍스트 간격
+                                                                      Text(
+                                                                        modir.clothesgender,
+                                                                        style: TextStyle(
+                                                                          color: Color(0xFF0B5C1F),
+                                                                          fontSize: 10.sp,
+                                                                          fontFamily: 'Pretendard',
+                                                                          fontWeight: FontWeight.w400,
+                                                                          height: 1.40,
+                                                                          letterSpacing: -0.25,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
                                                                 ),
                                                               ],
                                                             ),

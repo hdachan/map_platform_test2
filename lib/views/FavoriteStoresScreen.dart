@@ -98,7 +98,7 @@ class _FavoriteStoresScreenState extends State<FavoriteStoresScreen> {
                                     ),
                                     SizedBox(height: 8),
                                     Text(
-                                      '조회 · 1912명',
+                                      store['modir']['address'],
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 12,

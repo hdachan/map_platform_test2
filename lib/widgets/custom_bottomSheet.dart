@@ -219,16 +219,49 @@ class FilterBottomSheet {
 
 // 매장 바텀시트
 class StyleBottomSheet {
-  static void show(BuildContext context) {
-    String? selectedLocation; // 선택된 지역 저장
+  static Future<String?> show(BuildContext context) async {
+    String? selectedType; // 선택된 스타일 저장
 
-    showModalBottomSheet(
+    return await showModalBottomSheet<String?>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Color(0xFF1A1A1A),
       builder: (BuildContext context) {
-        return StatefulBuilder( // 상태 변경을 위해 StatefulBuilder 사용
+        return StatefulBuilder(
           builder: (context, setState) {
+            Widget typeButton(String type) {
+              bool isSelected = selectedType == type;
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedType = type;
+                  });
+                },
+                child: Container(
+                  width: 156.w,
+                  height: 36.h,
+                  decoration: ShapeDecoration(
+                    color: isSelected ? Colors.white : Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 1, color: Color(0xFF888888)),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    type,
+                    style: TextStyle(
+                      color: isSelected ? Colors.black : Color(0xFF888888),
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      height: 1.40,
+                      letterSpacing: -0.35,
+                    ),
+                  ),
+                ),
+              );
+            }
+
             return Container(
               width: 360.w,
               height: 500.h,
@@ -237,110 +270,33 @@ class StyleBottomSheet {
                   Container(
                     width: 360.w,
                     height: 40.h,
-                    decoration: ShapeDecoration(
-                      color: Color(0xFF1A1A1A),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(16),
-                          topRight: Radius.circular(16),
-                        ),
-                      ),
-                    ),
-                    padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                     child: Text(
-                      '매장',
+                      '매장 스타일',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18.sp,
-                        fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w700,
-                        height: 1.10,
                         letterSpacing: -0.45,
                       ),
                     ),
                   ),
-                  Container(
-                    width: 360.w,
-                    height: 388.h,
-                    padding: EdgeInsets.only(left: 16,right: 16,bottom: 8,top: 8),
-                    child: Container(
-                      width: 328.w,
-                      height: 36.h,
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 156.w,
-                                height: 36.h,
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(width: 1, color: Color(0xFF888888)),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                                child: Container(
-                                  width: 124.w,
-                                  height: 20.h,
-                                  padding: EdgeInsets.only(left: 16,right: 16,top: 8,bottom: 8),
-                                  child: Text(
-                                    '편집샵',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Color(0xFF888888),
-                                      fontSize: 14.sp,
-                                      fontFamily: 'Pretendard',
-                                      fontWeight: FontWeight.w500,
-                                      height: 1.40,
-                                      letterSpacing: -0.35,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 16.w),
-                              Container(
-                                width: 156.w,
-                                height: 36.h,
-                                decoration: ShapeDecoration(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(width: 1, color: Color(0xFF888888)),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                                child: Container(
-                                  width: 124.w,
-                                  height: 20.h,
-                                  padding: EdgeInsets.only(left: 16,right: 16,top: 8,bottom: 8),
-                                  child: Text(
-                                    '구제',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Color(0xFF888888),
-                                      fontSize: 14.sp,
-                                      fontFamily: 'Pretendard',
-                                      fontWeight: FontWeight.w500,
-                                      height: 1.40,
-                                      letterSpacing: -0.35,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    )
+                  SizedBox(height: 8.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      typeButton('편집샵'),
+                      SizedBox(width: 16.w),
+                      typeButton('구제'),
+                    ],
                   ),
-                  Container(
-                    width: 360.w,
-                    height: 68.h,
-                    padding: EdgeInsets.all(16),
+                  Spacer(),
+                  Padding(
+                    padding: EdgeInsets.all(16.w),
                     child: Row(
                       children: [
                         GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
+                          onTap: () => Navigator.pop(context),
                           child: Container(
                             width: 156.w,
                             height: 36.h,
@@ -349,24 +305,12 @@ class StyleBottomSheet {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             ),
                             alignment: Alignment.center,
-                            child: Text(
-                              '닫기',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w500,
-                                letterSpacing: -0.35,
-                              ),
-                            ),
+                            child: Text('닫기', style: TextStyle(color: Colors.white)),
                           ),
                         ),
                         SizedBox(width: 16.w),
                         GestureDetector(
-                          onTap: () {
-                            print("최종 선택된 위치: $selectedLocation");
-                            Navigator.pop(context, selectedLocation);
-                          },
+                          onTap: () => Navigator.pop(context, selectedType),
                           child: Container(
                             width: 156.w,
                             height: 36.h,
@@ -375,16 +319,7 @@ class StyleBottomSheet {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             ),
                             alignment: Alignment.center,
-                            child: Text(
-                              '적용',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w500,
-                                letterSpacing: -0.35,
-                              ),
-                            ),
+                            child: Text('적용', style: TextStyle(color: Colors.black)),
                           ),
                         ),
                       ],
@@ -401,18 +336,53 @@ class StyleBottomSheet {
 }
 
 
+
 // 남여 바텀시트
 class GenderBottomSheet {
-  static void show(BuildContext context) {
-    String? selectedLocation; // 선택된 지역 저장
+  static Future<String?> show(BuildContext context) async {
+    String? selectedGender;
 
-    showModalBottomSheet(
+    return await showModalBottomSheet<String?>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Color(0xFF1A1A1A),
+      backgroundColor: const Color(0xFF1A1A1A),
       builder: (BuildContext context) {
-        return StatefulBuilder( // 상태 변경을 위해 StatefulBuilder 사용
+        return StatefulBuilder(
           builder: (context, setState) {
+            Widget genderButton(String gender, {double? width}) {
+              bool isSelected = selectedGender == gender;
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedGender = gender;
+                  });
+                },
+                child: Container(
+                  width: width ?? 156.w,
+                  height: 36.h,
+                  decoration: ShapeDecoration(
+                    color: isSelected ? Colors.white : Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 1, color: Color(0xFF888888)),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    gender,
+                    style: TextStyle(
+                      color: isSelected ? Colors.black : Color(0xFF888888),
+                      fontSize: 14.sp,
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w500,
+                      height: 1.40,
+                      letterSpacing: -0.35,
+                    ),
+                  ),
+                ),
+              );
+            }
+
             return Container(
               width: 360.w,
               height: 500.h,
@@ -421,110 +391,35 @@ class GenderBottomSheet {
                   Container(
                     width: 360.w,
                     height: 40.h,
-                    decoration: ShapeDecoration(
-                      color: Color(0xFF1A1A1A),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(16),
-                          topRight: Radius.circular(16),
-                        ),
-                      ),
-                    ),
-                    padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                     child: Text(
                       '성별',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18.sp,
-                        fontFamily: 'Pretendard',
                         fontWeight: FontWeight.w700,
-                        height: 1.10,
                         letterSpacing: -0.45,
                       ),
                     ),
                   ),
-                  Container(
-                      width: 360.w,
-                      height: 388.h,
-                      padding: EdgeInsets.only(left: 16,right: 16,bottom: 8,top: 8),
-                      child: Container(
-                        width: 328.w,
-                        height: 36.h,
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                  width: 156.w,
-                                  height: 36.h,
-                                  decoration: ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(width: 1, color: Color(0xFF888888)),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child: Container(
-                                    width: 124.w,
-                                    height: 20.h,
-                                    padding: EdgeInsets.only(left: 16,right: 16,top: 8,bottom: 8),
-                                    child: Text(
-                                      '남자',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Color(0xFF888888),
-                                        fontSize: 14.sp,
-                                        fontFamily: 'Pretendard',
-                                        fontWeight: FontWeight.w500,
-                                        height: 1.40,
-                                        letterSpacing: -0.35,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 16.w),
-                                Container(
-                                  width: 156.w,
-                                  height: 36.h,
-                                  decoration: ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(width: 1, color: Color(0xFF888888)),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child: Container(
-                                    width: 124.w,
-                                    height: 20.h,
-                                    padding: EdgeInsets.only(left: 16,right: 16,top: 8,bottom: 8),
-                                    child: Text(
-                                      '여자',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Color(0xFF888888),
-                                        fontSize: 14.sp,
-                                        fontFamily: 'Pretendard',
-                                        fontWeight: FontWeight.w500,
-                                        height: 1.40,
-                                        letterSpacing: -0.35,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      )
+                  SizedBox(height: 8.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      genderButton('남자'),
+                      SizedBox(width: 16.w),
+                      genderButton('여자'),
+                    ],
                   ),
-                  Container(
-                    width: 360.w,
-                    height: 68.h,
-                    padding: EdgeInsets.all(16),
+                  SizedBox(height: 12.h),
+                  genderButton('남여공용', width: 328.w),
+                  Spacer(),
+                  Padding(
+                    padding: EdgeInsets.all(16.w),
                     child: Row(
                       children: [
                         GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
+                          onTap: () => Navigator.pop(context, null), // 필터 해제
                           child: Container(
                             width: 156.w,
                             height: 36.h,
@@ -533,24 +428,12 @@ class GenderBottomSheet {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             ),
                             alignment: Alignment.center,
-                            child: Text(
-                              '닫기',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w500,
-                                letterSpacing: -0.35,
-                              ),
-                            ),
+                            child: Text('닫기', style: TextStyle(color: Colors.white)),
                           ),
                         ),
                         SizedBox(width: 16.w),
                         GestureDetector(
-                          onTap: () {
-                            print("최종 선택된 위치: $selectedLocation");
-                            Navigator.pop(context, selectedLocation);
-                          },
+                          onTap: () => Navigator.pop(context, selectedGender),
                           child: Container(
                             width: 156.w,
                             height: 36.h,
@@ -559,16 +442,7 @@ class GenderBottomSheet {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             ),
                             alignment: Alignment.center,
-                            child: Text(
-                              '적용',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w500,
-                                letterSpacing: -0.35,
-                              ),
-                            ),
+                            child: Text('적용', style: TextStyle(color: Colors.black)),
                           ),
                         ),
                       ],
@@ -817,7 +691,10 @@ class bbbbbBottomSheet {
                     child: Container(
                       width: 328.w,
                       height: 36.h,
-                      color: Colors.cyan,
+                      decoration: ShapeDecoration(
+                        color: Color(0xFF3D3D3D),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      ),
                       padding: EdgeInsets.only(left: 16, right: 16, bottom: 8, top: 8),
                       child: TextField(
                         decoration: InputDecoration(
@@ -841,6 +718,69 @@ class bbbbbBottomSheet {
                           letterSpacing: -0.35,
                         ),
                       ),
+                    ),
+                  ),
+                  Container(
+                    width: 360.w,
+                    height: 36.h,
+                    padding: EdgeInsets.only(left: 16,right: 16,top: 8,bottom: 8),
+                    child:         Text(
+                      '전체',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.sp,
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w700,
+                        height: 1.40,
+                        letterSpacing: -0.35,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 360.w,
+                    height: 56.h,
+                    padding: EdgeInsets.only(left: 16,right: 16,top: 8,bottom: 8),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 156.w,
+                          height: 40.h,
+                          padding: EdgeInsets.only(top: 4,bottom: 4),
+                          child:Row(
+                            children: [
+                              Container(
+                                width: 20.w,
+                                height: 20.h,
+                                decoration: ShapeDecoration(
+                                  color: Color(0xFF242424),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                ),
+                              ),
+                              SizedBox(width: 8.w),
+                              Container(
+                                width: 128.w,
+                                height: 32.h,
+                                child: Text(
+                                  '안데르센 안데르센\nANDERSEN-ANDERSEN',
+                                  style: TextStyle(
+                                    color: Color(0xFF888888),
+                                    fontSize: 10.sp,
+                                    fontFamily: 'Pretendard',
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.40,
+                                    letterSpacing: -0.25,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 16.w),
+                        Container(
+                          width: 156.w,
+                          height: 40.h,
+                        ),
+                      ],
                     ),
                   ),
                   Container(

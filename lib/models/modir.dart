@@ -8,6 +8,7 @@ class Modir {
   final String roadAddress;
   final String trial;
   final String description;
+  final String clothesgender;
 
   Modir({
     required this.id,
@@ -19,6 +20,7 @@ class Modir {
     required this.roadAddress,
     required this.trial,
     required this.description,
+    required this.clothesgender,
   });
 
   factory Modir.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,7 @@ class Modir {
       roadAddress: json['roadAddress'] as String,
       trial: json['trial'] as String,
       description: json['description'] as String,
+      clothesgender: json['clothesgender'] as String,
     );
   }
 }
