@@ -45,8 +45,8 @@ class DataViewModel with ChangeNotifier {
   }
 
   // 특정 성별에 맞는 데이터만 필터링하여 불러오기
-  Future<void> fetchFilteredDataInBounds(NLatLngBounds bounds, String? gender) async {
-    print('Fetching filtered data in bounds: gender = $gender');
+  Future<void> fetchFilteredDataInBounds(NLatLngBounds bounds, String? gender, String? type) async {
+    print('Fetching filtered data in bounds: gender = $gender, type = $type');
     isLoading = true;
     errorMessage = null;
     notifyListeners();
@@ -55,10 +55,12 @@ class DataViewModel with ChangeNotifier {
       // 원본 데이터 불러오기
       await fetchDataInBounds(bounds);
 
-      // 필터링 적용
-      if (gender != null) {
-        dataList = dataList.where((modir) => modir.clothesgender == gender).toList();
-      }
+      // 다중 필터링 적용
+      dataList = dataList.where((modir) {
+        bool matchesGender = gender == null || modir.clothesgender == gender;
+        bool matchesType = type == null || modir.type == type;
+        return matchesGender && matchesType; // 두 조건 모두 만족해야 함
+      }).toList();
 
       print('Filtered data count: ${dataList.length}');
     } catch (e) {

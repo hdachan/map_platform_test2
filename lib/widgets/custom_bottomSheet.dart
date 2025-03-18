@@ -218,18 +218,18 @@ class FilterBottomSheet {
 }
 
 // 매장 바텀시트
-class StyleBottomSheet {
+class StoreTypeBottomSheet {
   static Future<String?> show(BuildContext context) async {
-    String? selectedType; // 선택된 스타일 저장
+    String? selectedType;
 
     return await showModalBottomSheet<String?>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Color(0xFF1A1A1A),
+      backgroundColor: const Color(0xFF1A1A1A),
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            Widget typeButton(String type) {
+            Widget typeButton(String type, {double? width}) {
               bool isSelected = selectedType == type;
               return GestureDetector(
                 onTap: () {
@@ -238,7 +238,7 @@ class StyleBottomSheet {
                   });
                 },
                 child: Container(
-                  width: 156.w,
+                  width: width ?? 156.w,
                   height: 36.h,
                   decoration: ShapeDecoration(
                     color: isSelected ? Colors.white : Colors.transparent,
@@ -253,6 +253,7 @@ class StyleBottomSheet {
                     style: TextStyle(
                       color: isSelected ? Colors.black : Color(0xFF888888),
                       fontSize: 14.sp,
+                      fontFamily: 'Pretendard',
                       fontWeight: FontWeight.w500,
                       height: 1.40,
                       letterSpacing: -0.35,
@@ -272,7 +273,7 @@ class StyleBottomSheet {
                     height: 40.h,
                     padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                     child: Text(
-                      '매장 스타일',
+                      '매장 유형',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18.sp,
@@ -285,18 +286,21 @@ class StyleBottomSheet {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      typeButton('편집샵'),
+                      typeButton('편집샵'), // "온라인" → "편집샵"
                       SizedBox(width: 16.w),
-                      typeButton('구제'),
+                      typeButton('구제'),   // "오프라인" → "구제"
                     ],
                   ),
+                  // "플래그십"을 남길지 삭제할지 모호해서 주석 처리. 필요하면 아래 줄 주석 해제
+                  // SizedBox(height: 12.h),
+                  // typeButton('플래그십', width: 328.w),
                   Spacer(),
                   Padding(
                     padding: EdgeInsets.all(16.w),
                     child: Row(
                       children: [
                         GestureDetector(
-                          onTap: () => Navigator.pop(context),
+                          onTap: () => Navigator.pop(context, null), // 필터 해제
                           child: Container(
                             width: 156.w,
                             height: 36.h,

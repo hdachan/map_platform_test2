@@ -31,7 +31,8 @@ class _MapScreenState extends State<MapScreen> {
   late DataViewModel dataProvider; // 데이터 제공자
   List<Modir> filteredData = []; // 필터링된 데이터
 
-  Map<String, String?> filters = { // 다중 필터 맵
+  Map<String, String?> filters = {
+    // 다중 필터 맵
     "gender": null,
     "style": null,
     "brand": null,
@@ -45,22 +46,22 @@ class _MapScreenState extends State<MapScreen> {
     filteredData = dataProvider.dataList; // 초기 데이터 설정
   }
 
-  void applyFilters() { // 필터링 함수
+  void applyFilters() {
     setState(() {
       filteredData = dataProvider.dataList.where((modir) {
-        return filters.entries.every((entry) { // Map.entries로 변경
+        return filters.entries.every((entry) {
           final key = entry.key;
           final value = entry.value;
           if (value == null) return true; // 필터 없으면 통과
           switch (key) {
             case "gender":
-              return modir.clothesgender == value; // 오타 수정: clothesgender → clothesGender
-            case "style":
-              return modir.type == value; // 가게 타입 필터 추가
+              return modir.clothesgender == value;
+            case "type": // type 필터 추가
+              return modir.type == value;
             case "brand":
-              return true; // 아직 brand 속성 없으니 통과
+              return true; // 아직 구현 안 됨
             case "store":
-              return true; // 아직 store 속성 없으니 통과
+              return true; // 아직 구현 안 됨
             default:
               return true; // 알 수 없는 키는 통과
           }
@@ -69,11 +70,38 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
+  // 검색 버튼 클릭 시 데이터와 마커 업데이트
+  void _onSearchPressed(DataViewModel dataProvider) async {
+    final bounds = await _mapController?.getContentBounds();
+    if (bounds != null) {
+      print(
+          'Search triggered, bounds: SW(${bounds.southWest.latitude}, ${bounds.southWest.longitude}), NE(${bounds.northEast.latitude}, ${bounds.northEast.longitude})');
+
+      // 필터가 적용된 경우 필터링된 데이터 불러오기
+      if (filters["gender"] != null || filters["type"] != null) {
+        await dataProvider.fetchFilteredDataInBounds(
+            bounds, filters["gender"], filters["type"]);
+      } else {
+        // 필터가 없으면 기존 방식으로 전체 데이터 불러오기
+        await dataProvider.fetchDataInBounds(bounds);
+      }
+
+      _updateMarkers(dataProvider);
+
+      setState(() {
+        _showRefreshButton = false; // 검색 후 버튼 숨김
+      });
+    } else {
+      print('Bounds is null on search');
+    }
+  }
+
   @override
   void dispose() {
     _mapController?.dispose();
     super.dispose();
   }
+
   Future<void> _moveToCurrentLocation() async {
     print("버튼이 눌렸습니다!");
 
@@ -142,7 +170,8 @@ class _MapScreenState extends State<MapScreen> {
           context,
           modir.address,
           modir.roadAddress,
-          modir.type, // ✅ type 추가
+          modir.type,
+          // ✅ type 추가
           modir.title,
           modir.latitude,
           modir.longitude,
@@ -151,34 +180,10 @@ class _MapScreenState extends State<MapScreen> {
         );
       },
       () {
-        showCenteredSnackbar(context, "현재 지도에는 조건에 맞는 매장이 없어요\n지도 범위를 다시 설정해주세요");
+        showCenteredSnackbar(
+            context, "현재 지도에는 조건에 맞는 매장이 없어요\n지도 범위를 다시 설정해주세요");
       },
     );
-  }
-
-  // 검색 버튼 클릭 시 데이터와 마커 업데이트
-  void _onSearchPressed(DataViewModel dataProvider) async {
-    final bounds = await _mapController?.getContentBounds();
-    if (bounds != null) {
-      print(
-          'Search triggered, bounds: SW(${bounds.southWest.latitude}, ${bounds.southWest.longitude}), NE(${bounds.northEast.latitude}, ${bounds.northEast.longitude})');
-
-      // 필터가 적용된 경우 필터링된 데이터 불러오기
-      if (filters["gender"] != null) {
-        await dataProvider.fetchFilteredDataInBounds(bounds, filters["gender"]!);
-      } else {
-        // 필터가 없으면 기존 방식으로 전체 데이터 불러오기
-        await dataProvider.fetchDataInBounds(bounds);
-      }
-
-      _updateMarkers(dataProvider);
-
-      setState(() {
-        _showRefreshButton = false; // 검색 후 버튼 숨김
-      });
-    } else {
-      print('Bounds is null on search');
-    }
   }
 
   bool _snackbarShown = false; // ✅ 스낵바 상태 추가
@@ -306,12 +311,15 @@ class _MapScreenState extends State<MapScreen> {
                                     .setMapController(controller);
                                 print('Map ready');
 
-                                WidgetsBinding.instance.addPostFrameCallback((_) async {
-                                  final bounds = await _mapController?.getContentBounds();
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) async {
+                                  final bounds =
+                                      await _mapController?.getContentBounds();
                                   if (bounds != null) {
                                     print(
                                         'Initial bounds: SW(${bounds.southWest.latitude}, ${bounds.southWest.longitude}), NE(${bounds.northEast.latitude}, ${bounds.northEast.longitude})');
-                                    await dataProvider.fetchDataInBounds(bounds);
+                                    await dataProvider
+                                        .fetchDataInBounds(bounds);
                                     _updateMarkers(dataProvider);
                                   } else {
                                     print('Initial bounds is null');
@@ -321,8 +329,10 @@ class _MapScreenState extends State<MapScreen> {
                               onCameraChange: (position, reason) async {
                                 if (_mapController == null) return;
 
-                                final cameraPosition = await _mapController!.getCameraPosition();
-                                final shouldShowButton = cameraPosition.zoom >= 10;
+                                final cameraPosition =
+                                    await _mapController!.getCameraPosition();
+                                final shouldShowButton =
+                                    cameraPosition.zoom >= 10;
 
                                 if (_showRefreshButton != shouldShowButton) {
                                   setState(() {
@@ -333,10 +343,12 @@ class _MapScreenState extends State<MapScreen> {
                               onCameraIdle: () async {
                                 if (_mapController == null) return;
 
-                                final cameraPosition = await _mapController!.getCameraPosition();
+                                final cameraPosition =
+                                    await _mapController!.getCameraPosition();
                                 print('📍 현재 줌 레벨: ${cameraPosition.zoom}');
 
-                                final shouldShowButton = cameraPosition.zoom >= 10;
+                                final shouldShowButton =
+                                    cameraPosition.zoom >= 10;
 
                                 if (_showRefreshButton != shouldShowButton) {
                                   setState(() {
@@ -349,7 +361,8 @@ class _MapScreenState extends State<MapScreen> {
                                   _snackbarShown = false; // 🔥 즉시 반영
                                 } else if (!_snackbarShown) {
                                   // ✅ 줌이 10 미만이고 스낵바가 안 떴으면 띄우기
-                                  showCenteredSnackbar(context, "지도를 가까이 가주세요!");
+                                  showCenteredSnackbar(
+                                      context, "지도를 가까이 가주세요!");
                                   _snackbarShown = true;
                                 }
 
@@ -364,7 +377,6 @@ class _MapScreenState extends State<MapScreen> {
                                 logoMargin: EdgeInsets.only(top: 16, right: 16),
                               ),
                             ),
-
                             if (_showRefreshButton)
                               Positioned(
                                 top: 20,
@@ -374,9 +386,6 @@ class _MapScreenState extends State<MapScreen> {
                                   onTap: () => _onSearchPressed(dataProvider),
                                 ),
                               ),
-
-
-
                             NotificationListener<
                                 DraggableScrollableNotification>(
                               onNotification: (notification) {
@@ -610,59 +619,170 @@ class _MapScreenState extends State<MapScreen> {
                                                         ),
                                                       ),
                                                       SizedBox(width: 12),
+                                                      // GestureDetector(
+                                                      //   onTap: () {
+                                                      //     bbbbbBottomSheet.show(
+                                                      //         context); // 바텀시트 표시 함수 호출
+                                                      //   },
+                                                      //   child: Container(
+                                                      //     width: 77.w,
+                                                      //     height: 32.h,
+                                                      //     decoration:
+                                                      //         ShapeDecoration(
+                                                      //       shape:
+                                                      //           RoundedRectangleBorder(
+                                                      //         side: BorderSide(
+                                                      //             width: 1,
+                                                      //             color: Color(
+                                                      //                 0xFF3D3D3D)),
+                                                      //         borderRadius:
+                                                      //             BorderRadius
+                                                      //                 .circular(
+                                                      //                     100),
+                                                      //       ),
+                                                      //     ),
+                                                      //     padding:
+                                                      //         EdgeInsets.only(
+                                                      //             left: 16,
+                                                      //             right: 12,
+                                                      //             top: 8,
+                                                      //             bottom: 8),
+                                                      //     child: Row(
+                                                      //       children: [
+                                                      //         Container(
+                                                      //           width: 31.w,
+                                                      //           height: 16.h,
+                                                      //           child: Text(
+                                                      //             '브랜드',
+                                                      //             textAlign:
+                                                      //                 TextAlign
+                                                      //                     .center,
+                                                      //             style:
+                                                      //                 TextStyle(
+                                                      //               color: Colors
+                                                      //                   .white,
+                                                      //               fontSize:
+                                                      //                   12.sp,
+                                                      //               fontFamily:
+                                                      //                   'Pretendard',
+                                                      //               fontWeight:
+                                                      //                   FontWeight
+                                                      //                       .w500,
+                                                      //               height:
+                                                      //                   1.30,
+                                                      //               letterSpacing:
+                                                      //                   -0.30,
+                                                      //             ),
+                                                      //           ),
+                                                      //         ),
+                                                      //         SizedBox(
+                                                      //             width: 2.w),
+                                                      //         Container(
+                                                      //           width: 16.w,
+                                                      //           height: 16.h,
+                                                      //           child: Center(
+                                                      //             child: Icon(
+                                                      //               Icons
+                                                      //                   .keyboard_arrow_down_outlined,
+                                                      //               size: 16.sp,
+                                                      //               color: Colors
+                                                      //                   .white,
+                                                      //             ),
+                                                      //           ),
+                                                      //         ),
+                                                      //       ],
+                                                      //     ),
+                                                      //   ),
+                                                      // ),
+                                                      //SizedBox(width: 12),
                                                       GestureDetector(
-                                                        onTap: () {
-                                                          bbbbbBottomSheet.show(
-                                                              context); // 바텀시트 표시 함수 호출
+                                                        onTap: () async {
+                                                          final selectedGender =
+                                                              await GenderBottomSheet
+                                                                  .show(
+                                                                      context);
+                                                          setState(() {
+                                                            filters["gender"] =
+                                                                selectedGender;
+                                                            if (selectedGender !=
+                                                                    null ||
+                                                                filters["type"] !=
+                                                                    null) {
+                                                              context
+                                                                  .read<
+                                                                      DataViewModel>()
+                                                                  .fetchFilteredDataInBounds(
+                                                                    context
+                                                                        .read<
+                                                                            DataViewModel>()
+                                                                        .currentBounds!,
+                                                                    filters[
+                                                                        "gender"],
+                                                                    filters[
+                                                                        "type"],
+                                                                  );
+                                                            } else {
+                                                              context
+                                                                  .read<
+                                                                      DataViewModel>()
+                                                                  .fetchDataInBounds(
+                                                                    context
+                                                                        .read<
+                                                                            DataViewModel>()
+                                                                        .currentBounds!,
+                                                                  );
+                                                            }
+                                                          });
                                                         },
                                                         child: Container(
-                                                          width: 77.w,
+                                                          width: 67.w,
                                                           height: 32.h,
                                                           decoration:
-                                                          ShapeDecoration(
+                                                              ShapeDecoration(
                                                             shape:
-                                                            RoundedRectangleBorder(
+                                                                RoundedRectangleBorder(
                                                               side: BorderSide(
                                                                   width: 1,
                                                                   color: Color(
                                                                       0xFF3D3D3D)),
                                                               borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                  100),
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          100),
                                                             ),
                                                           ),
                                                           padding:
-                                                          EdgeInsets.only(
-                                                              left: 16,
-                                                              right: 12,
-                                                              top: 8,
-                                                              bottom: 8),
+                                                              EdgeInsets.only(
+                                                                  left: 16,
+                                                                  right: 12,
+                                                                  top: 8,
+                                                                  bottom: 8),
                                                           child: Row(
                                                             children: [
                                                               Container(
-                                                                width: 31.w,
+                                                                width: 21.w,
                                                                 height: 16.h,
                                                                 child: Text(
-                                                                  '브랜드',
+                                                                  filters["gender"] ??
+                                                                      '성별',
                                                                   textAlign:
-                                                                  TextAlign
-                                                                      .center,
+                                                                      TextAlign
+                                                                          .center,
                                                                   style:
-                                                                  TextStyle(
+                                                                      TextStyle(
                                                                     color: Colors
                                                                         .white,
                                                                     fontSize:
-                                                                    12.sp,
+                                                                        12.sp,
                                                                     fontFamily:
-                                                                    'Pretendard',
+                                                                        'Pretendard',
                                                                     fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
+                                                                        FontWeight
+                                                                            .w500,
                                                                     height:
-                                                                    1.30,
+                                                                        1.30,
                                                                     letterSpacing:
-                                                                    -0.30,
+                                                                        -0.30,
                                                                   ),
                                                                 ),
                                                               ),
@@ -688,111 +808,107 @@ class _MapScreenState extends State<MapScreen> {
                                                       SizedBox(width: 12),
                                                       GestureDetector(
                                                         onTap: () async {
-                                                          final selectedType = await StyleBottomSheet.show(context);
+                                                          final selectedType =
+                                                              await StoreTypeBottomSheet
+                                                                  .show(
+                                                                      context);
                                                           setState(() {
-                                                            filters["type"] = selectedType; // 스타일 필터 설정
-                                                            applyFilters(); // 필터링 적용
-                                                          });
-                                                        },
-                                                        child: Container(
-                                                          width: 67.w,
-                                                          height: 32.h,
-                                                          decoration: ShapeDecoration(
-                                                            shape: RoundedRectangleBorder(
-                                                              side: BorderSide(width: 1, color: Color(0xFF3D3D3D)),
-                                                              borderRadius: BorderRadius.circular(100),
-                                                            ),
-                                                          ),
-                                                          padding: EdgeInsets.only(left: 16, right: 12, top: 8, bottom: 8),
-                                                          child: Row(
-                                                            children: [
-                                                              Container(
-                                                                width: 21.w,
-                                                                height: 16.h,
-                                                                child: Text(
-                                                                  filters["type"] ?? '매장',
-                                                                  textAlign: TextAlign.center,
-                                                                  style: TextStyle(
-                                                                    color: Colors.white,
-                                                                    fontSize: 12.sp,
-                                                                    fontWeight: FontWeight.w500,
-                                                                    height: 1.30,
-                                                                    letterSpacing: -0.30,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              SizedBox(width: 2.w),
-                                                              Container(
-                                                                width: 16.w,
-                                                                height: 16.h,
-                                                                child: Center(
-                                                                  child: Icon(
-                                                                    Icons.keyboard_arrow_down_outlined,
-                                                                    size: 16.sp,
-                                                                    color: Colors.white,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-
-                                                      SizedBox(width: 12),
-                                                      GestureDetector(
-                                                        onTap: () async {
-                                                          final selectedGender = await GenderBottomSheet.show(context);
-                                                          setState(() {
-                                                            filters["gender"] = selectedGender; // 필터 값 저장
-                                                            if (selectedGender != null) {
-                                                              context.read<DataViewModel>().fetchFilteredDataInBounds(
-                                                                context.read<DataViewModel>().currentBounds!,
-                                                                selectedGender,
-                                                              );
+                                                            filters["type"] =
+                                                                selectedType;
+                                                            if (selectedType !=
+                                                                    null ||
+                                                                filters["gender"] !=
+                                                                    null) {
+                                                              context
+                                                                  .read<
+                                                                      DataViewModel>()
+                                                                  .fetchFilteredDataInBounds(
+                                                                    context
+                                                                        .read<
+                                                                            DataViewModel>()
+                                                                        .currentBounds!,
+                                                                    filters[
+                                                                        "gender"],
+                                                                    filters[
+                                                                        "type"],
+                                                                  );
                                                             } else {
-                                                              context.read<DataViewModel>().fetchDataInBounds(
-                                                                context.read<DataViewModel>().currentBounds!,
-                                                              );
+                                                              context
+                                                                  .read<
+                                                                      DataViewModel>()
+                                                                  .fetchDataInBounds(
+                                                                    context
+                                                                        .read<
+                                                                            DataViewModel>()
+                                                                        .currentBounds!,
+                                                                  );
                                                             }
                                                           });
                                                         },
                                                         child: Container(
                                                           width: 67.w,
                                                           height: 32.h,
-                                                          decoration: ShapeDecoration(
-                                                            shape: RoundedRectangleBorder(
-                                                              side: BorderSide(width: 1, color: Color(0xFF3D3D3D)),
-                                                              borderRadius: BorderRadius.circular(100),
+                                                          decoration:
+                                                              ShapeDecoration(
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              side: BorderSide(
+                                                                  width: 1,
+                                                                  color: Color(
+                                                                      0xFF3D3D3D)),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          100),
                                                             ),
                                                           ),
-                                                          padding: EdgeInsets.only(left: 16, right: 12, top: 8, bottom: 8),
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 16,
+                                                                  right: 12,
+                                                                  top: 8,
+                                                                  bottom: 8),
                                                           child: Row(
                                                             children: [
                                                               Container(
                                                                 width: 21.w,
                                                                 height: 16.h,
                                                                 child: Text(
-                                                                  filters["gender"] ?? '성별', // 필터 값 표시
-                                                                  textAlign: TextAlign.center,
-                                                                  style: TextStyle(
-                                                                    color: Colors.white,
-                                                                    fontSize: 12.sp,
-                                                                    fontFamily: 'Pretendard',
-                                                                    fontWeight: FontWeight.w500,
-                                                                    height: 1.30,
-                                                                    letterSpacing: -0.30,
+                                                                  filters["type"] ??
+                                                                      '매장',
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        12.sp,
+                                                                    fontFamily:
+                                                                        'Pretendard',
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    height:
+                                                                        1.30,
+                                                                    letterSpacing:
+                                                                        -0.30,
                                                                   ),
                                                                 ),
                                                               ),
-                                                              SizedBox(width: 2.w),
+                                                              SizedBox(
+                                                                  width: 2.w),
                                                               Container(
                                                                 width: 16.w,
                                                                 height: 16.h,
                                                                 child: Center(
                                                                   child: Icon(
-                                                                    Icons.keyboard_arrow_down_outlined,
+                                                                    Icons
+                                                                        .keyboard_arrow_down_outlined,
                                                                     size: 16.sp,
-                                                                    color: Colors.white,
+                                                                    color: Colors
+                                                                        .white,
                                                                   ),
                                                                 ),
                                                               ),
@@ -847,48 +963,84 @@ class _MapScreenState extends State<MapScreen> {
                                                 decoration: ShapeDecoration(
                                                   color: Color(0xFF1A1A1A),
                                                   shape: RoundedRectangleBorder(
-                                                    side: BorderSide(width: 1, color: Color(0xFF242424)),
+                                                    side: BorderSide(
+                                                        width: 1,
+                                                        color:
+                                                            Color(0xFF242424)),
                                                   ),
                                                 ),
-                                                padding: EdgeInsets.only(top: 16,bottom: 16),
+                                                padding: EdgeInsets.only(
+                                                    top: 16, bottom: 16),
                                                 child: Column(
                                                   children: [
                                                     Container(
                                                       width: 360.w,
                                                       height: 18.h,
-                                                      padding: EdgeInsets.only(left: 16,right: 16),
+                                                      padding: EdgeInsets.only(
+                                                          left: 16, right: 16),
                                                       child: Row(
                                                         children: [
                                                           Container(
                                                             height: 18.h,
-                                                            decoration: ShapeDecoration(
-                                                              color: Color(0xFFF6F6F6),
-                                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                                                            decoration:
+                                                                ShapeDecoration(
+                                                              color: Color(
+                                                                  0xFFF6F6F6),
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              4)),
                                                             ),
-                                                            padding: EdgeInsets.only(left: 4,right: 4,bottom: 2,top: 2),
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    left: 4,
+                                                                    right: 4,
+                                                                    bottom: 2,
+                                                                    top: 2),
                                                             child: Row(
                                                               children: [
-                                                                SizedBox(width: 2.w),
+                                                                SizedBox(
+                                                                    width: 2.w),
                                                                 Container(
                                                                   height: 14.h,
                                                                   child: Row(
-                                                                    mainAxisSize: MainAxisSize.min, // Row 크기를 내용에 맞춤
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .min,
+                                                                    // Row 크기를 내용에 맞춤
                                                                     children: [
                                                                       Icon(
-                                                                        Icons.person_outline, // 사람 아이콘
-                                                                        size: 12.sp, // 텍스트와 비슷한 크기
-                                                                        color: Color(0xFF0B5C1F), // 텍스트 색상과 동일
+                                                                        Icons
+                                                                            .person_outline,
+                                                                        // 사람 아이콘
+                                                                        size: 12
+                                                                            .sp,
+                                                                        // 텍스트와 비슷한 크기
+                                                                        color: Color(
+                                                                            0xFF0B5C1F), // 텍스트 색상과 동일
                                                                       ),
-                                                                      SizedBox(width: 4.w), // 아이콘과 텍스트 간격
+                                                                      SizedBox(
+                                                                          width:
+                                                                              4.w),
+                                                                      // 아이콘과 텍스트 간격
                                                                       Text(
-                                                                        modir.clothesgender,
-                                                                        style: TextStyle(
-                                                                          color: Color(0xFF0B5C1F),
-                                                                          fontSize: 10.sp,
-                                                                          fontFamily: 'Pretendard',
-                                                                          fontWeight: FontWeight.w400,
-                                                                          height: 1.40,
-                                                                          letterSpacing: -0.25,
+                                                                        modir
+                                                                            .clothesgender,
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              Color(0xFF0B5C1F),
+                                                                          fontSize:
+                                                                              10.sp,
+                                                                          fontFamily:
+                                                                              'Pretendard',
+                                                                          fontWeight:
+                                                                              FontWeight.w400,
+                                                                          height:
+                                                                              1.40,
+                                                                          letterSpacing:
+                                                                              -0.25,
                                                                         ),
                                                                       ),
                                                                     ],
@@ -904,21 +1056,30 @@ class _MapScreenState extends State<MapScreen> {
                                                     Container(
                                                       width: 360.w,
                                                       height: 20.h,
-                                                      padding: EdgeInsets.only(left: 16,right: 16),
+                                                      padding: EdgeInsets.only(
+                                                          left: 16, right: 16),
                                                       child: Row(
-                                                        crossAxisAlignment: CrossAxisAlignment.end, // Row 안에서 아래쪽 정렬
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .end,
+                                                        // Row 안에서 아래쪽 정렬
                                                         children: [
                                                           Container(
                                                             height: 20.h,
-                                                            child:         Text(
+                                                            child: Text(
                                                               modir.title,
                                                               style: TextStyle(
-                                                                color: Colors.white,
+                                                                color: Colors
+                                                                    .white,
                                                                 fontSize: 14.sp,
-                                                                fontFamily: 'Pretendard',
-                                                                fontWeight: FontWeight.w500,
+                                                                fontFamily:
+                                                                    'Pretendard',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
                                                                 height: 1.40,
-                                                                letterSpacing: -0.35,
+                                                                letterSpacing:
+                                                                    -0.35,
                                                               ),
                                                             ),
                                                           ),
@@ -929,12 +1090,17 @@ class _MapScreenState extends State<MapScreen> {
                                                             child: Text(
                                                               modir.type,
                                                               style: TextStyle(
-                                                                color: Color(0xFF888888),
+                                                                color: Color(
+                                                                    0xFF888888),
                                                                 fontSize: 12.sp,
-                                                                fontFamily: 'Pretendard',
-                                                                fontWeight: FontWeight.w500,
+                                                                fontFamily:
+                                                                    'Pretendard',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
                                                                 height: 1.30,
-                                                                letterSpacing: -0.30,
+                                                                letterSpacing:
+                                                                    -0.30,
                                                               ),
                                                             ),
                                                           ),
@@ -944,9 +1110,14 @@ class _MapScreenState extends State<MapScreen> {
                                                             height: 20.h,
                                                             child: Center(
                                                               child: Icon(
-                                                                Icons.favorite_outline, // 채워진 하트 아이콘
-                                                                color: Colors.red, // 하트 색상 (원하는 색으로 변경 가능)
-                                                                size: 16.sp, // 아이콘 크기 (Container 크기에 맞게 조정)
+                                                                Icons
+                                                                    .favorite_outline,
+                                                                // 채워진 하트 아이콘
+                                                                color:
+                                                                    Colors.red,
+                                                                // 하트 색상 (원하는 색으로 변경 가능)
+                                                                size: 16
+                                                                    .sp, // 아이콘 크기 (Container 크기에 맞게 조정)
                                                               ),
                                                             ),
                                                           ),
@@ -957,14 +1128,18 @@ class _MapScreenState extends State<MapScreen> {
                                                     Container(
                                                       width: 360.w,
                                                       height: 28.h,
-                                                      padding: EdgeInsets.only(left: 16,right: 16),
+                                                      padding: EdgeInsets.only(
+                                                          left: 16, right: 16),
                                                       child: Text(
                                                         modir.description,
                                                         style: TextStyle(
-                                                          color: Color(0xFFE7E7E7),
+                                                          color:
+                                                              Color(0xFFE7E7E7),
                                                           fontSize: 10.sp,
-                                                          fontFamily: 'Pretendard',
-                                                          fontWeight: FontWeight.w500,
+                                                          fontFamily:
+                                                              'Pretendard',
+                                                          fontWeight:
+                                                              FontWeight.w500,
                                                           height: 1.40,
                                                           letterSpacing: -0.25,
                                                         ),
@@ -974,15 +1149,20 @@ class _MapScreenState extends State<MapScreen> {
                                                     Container(
                                                       width: 360.w,
                                                       height: 104.h,
-                                                      padding: EdgeInsets.only(left: 16, right: 16),
-                                                      child: SingleChildScrollView(
-                                                        scrollDirection: Axis.horizontal, // 가로 스크롤 설정
+                                                      padding: EdgeInsets.only(
+                                                          left: 16, right: 16),
+                                                      child:
+                                                          SingleChildScrollView(
+                                                        scrollDirection:
+                                                            Axis.horizontal,
+                                                        // 가로 스크롤 설정
                                                         child: Row(
                                                           children: [
                                                             Container(
                                                               width: 104.w,
                                                               height: 104.h,
-                                                              color: Colors.cyanAccent,
+                                                              color: Colors
+                                                                  .cyanAccent,
                                                             ),
                                                             Container(
                                                               width: 104.w,
@@ -992,12 +1172,14 @@ class _MapScreenState extends State<MapScreen> {
                                                             Container(
                                                               width: 104.w,
                                                               height: 104.h,
-                                                              color: Colors.pink,
+                                                              color:
+                                                                  Colors.pink,
                                                             ),
                                                             Container(
                                                               width: 104.w,
                                                               height: 104.h,
-                                                              color: Colors.indigo,
+                                                              color:
+                                                                  Colors.indigo,
                                                             ),
                                                           ],
                                                         ),
