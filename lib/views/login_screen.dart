@@ -28,16 +28,15 @@ class _LoginScreenState extends State<LoginScreen> {
       _passwordController.text.trim(),
     );
     if (errorMessage == null) {
-      // 로그인 성공 시
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('로그인 성공!')),
+
       );
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => HomeScreen()), // HomeScreen 대신 HomeMain1
       );
     } else {
-      // 에러 메시지 표시
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(errorMessage)),
       );

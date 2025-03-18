@@ -19,45 +19,43 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     initScreenUtil(context); // 디자인 사이즈 초기화
-    return Consumer<SettingState>(
-      builder: (context, settingState, child) {
-        return Scaffold(
-          body: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 600),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: PageView(
-                      controller: _pageController,
-                      physics: const NeverScrollableScrollPhysics(),
-                      onPageChanged: (index) {
-                        settingState.updateIndex(index);
-                        // MYPage (인덱스 4)가 아닌 다른 페이지로 이동하면 오버레이 제거
-                        if (index != 4) {
-                          _myPageKey.currentState?.removeOverlay();
-                        }
-                      },
-                      children: [
-                        // KeepAlivePage(
-                        //   child: kIsWeb ? WebMapScreen() : MapScreen(),
-                        // ),
-                        kIsWeb ? WebMapScreen() : MapScreen(),
-                        MYPage(key: _myPageKey),
-                        kIsWeb ? HomeMain2() : HomeMain1(), // 웹이면 HomeMain2, 앱이면 HomeMain1
-                        const Center(child: Text("탭 4")),
-                        mmmm(),
-                      ],
+    return WillPopScope(
+      onWillPop: () async {
+        // 뒤로 가기를 막고 앱을 종료
+        return false; // 뒤로 가기 방지
+      },
+      child: Consumer<SettingState>(
+        builder: (context, settingState, child) {
+          return Scaffold(
+            body: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: PageView(
+                        controller: _pageController,
+                        physics: const NeverScrollableScrollPhysics(),
+                        onPageChanged: (index) {
+                          settingState.updateIndex(index);
+                          if (index != 4) {
+                            _myPageKey.currentState?.removeOverlay();
+                          }
+                        },
+                        children: [
+                          kIsWeb ? WebMapScreen() : MapScreen(),
+                          MYPage(key: _myPageKey),
+                          kIsWeb ? HomeMain2() : HomeMain1(),
+                          const Center(child: Text("탭 4")),
+                          mmmm(),
+                        ],
+                      ),
                     ),
-                  ),
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 600),
-                    child: BottomNavigationBar(
+                    BottomNavigationBar(
                       currentIndex: settingState.selectedIndex,
                       onTap: (index) {
                         settingState.updateIndex(index);
                         _pageController.jumpToPage(index);
-                        // MYPage (인덱스 4)가 아닌 다른 페이지로 이동하면 오버레이 제거
                         if (index != 4) {
                           _myPageKey.currentState?.removeOverlay();
                         }
@@ -67,28 +65,24 @@ class HomeScreen extends StatelessWidget {
                       selectedItemColor: const Color(0xFF05FFF7),
                       unselectedItemColor: Colors.grey,
                       items: const [
-                        BottomNavigationBarItem(
-                            icon: Icon(Icons.location_on_outlined), label: '지도'),
-                        BottomNavigationBarItem(
-                            icon: Icon(Icons.build_outlined), label: '코디'),
-                        BottomNavigationBarItem(
-                            icon: Icon(Icons.home_outlined), label: '홈'),
-                        BottomNavigationBarItem(
-                            icon: Icon(Icons.live_tv_outlined), label: '라이브'),
-                        BottomNavigationBarItem(
-                            icon: Icon(Icons.person_outline), label: '마이'),
+                        BottomNavigationBarItem(icon: Icon(Icons.location_on_outlined), label: '지도'),
+                        BottomNavigationBarItem(icon: Icon(Icons.build_outlined), label: '코디'),
+                        BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: '홈'),
+                        BottomNavigationBarItem(icon: Icon(Icons.live_tv_outlined), label: '라이브'),
+                        BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: '마이'),
                       ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
+
 
 
 // 하단바 관리 툴_KeepAlive를 위한 래퍼 위젯 (사용시 메모리에 계속 유지)

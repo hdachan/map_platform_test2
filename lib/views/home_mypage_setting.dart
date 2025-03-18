@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../services/auth_service.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
 import '../widgets/cutstom_appbar.dart';
 import 'home_mypage_Withdrawal_Screen.dart';
 import 'login_screen.dart';
+import 'login_selection_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Flutter 엔진 초기화
@@ -95,11 +98,21 @@ class _Setting1 extends State<Setting1> with SingleTickerProviderStateMixin {
               ),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.of(context).pop(); // 팝업 닫기
-                _logout(); // 로그아웃 함수 호출
+
+                // 로그아웃 실행 후 완료될 때까지 기다림
+                await Provider.of<AuthService>(context, listen: false).signOut();
+
+                // 로그아웃 완료 후 로그인 화면으로 이동 (이전 스택 제거)
+                if (!mounted) return; // 위젯이 이미 dispose된 경우 실행 방지
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => login_total_screen()),
+                      (Route<dynamic> route) => false, // 모든 이전 화면 제거
+                );
               },
-              child:         Text(
+              child: Text(
                 '확인',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -111,7 +124,10 @@ class _Setting1 extends State<Setting1> with SingleTickerProviderStateMixin {
                   letterSpacing: -0.30,
                 ),
               ),
-            ),
+            )
+
+
+
           ],
         );
       },

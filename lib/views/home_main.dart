@@ -419,159 +419,160 @@ class _HomeMainState1 extends State<HomeMain1> {
                     }).toList(),
                   ),
 
-                  middleText('바로가기'),
+                  //middleText('바로가기'),
                   //아이콘 모음
-                  Container(
-                    width: 360.w,
-                    height: 192.h,
-                    color: Color(0xFF1A1A1A),
-                    padding:
-                    EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 160.w,
-                          height: 160.h,
-                          child: Column(
-                            children: [
-                              Container(
-                                width: 160.w,
-                                height: 76.h,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 76.w,
-                                      height: 76.h,
-                                      color: Color(0xFF3F3F3F),
-                                    ),
-                                    SizedBox(width: 8.w),
-                                    Container(
-                                        width: 76.w,
-                                        height: 76.h,
-                                        color: Color(0xFF3F3F3F)),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 8.h),
-                              Container(
-                                width: 160.w,
-                                height: 76.h,
-                                color: Color(0xFF3F3F3F),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: 8.w),
-                        Container(
-                          width: 160.w,
-                          height: 160.h,
-                          decoration: ShapeDecoration(
-                            color: Color(0xFF3F3F3F),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Container(
+                  //   width: 360.w,
+                  //   height: 192.h,
+                  //   color: Color(0xFF1A1A1A),
+                  //   padding:
+                  //   EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                  //   child: Row(
+                  //     children: [
+                  //       Container(
+                  //         width: 160.w,
+                  //         height: 160.h,
+                  //         child: Column(
+                  //           children: [
+                  //             Container(
+                  //               width: 160.w,
+                  //               height: 76.h,
+                  //               child: Row(
+                  //                 children: [
+                  //                   Container(
+                  //                     width: 76.w,
+                  //                     height: 76.h,
+                  //                     color: Color(0xFF3F3F3F),
+                  //                   ),
+                  //                   SizedBox(width: 8.w),
+                  //                   Container(
+                  //                       width: 76.w,
+                  //                       height: 76.h,
+                  //                       color: Color(0xFF3F3F3F)),
+                  //                 ],
+                  //               ),
+                  //             ),
+                  //             SizedBox(height: 8.h),
+                  //             Container(
+                  //               width: 160.w,
+                  //               height: 76.h,
+                  //               color: Color(0xFF3F3F3F),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ),
+                  //       SizedBox(width: 8.w),
+                  //       Container(
+                  //         width: 160.w,
+                  //         height: 160.h,
+                  //         decoration: ShapeDecoration(
+                  //           color: Color(0xFF3F3F3F),
+                  //           shape: RoundedRectangleBorder(
+                  //             borderRadius: BorderRadius.circular(16),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
 
                   SizedBox(height: 24.h),
 
                   middleText('매장추천'),
-                  Container(
-                    height: 56.h,
-                    padding:
-                    EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 12),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 108.w,
-                            height: 32.h,
-                            decoration: ShapeDecoration(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                '나와 비슷한 취향',
-                                style: TextStyle(
-                                  color: Color(0xFF1A1A1A),
-                                  fontSize: 12.sp,
-                                  fontFamily: 'Pretendard',
-                                  fontWeight: FontWeight.w700,
-                                  height: 1.30.h,
-                                  letterSpacing: -0.30,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 12.w),
-                          Container(
-                            width: 108.w,
-                            height: 32.h,
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                    width: 1.w, color: Color(0xFF3D3D3D)),
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                '지금 뜨는 매장',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12.sp,
-                                  fontFamily: 'Pretendard',
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.30.h,
-                                  letterSpacing: -0.30,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 12.w),
-                          Container(
-                            width: 108.w,
-                            height: 32.h,
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                    width: 1.w, color: Color(0xFF3D3D3D)),
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                '유저가 추천하는',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12.sp,
-                                  fontFamily: 'Pretendard',
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.30.h,
-                                  letterSpacing: -0.30,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 12.w),
-                        ],
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   width: 360.w,
+                  //   height: 56.h,
+                  //   padding:
+                  //   EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 12),
+                  //   child: SingleChildScrollView(
+                  //     scrollDirection: Axis.horizontal,
+                  //     child: Row(
+                  //       children: [
+                  //         Container(
+                  //           width: 108.w,
+                  //           height: 32.h,
+                  //           decoration: ShapeDecoration(
+                  //             color: Colors.white,
+                  //             shape: RoundedRectangleBorder(
+                  //               borderRadius: BorderRadius.circular(100),
+                  //             ),
+                  //           ),
+                  //           child: Center(
+                  //             child: Text(
+                  //               '모디랑 추천매장',
+                  //               style: TextStyle(
+                  //                 color: Color(0xFF1A1A1A),
+                  //                 fontSize: 12.sp,
+                  //                 fontFamily: 'Pretendard',
+                  //                 fontWeight: FontWeight.w700,
+                  //                 height: 1.30.h,
+                  //                 letterSpacing: -0.30,
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         SizedBox(width: 12.w),
+                  //         Container(
+                  //           width: 108.w,
+                  //           height: 32.h,
+                  //           decoration: ShapeDecoration(
+                  //             shape: RoundedRectangleBorder(
+                  //               side: BorderSide(
+                  //                   width: 1.w, color: Color(0xFF3D3D3D)),
+                  //               borderRadius: BorderRadius.circular(100),
+                  //             ),
+                  //           ),
+                  //           child: Center(
+                  //             child: Text(
+                  //               '지금 뜨는 매장',
+                  //               style: TextStyle(
+                  //                 color: Colors.white,
+                  //                 fontSize: 12.sp,
+                  //                 fontFamily: 'Pretendard',
+                  //                 fontWeight: FontWeight.w500,
+                  //                 height: 1.30.h,
+                  //                 letterSpacing: -0.30,
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         SizedBox(width: 12.w),
+                  //         Container(
+                  //           width: 108.w,
+                  //           height: 32.h,
+                  //           decoration: ShapeDecoration(
+                  //             shape: RoundedRectangleBorder(
+                  //               side: BorderSide(
+                  //                   width: 1.w, color: Color(0xFF3D3D3D)),
+                  //               borderRadius: BorderRadius.circular(100),
+                  //             ),
+                  //           ),
+                  //           child: Center(
+                  //             child: Text(
+                  //               '유저가 추천하는',
+                  //               style: TextStyle(
+                  //                 color: Colors.white,
+                  //                 fontSize: 12.sp,
+                  //                 fontFamily: 'Pretendard',
+                  //                 fontWeight: FontWeight.w500,
+                  //                 height: 1.30.h,
+                  //                 letterSpacing: -0.30,
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         SizedBox(width: 12.w),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
 
                   Container(
                     height: 246.h,
                     padding:
                     EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 20),
                     child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
+                      //scrollDirection: Axis.horizontal,
                       child: Row(
                         children: [
                           Container(
@@ -586,7 +587,7 @@ class _HomeMainState1 extends State<HomeMain1> {
                                     color: Color(0xFF797777),
                                     borderRadius: BorderRadius.circular(4),
                                     image: DecorationImage(
-                                      image: AssetImage('assets/image/test_image.png'),
+                                      image: AssetImage('assets/image/store_test01.png'),
                                       fit: BoxFit.cover, // 이미지가 컨테이너를 어떻게 채울지 설정 (선택 사항)
                                     ),
                                   ),
@@ -602,7 +603,7 @@ class _HomeMainState1 extends State<HomeMain1> {
                                         width: 138.w,
                                         height: 20.h,
                                         child: Text(
-                                          'Nice Weather',
+                                          '비스토어 쇼룸점',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14.sp,
@@ -617,7 +618,7 @@ class _HomeMainState1 extends State<HomeMain1> {
                                         width: 138.w,
                                         height: 16.h,
                                         child: Text(
-                                          '서울 강남구 신사동',
+                                          '대구 중구 삼덕동1가 18-9',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 12.sp,
@@ -633,161 +634,7 @@ class _HomeMainState1 extends State<HomeMain1> {
                                         width: 138.w,
                                         height: 16.h,
                                         child: Text(
-                                          '영업 마감 · 10 : 00 | 24 : 00',
-                                          style: TextStyle(
-                                            color: Color(0xFF888888),
-                                            fontSize: 12.sp,
-                                            fontFamily: 'Pretendard',
-                                            fontWeight: FontWeight.w400,
-                                            height: 1.30,
-                                            letterSpacing: -0.30,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: 8.w),
-                          Container(
-                            width: 150.w,
-                            height: 218.h,
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: 150.w,
-                                  height: 150.h,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFF797777),
-                                    borderRadius: BorderRadius.circular(4),
-                                    image: DecorationImage(
-                                      image: AssetImage('assets/image/test_image.png'),
-                                      fit: BoxFit.cover, // 이미지가 컨테이너를 어떻게 채울지 설정 (선택 사항)
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 8.h),
-                                Container(
-                                  width: 150.w,
-                                  height: 60.h,
-                                  padding: EdgeInsets.only(left: 4,right: 8),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        width: 138.w,
-                                        height: 20.h,
-                                        child: Text(
-                                          'Nice Weather',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14.sp,
-                                            fontFamily: 'Pretendard',
-                                            fontWeight: FontWeight.w700,
-                                            height: 1.40,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 4),
-                                      Container(
-                                        width: 138.w,
-                                        height: 16.h,
-                                        child: Text(
-                                          '서울 강남구 신사동',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12.sp,
-                                            fontFamily: 'Pretendard',
-                                            fontWeight: FontWeight.w500,
-                                            height: 1.30,
-                                            letterSpacing: -0.30,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 4),
-                                      Container(
-                                        width: 138.w,
-                                        height: 16.h,
-                                        child: Text(
-                                          '영업 마감 · 10 : 00 | 24 : 00',
-                                          style: TextStyle(
-                                            color: Color(0xFF888888),
-                                            fontSize: 12.sp,
-                                            fontFamily: 'Pretendard',
-                                            fontWeight: FontWeight.w400,
-                                            height: 1.30,
-                                            letterSpacing: -0.30,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: 8.w),
-                          Container(
-                            width: 150.w,
-                            height: 218.h,
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: 150.w,
-                                  height: 150.h,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFF797777),
-                                    borderRadius: BorderRadius.circular(4),
-                                    image: DecorationImage(
-                                      image: AssetImage('assets/image/test_image.png'),
-                                      fit: BoxFit.cover, // 이미지가 컨테이너를 어떻게 채울지 설정 (선택 사항)
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 8.h),
-                                Container(
-                                  width: 150.w,
-                                  height: 60.h,
-                                  padding: EdgeInsets.only(left: 4,right: 8),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        width: 138.w,
-                                        height: 20.h,
-                                        child: Text(
-                                          'Nice Weather',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14.sp,
-                                            fontFamily: 'Pretendard',
-                                            fontWeight: FontWeight.w700,
-                                            height: 1.40,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 4),
-                                      Container(
-                                        width: 138.w,
-                                        height: 16.h,
-                                        child: Text(
-                                          '서울 강남구 신사동',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12.sp,
-                                            fontFamily: 'Pretendard',
-                                            fontWeight: FontWeight.w500,
-                                            height: 1.30,
-                                            letterSpacing: -0.30,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 4),
-                                      Container(
-                                        width: 138.w,
-                                        height: 16.h,
-                                        child: Text(
-                                          '영업 마감 · 10 : 00 | 24 : 00',
+                                          '영업 마감 · 12 : 00 | 21 : 30',
                                           style: TextStyle(
                                             color: Color(0xFF888888),
                                             fontSize: 12.sp,
