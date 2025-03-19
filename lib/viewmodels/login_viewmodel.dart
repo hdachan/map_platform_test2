@@ -1,25 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../services/supabase_service.dart';
 import '../views/login_Information_Screen.dart';
 
 /// 로그인 관련 로직
+
+
 class AuthViewModel extends ChangeNotifier {
   final SupabaseService _supabaseService = SupabaseService();
 
   bool _isLoading = false;
   String? _errorMessage;
+  User? _currentUser; // 현재 사용자 정보 저장
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
+  User? get currentUser => _currentUser;
 
-  /// 로그인 시도 후 에러 메시지를 반환 (성공 시 null 반환)
+  // 앱 시작 시 세션 복원 및 사용자 상태 확인
+  Future<bool> checkSession() async {
+    try {
+      final session = Supabase.instance.client.auth.currentSession;
+      if (session != null) {
+        _currentUser = Supabase.instance.client.auth.currentUser;
+        notifyListeners();
+        return true; // 세션이 유효함
+      }
+      return false; // 세션이 없음
+    } catch (error) {
+      print('Error checking session: $error');
+      return false;
+    }
+  }
+
   Future<String?> signIn(String email, String password) async {
-    // 빈 칸 검사
     if (email.isEmpty || password.isEmpty) {
       return '이메일과 비밀번호를 모두 입력해주세요.';
     }
 
-    // 간단한 이메일 형식 검사
     final emailRegex = RegExp(
       r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@"
       r"[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?"
@@ -45,6 +63,7 @@ class AuthViewModel extends ChangeNotifier {
         notifyListeners();
         return _errorMessage;
       }
+      _currentUser = user; // 로그인 성공 시 사용자 정보 저장
       notifyListeners();
       return null; // 로그인 성공
     } catch (error) {
@@ -53,6 +72,13 @@ class AuthViewModel extends ChangeNotifier {
       notifyListeners();
       return _errorMessage;
     }
+  }
+
+  // 로그아웃 메서드 (옵션)
+  Future<void> signOut() async {
+    await Supabase.instance.client.auth.signOut();
+    _currentUser = null;
+    notifyListeners();
   }
 }
 
