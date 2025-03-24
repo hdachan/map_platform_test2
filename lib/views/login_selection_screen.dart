@@ -42,11 +42,11 @@ class _login_totalscreen extends State<login_total_screen>
                           targetScreen: password_findScreen(), // LoginScreen으로 이동
                         ),
                         SizedBox(height: 16.h),
-                        CustomInkWell(
-                          context: context, // 현재 context를 전달
-                          imagePath: 'assets/image/kakaoh_icon.svg',
-                          targetScreen: ProfileEditScreen(), // LoginScreen으로 이동
-                        ),
+                        // CustomInkWell(
+                        //   context: context, // 현재 context를 전달
+                        //   imagePath: 'assets/image/kakaoh_icon.svg',
+                        //   targetScreen: ProfileEditScreen(), // LoginScreen으로 이동
+                        // ),
                         SizedBox(height: 16.h),
                         CustomInkWell(
                           context: context, // 현재 context를 전달

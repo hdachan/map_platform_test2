@@ -27,21 +27,6 @@ class _Setting1 extends State<Setting1> with SingleTickerProviderStateMixin {
 // Supabase 클라이언트 인스턴스 가져오기
   final SupabaseClient supabase = Supabase.instance.client;
 
-  // 로그아웃 함수
-  Future<void> _logout() async {
-    try {
-      await supabase.auth.signOut(); // Supabase 로그아웃
-      print('로그아웃 성공!');
-      // 로그아웃 후 로그인 화면으로 이동 (필요 시)
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()), // 로그인 화면으로 이동
-      );
-    } catch (e) {
-      print('로그아웃 실패: $e');
-    }
-  }
-
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -99,18 +84,26 @@ class _Setting1 extends State<Setting1> with SingleTickerProviderStateMixin {
             ),
             TextButton(
               onPressed: () async {
-                Navigator.of(context).pop(); // 팝업 닫기
-
                 // 로그아웃 실행 후 완료될 때까지 기다림
-                await Provider.of<AuthService>(context, listen: false).signOut();
+                try {
+                  await Provider.of<AuthService>(context, listen: false).signOut();
 
-                // 로그아웃 완료 후 로그인 화면으로 이동 (이전 스택 제거)
-                if (!mounted) return; // 위젯이 이미 dispose된 경우 실행 방지
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => login_total_screen()),
-                      (Route<dynamic> route) => false, // 모든 이전 화면 제거
-                );
+                  // 로그아웃 완료 후 로그인 화면으로 이동 (이전 스택 제거)
+                  if (!mounted) return; // 위젯이 dispose된 경우 실행 방지
+
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => login_total_screen()),
+                        (Route<dynamic> route) => false, // 모든 이전 화면 제거
+                  );
+
+                  // 화면 이동이 성공적으로 실행된 후 다이얼로그 닫기
+                  Navigator.of(context).pop();
+                } catch (e) {
+                  // 로그아웃 실패 시 예외 처리
+                  print('Logout failed: $e');
+                  // 다이얼로그는 닫히지 않고 유지됨
+                }
               },
               child: Text(
                 '확인',

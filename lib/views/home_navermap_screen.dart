@@ -155,7 +155,7 @@ class _MapScreenState extends State<MapScreen> {
       _mapController,
       dataProvider,
       _selectedMarkerTitle,
-      (modir) {
+          (modir) {
         setState(() {
           _selectedMarkerTitle = modir.title;
         });
@@ -171,15 +171,20 @@ class _MapScreenState extends State<MapScreen> {
           modir.address,
           modir.roadAddress,
           modir.type,
-          // ✅ type 추가
           modir.title,
           modir.latitude,
           modir.longitude,
           modir.id,
           modir.trial,
+          onClosed: () {
+            setState(() {
+              _selectedMarkerTitle = null; // 선택 해제
+            });
+            Future.microtask(() => _updateMarkers(dataProvider)); // 마커 업데이트
+          },
         );
       },
-      () {
+          () {
         showCenteredSnackbar(
             context, "현재 지도에는 조건에 맞는 매장이 없어요\n지도 범위를 다시 설정해주세요");
       },
@@ -385,6 +390,7 @@ class _MapScreenState extends State<MapScreen> {
                                 child: RefreshButton(
                                   onTap: () => _onSearchPressed(dataProvider),
                                 ),
+
                               ),
                             NotificationListener<
                                 DraggableScrollableNotification>(
