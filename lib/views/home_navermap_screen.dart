@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/modir.dart';
 import '../utils/animation.dart';
 import '../utils/designSize.dart';
@@ -31,6 +33,29 @@ class _MapScreenState extends State<MapScreen> {
   late DataViewModel dataProvider; // 데이터 제공자
   List<Modir> filteredData = []; // 필터링된 데이터
 
+  // Supabase 클라이언트 (이미 초기화되어 있다고 가정)
+  final supabase = Supabase.instance.client;
+  final Map<int, Future<List<String>>> _imageFutures =
+      {}; // modir.id별 Future 캐싱
+
+// 이미지 가져오는 함수
+  Future<List<String>> fetchImagesForModir(int modirId) async {
+    try {
+      final response = await supabase
+          .from('modir_images')
+          .select('image_url')
+          .eq('modir_id', modirId);
+      return response.isNotEmpty
+          ? response.map((row) => row['image_url'] as String).toList()
+          : [];
+    } catch (e) {
+      print('Error fetching images for modir $modirId: $e');
+      return [];
+    }
+  }
+
+
+
   Map<String, String?> filters = {
     // 다중 필터 맵
     "gender": null,
@@ -44,6 +69,10 @@ class _MapScreenState extends State<MapScreen> {
     super.initState();
     dataProvider = DataViewModel();
     filteredData = dataProvider.dataList; // 초기 데이터 설정
+    // 초기 데이터 로드 시 이미지 Future 미리 캐싱 (선택적)
+    for (var modir in dataProvider.dataList) {
+      _imageFutures[modir.id] = fetchImagesForModir(modir.id);
+    }
   }
 
   void applyFilters() {
@@ -155,7 +184,7 @@ class _MapScreenState extends State<MapScreen> {
       _mapController,
       dataProvider,
       _selectedMarkerTitle,
-          (modir) {
+      (modir) {
         setState(() {
           _selectedMarkerTitle = modir.title;
         });
@@ -184,7 +213,7 @@ class _MapScreenState extends State<MapScreen> {
           },
         );
       },
-          () {
+      () {
         showCenteredSnackbar(
             context, "현재 지도에는 조건에 맞는 매장이 없어요\n지도 범위를 다시 설정해주세요");
       },
@@ -289,7 +318,7 @@ class _MapScreenState extends State<MapScreen> {
                                   ),
                                   child: Center(
                                     child: Icon(
-                                      Icons.filter_list,
+                                      Icons.storefront_outlined ,
                                       size: 24.sp,
                                       color: Colors.white,
                                     ),
@@ -390,7 +419,6 @@ class _MapScreenState extends State<MapScreen> {
                                 child: RefreshButton(
                                   onTap: () => _onSearchPressed(dataProvider),
                                 ),
-
                               ),
                             NotificationListener<
                                 DraggableScrollableNotification>(
@@ -402,7 +430,6 @@ class _MapScreenState extends State<MapScreen> {
                               },
                               child: DraggableScrollableSheet(
                                 controller: _sheetController,
-                                // 컨트롤러 추가
                                 initialChildSize: 0.2,
                                 minChildSize: 0.2,
                                 maxChildSize: 1.0,
@@ -469,13 +496,12 @@ class _MapScreenState extends State<MapScreen> {
                                                       SizedBox(width: 8.w),
                                                       InkWell(
                                                         onTap: () {
-                                                          FilterBottomSheet.show(
-                                                              context); // 바텀시트 표시 함수 호출
+                                                          FilterBottomSheet
+                                                              .show(context);
                                                         },
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(100),
-                                                        // 터치 피드백 모양 맞춤
                                                         child: Container(
                                                           width: 89.w,
                                                           height: 32.h,
@@ -552,7 +578,7 @@ class _MapScreenState extends State<MapScreen> {
                                                       GestureDetector(
                                                         onTap: () {
                                                           BrandBottomSheet.show(
-                                                              context); // 바텀시트 표시 함수 호출
+                                                              context);
                                                         },
                                                         child: Container(
                                                           width: 77.w,
@@ -625,101 +651,43 @@ class _MapScreenState extends State<MapScreen> {
                                                         ),
                                                       ),
                                                       SizedBox(width: 12),
-                                                      // GestureDetector(
-                                                      //   onTap: () {
-                                                      //     bbbbbBottomSheet.show(
-                                                      //         context); // 바텀시트 표시 함수 호출
-                                                      //   },
-                                                      //   child: Container(
-                                                      //     width: 77.w,
-                                                      //     height: 32.h,
-                                                      //     decoration:
-                                                      //         ShapeDecoration(
-                                                      //       shape:
-                                                      //           RoundedRectangleBorder(
-                                                      //         side: BorderSide(
-                                                      //             width: 1,
-                                                      //             color: Color(
-                                                      //                 0xFF3D3D3D)),
-                                                      //         borderRadius:
-                                                      //             BorderRadius
-                                                      //                 .circular(
-                                                      //                     100),
-                                                      //       ),
-                                                      //     ),
-                                                      //     padding:
-                                                      //         EdgeInsets.only(
-                                                      //             left: 16,
-                                                      //             right: 12,
-                                                      //             top: 8,
-                                                      //             bottom: 8),
-                                                      //     child: Row(
-                                                      //       children: [
-                                                      //         Container(
-                                                      //           width: 31.w,
-                                                      //           height: 16.h,
-                                                      //           child: Text(
-                                                      //             '브랜드',
-                                                      //             textAlign:
-                                                      //                 TextAlign
-                                                      //                     .center,
-                                                      //             style:
-                                                      //                 TextStyle(
-                                                      //               color: Colors
-                                                      //                   .white,
-                                                      //               fontSize:
-                                                      //                   12.sp,
-                                                      //               fontFamily:
-                                                      //                   'Pretendard',
-                                                      //               fontWeight:
-                                                      //                   FontWeight
-                                                      //                       .w500,
-                                                      //               height:
-                                                      //                   1.30,
-                                                      //               letterSpacing:
-                                                      //                   -0.30,
-                                                      //             ),
-                                                      //           ),
-                                                      //         ),
-                                                      //         SizedBox(
-                                                      //             width: 2.w),
-                                                      //         Container(
-                                                      //           width: 16.w,
-                                                      //           height: 16.h,
-                                                      //           child: Center(
-                                                      //             child: Icon(
-                                                      //               Icons
-                                                      //                   .keyboard_arrow_down_outlined,
-                                                      //               size: 16.sp,
-                                                      //               color: Colors
-                                                      //                   .white,
-                                                      //             ),
-                                                      //           ),
-                                                      //         ),
-                                                      //       ],
-                                                      //     ),
-                                                      //   ),
-                                                      // ),
-                                                      //SizedBox(width: 12),
                                                       GestureDetector(
                                                         onTap: () async {
-                                                          final selectedGender = await GenderBottomSheet.show(context);
+                                                          final selectedGender =
+                                                              await GenderBottomSheet
+                                                                  .show(
+                                                                      context);
                                                           setState(() {
-                                                            filters["gender"] = selectedGender;
-                                                            final dataProvider = context.read<DataViewModel>(); // DataViewModel 가져오기
-                                                            if (selectedGender != null || filters["type"] != null) {
-                                                              dataProvider.fetchFilteredDataInBounds(
-                                                                dataProvider.currentBounds!,
-                                                                filters["gender"],
+                                                            filters["gender"] =
+                                                                selectedGender;
+                                                            final dataProvider =
+                                                                context.read<
+                                                                    DataViewModel>();
+                                                            if (selectedGender !=
+                                                                    null ||
+                                                                filters["type"] !=
+                                                                    null) {
+                                                              dataProvider
+                                                                  .fetchFilteredDataInBounds(
+                                                                dataProvider
+                                                                    .currentBounds!,
+                                                                filters[
+                                                                    "gender"],
                                                                 filters["type"],
-                                                              ).then((_) {
-                                                                _updateMarkers(dataProvider); // 마커 갱신
+                                                              )
+                                                                  .then((_) {
+                                                                _updateMarkers(
+                                                                    dataProvider);
                                                               });
                                                             } else {
-                                                              dataProvider.fetchDataInBounds(
-                                                                dataProvider.currentBounds!,
-                                                              ).then((_) {
-                                                                _updateMarkers(dataProvider); // 마커 갱신
+                                                              dataProvider
+                                                                  .fetchDataInBounds(
+                                                                dataProvider
+                                                                    .currentBounds!,
+                                                              )
+                                                                  .then((_) {
+                                                                _updateMarkers(
+                                                                    dataProvider);
                                                               });
                                                             }
                                                           });
@@ -727,40 +695,67 @@ class _MapScreenState extends State<MapScreen> {
                                                         child: Container(
                                                           width: 67.w,
                                                           height: 32.h,
-                                                          decoration: ShapeDecoration(
-                                                            shape: RoundedRectangleBorder(
-                                                              side: BorderSide(width: 1, color: Color(0xFF3D3D3D)),
-                                                              borderRadius: BorderRadius.circular(100),
+                                                          decoration:
+                                                              ShapeDecoration(
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              side: BorderSide(
+                                                                  width: 1,
+                                                                  color: Color(
+                                                                      0xFF3D3D3D)),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          100),
                                                             ),
                                                           ),
-                                                          padding: EdgeInsets.only(left: 16, right: 12, top: 8, bottom: 8),
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 16,
+                                                                  right: 12,
+                                                                  top: 8,
+                                                                  bottom: 8),
                                                           child: Row(
                                                             children: [
                                                               Container(
                                                                 width: 21.w,
                                                                 height: 16.h,
                                                                 child: Text(
-                                                                  filters["gender"] ?? '성별',
-                                                                  textAlign: TextAlign.center,
-                                                                  style: TextStyle(
-                                                                    color: Colors.white,
-                                                                    fontSize: 12.sp,
-                                                                    fontFamily: 'Pretendard',
-                                                                    fontWeight: FontWeight.w500,
-                                                                    height: 1.30,
-                                                                    letterSpacing: -0.30,
+                                                                  filters["gender"] ??
+                                                                      '성별',
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        12.sp,
+                                                                    fontFamily:
+                                                                        'Pretendard',
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    height:
+                                                                        1.30,
+                                                                    letterSpacing:
+                                                                        -0.30,
                                                                   ),
                                                                 ),
                                                               ),
-                                                              SizedBox(width: 2.w),
+                                                              SizedBox(
+                                                                  width: 2.w),
                                                               Container(
                                                                 width: 16.w,
                                                                 height: 16.h,
                                                                 child: Center(
                                                                   child: Icon(
-                                                                    Icons.keyboard_arrow_down_outlined,
+                                                                    Icons
+                                                                        .keyboard_arrow_down_outlined,
                                                                     size: 16.sp,
-                                                                    color: Colors.white,
+                                                                    color: Colors
+                                                                        .white,
                                                                   ),
                                                                 ),
                                                               ),
@@ -771,23 +766,41 @@ class _MapScreenState extends State<MapScreen> {
                                                       SizedBox(width: 12),
                                                       GestureDetector(
                                                         onTap: () async {
-                                                          final selectedType = await StoreTypeBottomSheet.show(context);
+                                                          final selectedType =
+                                                              await StoreTypeBottomSheet
+                                                                  .show(
+                                                                      context);
                                                           setState(() {
-                                                            filters["type"] = selectedType;
-                                                            final dataProvider = context.read<DataViewModel>(); // DataViewModel 인스턴스 가져오기
-                                                            if (selectedType != null || filters["gender"] != null) {
-                                                              dataProvider.fetchFilteredDataInBounds(
-                                                                dataProvider.currentBounds!,
-                                                                filters["gender"],
+                                                            filters["type"] =
+                                                                selectedType;
+                                                            final dataProvider =
+                                                                context.read<
+                                                                    DataViewModel>();
+                                                            if (selectedType !=
+                                                                    null ||
+                                                                filters["gender"] !=
+                                                                    null) {
+                                                              dataProvider
+                                                                  .fetchFilteredDataInBounds(
+                                                                dataProvider
+                                                                    .currentBounds!,
+                                                                filters[
+                                                                    "gender"],
                                                                 filters["type"],
-                                                              ).then((_) {
-                                                                _updateMarkers(dataProvider); // 필터링된 데이터로 마커 업데이트
+                                                              )
+                                                                  .then((_) {
+                                                                _updateMarkers(
+                                                                    dataProvider);
                                                               });
                                                             } else {
-                                                              dataProvider.fetchDataInBounds(
-                                                                dataProvider.currentBounds!,
-                                                              ).then((_) {
-                                                                _updateMarkers(dataProvider); // 기본 데이터로 마커 업데이트
+                                                              dataProvider
+                                                                  .fetchDataInBounds(
+                                                                dataProvider
+                                                                    .currentBounds!,
+                                                              )
+                                                                  .then((_) {
+                                                                _updateMarkers(
+                                                                    dataProvider);
                                                               });
                                                             }
                                                           });
@@ -795,40 +808,67 @@ class _MapScreenState extends State<MapScreen> {
                                                         child: Container(
                                                           width: 67.w,
                                                           height: 32.h,
-                                                          decoration: ShapeDecoration(
-                                                            shape: RoundedRectangleBorder(
-                                                              side: BorderSide(width: 1, color: Color(0xFF3D3D3D)),
-                                                              borderRadius: BorderRadius.circular(100),
+                                                          decoration:
+                                                              ShapeDecoration(
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              side: BorderSide(
+                                                                  width: 1,
+                                                                  color: Color(
+                                                                      0xFF3D3D3D)),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          100),
                                                             ),
                                                           ),
-                                                          padding: EdgeInsets.only(left: 16, right: 12, top: 8, bottom: 8),
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 16,
+                                                                  right: 12,
+                                                                  top: 8,
+                                                                  bottom: 8),
                                                           child: Row(
                                                             children: [
                                                               Container(
                                                                 width: 21.w,
                                                                 height: 16.h,
                                                                 child: Text(
-                                                                  filters["type"] ?? '매장',
-                                                                  textAlign: TextAlign.center,
-                                                                  style: TextStyle(
-                                                                    color: Colors.white,
-                                                                    fontSize: 12.sp,
-                                                                    fontFamily: 'Pretendard',
-                                                                    fontWeight: FontWeight.w500,
-                                                                    height: 1.30,
-                                                                    letterSpacing: -0.30,
+                                                                  filters["type"] ??
+                                                                      '매장',
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        12.sp,
+                                                                    fontFamily:
+                                                                        'Pretendard',
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    height:
+                                                                        1.30,
+                                                                    letterSpacing:
+                                                                        -0.30,
                                                                   ),
                                                                 ),
                                                               ),
-                                                              SizedBox(width: 2.w),
+                                                              SizedBox(
+                                                                  width: 2.w),
                                                               Container(
                                                                 width: 16.w,
                                                                 height: 16.h,
                                                                 child: Center(
                                                                   child: Icon(
-                                                                    Icons.keyboard_arrow_down_outlined,
+                                                                    Icons
+                                                                        .keyboard_arrow_down_outlined,
                                                                     size: 16.sp,
-                                                                    color: Colors.white,
+                                                                    color: Colors
+                                                                        .white,
                                                                   ),
                                                                 ),
                                                               ),
@@ -872,18 +912,25 @@ class _MapScreenState extends State<MapScreen> {
                                         ),
                                         SliverList(
                                           delegate: SliverChildBuilderDelegate(
-                                                (context, index) {
-                                              final modir = dataProvider.dataList[index];
-                                              print('Building SliverList item $index: ${modir.title}');
+                                            (context, index) {
+                                              final modir =
+                                                  dataProvider.dataList[index];
+                                              print(
+                                                  'Building SliverList item $index: ${modir.title}');
+                                              if (!_imageFutures
+                                                  .containsKey(modir.id)) {
+                                                _imageFutures[modir.id] =
+                                                    fetchImagesForModir(
+                                                        modir.id);
+                                              }
                                               return GestureDetector(
                                                 onTap: () {
-                                                  // 바텀 시트 크기를 애니메이션으로 조정 (0.2로 설정)
                                                   _sheetController.animateTo(
                                                     0.2,
-                                                    duration: Duration(milliseconds: 300),
+                                                    duration: Duration(
+                                                        milliseconds: 300),
                                                     curve: Curves.easeInOut,
                                                   );
-                                                  // 클릭한 항목의 정보를 바텀 시트로 표시
                                                   showMarkerBottomSheet(
                                                     context,
                                                     modir.address,
@@ -901,51 +948,88 @@ class _MapScreenState extends State<MapScreen> {
                                                   height: 226.h,
                                                   decoration: ShapeDecoration(
                                                     color: Color(0xFF1A1A1A),
-                                                    shape: RoundedRectangleBorder(
-                                                      side: BorderSide(width: 1, color: Color(0xFF242424)),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      side: BorderSide(
+                                                          width: 1,
+                                                          color: Color(
+                                                              0xFF242424)),
                                                     ),
                                                   ),
-                                                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                                                  padding: EdgeInsets.only(
+                                                      top: 16, bottom: 16),
                                                   child: Column(
                                                     children: [
                                                       Container(
                                                         width: 360.w,
                                                         height: 18.h,
-                                                        padding: EdgeInsets.only(left: 16, right: 16),
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 16,
+                                                                right: 16),
                                                         child: Row(
                                                           children: [
                                                             Container(
                                                               height: 18.h,
-                                                              decoration: ShapeDecoration(
-                                                                color: Color(0xFFF6F6F6),
-                                                                shape: RoundedRectangleBorder(
-                                                                  borderRadius: BorderRadius.circular(4),
+                                                              decoration:
+                                                                  ShapeDecoration(
+                                                                color: Color(
+                                                                    0xFFF6F6F6),
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              4),
                                                                 ),
                                                               ),
-                                                              padding: EdgeInsets.only(left: 4, right: 4, bottom: 2, top: 2),
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      left: 4,
+                                                                      right: 4,
+                                                                      bottom: 2,
+                                                                      top: 2),
                                                               child: Row(
                                                                 children: [
-                                                                  SizedBox(width: 2.w),
+                                                                  SizedBox(
+                                                                      width:
+                                                                          2.w),
                                                                   Container(
-                                                                    height: 14.h,
+                                                                    height:
+                                                                        14.h,
                                                                     child: Row(
-                                                                      mainAxisSize: MainAxisSize.min,
+                                                                      mainAxisSize:
+                                                                          MainAxisSize
+                                                                              .min,
                                                                       children: [
                                                                         Icon(
-                                                                          Icons.person_outline,
-                                                                          size: 12.sp,
-                                                                          color: Color(0xFF0B5C1F),
+                                                                          Icons
+                                                                              .person_outline,
+                                                                          size:
+                                                                              12.sp,
+                                                                          color:
+                                                                              Color(0xFF0B5C1F),
                                                                         ),
-                                                                        SizedBox(width: 4.w),
+                                                                        SizedBox(
+                                                                            width:
+                                                                                4.w),
                                                                         Text(
-                                                                          modir.clothesgender,
-                                                                          style: TextStyle(
-                                                                            color: Color(0xFF0B5C1F),
-                                                                            fontSize: 10.sp,
-                                                                            fontFamily: 'Pretendard',
-                                                                            fontWeight: FontWeight.w400,
-                                                                            height: 1.40,
-                                                                            letterSpacing: -0.25,
+                                                                          modir
+                                                                              .clothesgender,
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                Color(0xFF0B5C1F),
+                                                                            fontSize:
+                                                                                10.sp,
+                                                                            fontFamily:
+                                                                                'Pretendard',
+                                                                            fontWeight:
+                                                                                FontWeight.w400,
+                                                                            height:
+                                                                                1.40,
+                                                                            letterSpacing:
+                                                                                -0.25,
                                                                           ),
                                                                         ),
                                                                       ],
@@ -961,37 +1045,57 @@ class _MapScreenState extends State<MapScreen> {
                                                       Container(
                                                         width: 360.w,
                                                         height: 20.h,
-                                                        padding: EdgeInsets.only(left: 16, right: 16),
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 16,
+                                                                right: 16),
                                                         child: Row(
-                                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .end,
                                                           children: [
                                                             Container(
                                                               height: 20.h,
                                                               child: Text(
                                                                 modir.title,
-                                                                style: TextStyle(
-                                                                  color: Colors.white,
-                                                                  fontSize: 14.sp,
-                                                                  fontFamily: 'Pretendard',
-                                                                  fontWeight: FontWeight.w500,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize:
+                                                                      14.sp,
+                                                                  fontFamily:
+                                                                      'Pretendard',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
                                                                   height: 1.40,
-                                                                  letterSpacing: -0.35,
+                                                                  letterSpacing:
+                                                                      -0.35,
                                                                 ),
                                                               ),
                                                             ),
-                                                            SizedBox(width: 4.w),
+                                                            SizedBox(
+                                                                width: 4.w),
                                                             Container(
                                                               width: 150.h,
                                                               height: 16.h,
                                                               child: Text(
                                                                 modir.type,
-                                                                style: TextStyle(
-                                                                  color: Color(0xFF888888),
-                                                                  fontSize: 12.sp,
-                                                                  fontFamily: 'Pretendard',
-                                                                  fontWeight: FontWeight.w500,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Color(
+                                                                      0xFF888888),
+                                                                  fontSize:
+                                                                      12.sp,
+                                                                  fontFamily:
+                                                                      'Pretendard',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
                                                                   height: 1.30,
-                                                                  letterSpacing: -0.30,
+                                                                  letterSpacing:
+                                                                      -0.30,
                                                                 ),
                                                               ),
                                                             ),
@@ -1001,8 +1105,10 @@ class _MapScreenState extends State<MapScreen> {
                                                               height: 20.h,
                                                               child: Center(
                                                                 child: Icon(
-                                                                  Icons.favorite_outline,
-                                                                  color: Colors.red,
+                                                                  Icons
+                                                                      .favorite_outline,
+                                                                  color: Colors
+                                                                      .red,
                                                                   size: 16.sp,
                                                                 ),
                                                               ),
@@ -1014,16 +1120,23 @@ class _MapScreenState extends State<MapScreen> {
                                                       Container(
                                                         width: 360.w,
                                                         height: 28.h,
-                                                        padding: EdgeInsets.only(left: 16, right: 16),
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 16,
+                                                                right: 16),
                                                         child: Text(
                                                           modir.description,
                                                           style: TextStyle(
-                                                            color: Color(0xFFE7E7E7),
+                                                            color: Color(
+                                                                0xFFE7E7E7),
                                                             fontSize: 10.sp,
-                                                            fontFamily: 'Pretendard',
-                                                            fontWeight: FontWeight.w500,
+                                                            fontFamily:
+                                                                'Pretendard',
+                                                            fontWeight:
+                                                                FontWeight.w500,
                                                             height: 1.40,
-                                                            letterSpacing: -0.25,
+                                                            letterSpacing:
+                                                                -0.25,
                                                           ),
                                                         ),
                                                       ),
@@ -1031,17 +1144,108 @@ class _MapScreenState extends State<MapScreen> {
                                                       Container(
                                                         width: 360.w,
                                                         height: 104.h,
-                                                        padding: EdgeInsets.only(left: 16, right: 16),
-                                                        child: SingleChildScrollView(
-                                                          scrollDirection: Axis.horizontal,
-                                                          child: Row(
-                                                            children: [
-                                                              Container(width: 104.w, height: 104.h, color: Colors.cyanAccent),
-                                                              Container(width: 104.w, height: 104.h, color: Colors.red),
-                                                              Container(width: 104.w, height: 104.h, color: Colors.pink),
-                                                              Container(width: 104.w, height: 104.h, color: Colors.indigo),
-                                                            ],
-                                                          ),
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 16,
+                                                                right: 16),
+                                                        child: FutureBuilder<
+                                                            List<String>>(
+                                                          future: _imageFutures[
+                                                              modir.id],
+                                                          // 캐싱된 Future 사용
+                                                          builder: (context,
+                                                              snapshot) {
+                                                            if (snapshot.connectionState ==
+                                                                ConnectionState
+                                                                    .waiting) {
+                                                              return SingleChildScrollView(
+                                                                scrollDirection:
+                                                                    Axis.horizontal,
+                                                                child: Row(
+                                                                  children: List
+                                                                      .generate(
+                                                                          4,
+                                                                          (_) =>
+                                                                              Container(
+                                                                                width: 104.w,
+                                                                                height: 104.h,
+                                                                                margin: EdgeInsets.only(right: 8.w),
+                                                                                color: Colors.grey[300],
+                                                                                child: Center(child: CircularProgressIndicator()),
+                                                                              )),
+                                                                ),
+                                                              );
+                                                            } else if (snapshot
+                                                                    .hasError ||
+                                                                !snapshot
+                                                                    .hasData ||
+                                                                snapshot.data!
+                                                                    .isEmpty) {
+                                                              return SingleChildScrollView(
+                                                                scrollDirection:
+                                                                    Axis.horizontal,
+                                                                child: Row(
+                                                                  children: List
+                                                                      .generate(
+                                                                          4,
+                                                                          (_) =>
+                                                                              Container(
+                                                                                width: 104.w,
+                                                                                height: 104.h,
+                                                                                margin: EdgeInsets.only(right: 8.w),
+                                                                                color: Colors.grey,
+                                                                                child: Center(child: Icon(Icons.error, color: Colors.white)),
+                                                                              )),
+                                                                ),
+                                                              );
+                                                            } else {
+                                                              final imageUrls =
+                                                                  snapshot
+                                                                      .data!;
+                                                              return SingleChildScrollView(
+                                                                scrollDirection:
+                                                                    Axis.horizontal,
+                                                                child: Row(
+                                                                  children: imageUrls
+                                                                          .isNotEmpty
+                                                                      ? imageUrls
+                                                                          .take(
+                                                                              4)
+                                                                          .map(
+                                                                              (url) {
+                                                                          return Padding(
+                                                                            padding:
+                                                                                EdgeInsets.only(right: 8.w),
+                                                                            child:
+                                                                                CachedNetworkImage(
+                                                                              imageUrl: url,
+                                                                              width: 104.w,
+                                                                              height: 104.h,
+                                                                              fit: BoxFit.cover,
+                                                                              placeholder: (context, url) => Container(
+                                                                                color: Colors.grey[300],
+                                                                                child: Center(child: CircularProgressIndicator()),
+                                                                              ),
+                                                                              errorWidget: (context, url, error) => Container(
+                                                                                color: Colors.grey,
+                                                                                child: Center(child: Icon(Icons.error, color: Colors.white)),
+                                                                              ),
+                                                                            ),
+                                                                          );
+                                                                        }).toList()
+                                                                      : List.generate(
+                                                                          4,
+                                                                          (_) => Container(
+                                                                                width: 104.w,
+                                                                                height: 104.h,
+                                                                                margin: EdgeInsets.only(right: 8.w),
+                                                                                color: Colors.grey,
+                                                                                child: Center(child: Icon(Icons.image_not_supported, color: Colors.white)),
+                                                                              )),
+                                                                ),
+                                                              );
+                                                            }
+                                                          },
                                                         ),
                                                       ),
                                                     ],
@@ -1049,7 +1253,8 @@ class _MapScreenState extends State<MapScreen> {
                                                 ),
                                               );
                                             },
-                                            childCount: dataProvider.dataList.length,
+                                            childCount:
+                                                dataProvider.dataList.length,
                                           ),
                                         ),
                                       ],

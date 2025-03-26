@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -313,6 +314,24 @@ class RefreshButton extends StatelessWidget {
   }
 }
 
+
+final supabase = Supabase.instance.client;
+
+// 이미지 가져오는 함수
+Future<List<String>> fetchImagesForModir(int modirId) async {
+  try {
+    final response = await supabase
+        .from('modir_images')
+        .select('image_url')
+        .eq('modir_id', modirId);
+    return response.isNotEmpty
+        ? response.map((row) => row['image_url'] as String).toList()
+        : [];
+  } catch (e) {
+    print('Error fetching images for modir $modirId: $e');
+    return [];
+  }
+}
 // 네이버 지도 마커 클릭시 바텀시트 버튼
 void showMarkerBottomSheet(
     BuildContext context,
@@ -741,10 +760,36 @@ void showMarkerBottomSheet(
                           decoration: BoxDecoration(
                             color: Color(0xFF797777),
                             borderRadius: BorderRadius.circular(4),
-                            image: DecorationImage(
-                              image: AssetImage('assets/image/test_image.png'),
-                              fit: BoxFit.cover,
-                            ),
+                          ),
+                          child: FutureBuilder<List<String>>(
+                            future: fetchImagesForModir(id), // modir.id로 이미지 리스트 가져오기
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return Container(
+                                  color: Colors.grey[300],
+                                  child: Center(child: CircularProgressIndicator()),
+                                );
+                              } else if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
+                                return Container(
+                                  color: Colors.grey,
+                                  child: Center(child: Icon(Icons.error, color: Colors.white)),
+                                );
+                              } else {
+                                final imageUrl = snapshot.data!.first; // 첫 번째 이미지 URL
+                                return CachedNetworkImage(
+                                  imageUrl: imageUrl,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) => Container(
+                                    color: Colors.grey[300],
+                                    child: Center(child: CircularProgressIndicator()),
+                                  ),
+                                  errorWidget: (context, url, error) => Container(
+                                    color: Colors.grey,
+                                    child: Center(child: Icon(Icons.error, color: Colors.white)),
+                                  ),
+                                );
+                              }
+                            },
                           ),
                         ),
                       ],
