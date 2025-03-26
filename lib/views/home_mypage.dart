@@ -295,14 +295,14 @@ class mmmm1 extends State<mmmm> with SingleTickerProviderStateMixin {
                       ),
                       // 여기 넣는거임
                       SizedBox(height: 24.h),
-                      middleText('기록'),
-                      customButton(
-                        '최근에 본 매장',
-                            () {
-                          // 버튼 클릭 시 수행할 작업을 여기에 작성하세요.
-                          print('버튼이 클릭되었습니다!');
-                        },
-                      ),
+                      // middleText('기록'),
+                      // customButton(
+                      //   '최근에 본 매장',
+                      //       () {
+                      //     // 버튼 클릭 시 수행할 작업을 여기에 작성하세요.
+                      //     print('버튼이 클릭되었습니다!');
+                      //   },
+                      // ),
                       middleText('관심'),
                       customButton(
                         '관심 매장',
@@ -315,10 +315,14 @@ class mmmm1 extends State<mmmm> with SingleTickerProviderStateMixin {
                       ),
                       middleText('문의'),
                       customButton(
-                        '매장에 문의한 글',
-                            () {
-                          // 버튼 클릭 시 수행할 작업을 여기에 작성하세요.
-                          print('버튼22이 클릭되었습니다!');
+                        '사장님들 입점 문의하기!',
+                            () async {
+                          final Uri url = Uri.parse('https://forms.gle/hrkbBsHA5BphXiN77');
+                          if (await canLaunchUrl(url)) {
+                            await launchUrl(url, mode: LaunchMode.externalApplication);
+                          } else {
+                            print('Could not launch $url');
+                          }
                         },
                       ),
                       middleText('센터'),
@@ -329,13 +333,13 @@ class mmmm1 extends State<mmmm> with SingleTickerProviderStateMixin {
                           print('버튼22이 클릭되었습니다!');
                         },
                       ),
-                      customButton(
-                        'FQA',
-                            () {
-                          // 버튼 클릭 시 수행할 작업을 여기에 작성하세요.
-                          print('버튼22이 클릭되었습니다!');
-                        },
-                      ),
+                      // customButton(
+                      //   'FQA',
+                      //       () {
+                      //     // 버튼 클릭 시 수행할 작업을 여기에 작성하세요.
+                      //     print('버튼22이 클릭되었습니다!');
+                      //   },
+                      // ),
                       customButton(
                         '1:1 문의하기',
                             () async {

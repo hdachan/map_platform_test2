@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../services/auth_service.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
@@ -156,23 +157,28 @@ class _Setting1 extends State<Setting1> with SingleTickerProviderStateMixin {
                 middleText('정보'),
                 customButton(
                   '이용약관',
-                      () {
-                    print('버튼이 클릭되었습니다!');
+                      () async {
+                    final Uri url = Uri.parse('https://holybaits-modir.notion.site/1a6a2688a39a80d18f4fe74fa96ca226?pvs=74');
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url, mode: LaunchMode.externalApplication);
+                    } else {
+                      print('Could not launch $url');
+                    }
                   },
                 ),
-                customButton(
-                  '오픈 라이센스 확인하기',
-                      () {
-                    print('버튼이 클릭되었습니다!');
-                  },
-                ),
+                // customButton(
+                //   '오픈 라이센스 확인하기',
+                //       () {
+                //     print('버튼이 클릭되었습니다!');
+                //   },
+                // ),
                 middleText('기타'),
-                customButton(
-                  '오류신고',
-                      () {
-                    print('버튼이 클릭되었습니다!');
-                  },
-                ),
+                // customButton(
+                //   '오류신고',
+                //       () {
+                //     print('버튼이 클릭되었습니다!');
+                //   },
+                // ),
                 customButton(
                   '로그아웃',
                       () => _showLogoutDialog(context),

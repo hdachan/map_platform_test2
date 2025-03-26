@@ -66,7 +66,7 @@ class HomeScreen extends StatelessWidget {
                       unselectedItemColor: Colors.grey,
                       items: const [
                         BottomNavigationBarItem(icon: Icon(Icons.location_on_outlined), label: '지도'),
-                        BottomNavigationBarItem(icon: Icon(Icons.build_outlined), label: '코디'),
+                        BottomNavigationBarItem(icon: Icon(Icons.checkroom_outlined), label: '코디'),
                         BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: '홈'),
                         //BottomNavigationBarItem(icon: Icon(Icons.live_tv_outlined), label: '라이브'),
                         BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: '마이'),

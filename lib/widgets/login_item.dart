@@ -142,38 +142,38 @@ class _LoginOptionsRowState extends State<LoginOptionsRow> {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
-              Container(
-                width: ResponsiveUtils.getResponsiveWidth(70, 360, constraints),
-                height: 20.h,
-                child: Text(
-                  '아이디 찾기',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14.sp,
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w500,
-                    height: 1.40,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Container(
-                width: ResponsiveUtils.getResponsiveWidth(77, 360, constraints),
-                height: 20.h,
-                child: Text(
-                  '비밀번호 찾기',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14.sp,
-                    fontFamily: 'Pretendard',
-                    fontWeight: FontWeight.w500,
-                    height: 1.40,
-                  ),
-                ),
-              ),
+              // const SizedBox(width: 8),
+              // Container(
+              //   width: ResponsiveUtils.getResponsiveWidth(70, 360, constraints),
+              //   height: 20.h,
+              //   child: Text(
+              //     '아이디 찾기',
+              //     textAlign: TextAlign.right,
+              //     style: TextStyle(
+              //       color: Colors.white,
+              //       fontSize: 14.sp,
+              //       fontFamily: 'Pretendard',
+              //       fontWeight: FontWeight.w500,
+              //       height: 1.40,
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(width: 16),
+              // Container(
+              //   width: ResponsiveUtils.getResponsiveWidth(77, 360, constraints),
+              //   height: 20.h,
+              //   child: Text(
+              //     '비밀번호 찾기',
+              //     textAlign: TextAlign.center,
+              //     style: TextStyle(
+              //       color: Colors.white,
+              //       fontSize: 14.sp,
+              //       fontFamily: 'Pretendard',
+              //       fontWeight: FontWeight.w500,
+              //       height: 1.40,
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         );

@@ -34,7 +34,7 @@ class MarkerImageScreen extends StatefulWidget {
 class _MarkerImageScreenState extends State<MarkerImageScreen> {
   int modirId1 = 1; // 첫 번째 마커 ID
   int modirId2 = 2; // 두 번째 마커 ID
-  int modirId3 = 3; // 세 번째 마커 ID
+  int modirId3 = 11; // 세 번째 마커 ID
   List<String> imageUrls1 = [];
   List<String> imageUrls2 = [];
   List<String> imageUrls3 = [];
