@@ -45,7 +45,7 @@ class HomeScreen extends StatelessWidget {
                         children: [
                           kIsWeb ? WebMapScreen() : MapScreen(),
                           MYPage(key: _myPageKey),
-                          kIsWeb ? HomeMain2() : HomeMain1(),
+                          //kIsWeb ? HomeMain2() : HomeMain1(),
                           //const Center(child: Text("탭 4")),
                           mmmm(),
                         ],
@@ -66,9 +66,9 @@ class HomeScreen extends StatelessWidget {
                       unselectedItemColor: Colors.grey,
                       items: const [
                         BottomNavigationBarItem(icon: Icon(Icons.location_on_outlined), label: '지도'),
-                        BottomNavigationBarItem(icon: Icon(Icons.checkroom_outlined), label: '코디'),
-                        BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: '홈'),
-                        //BottomNavigationBarItem(icon: Icon(Icons.live_tv_outlined), label: '라이브'),
+                        BottomNavigationBarItem(icon: Icon(Icons.checkroom_outlined), label: '추천'),
+                        //BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: '홈'),
+                        //BottomNavigationBarItem(icon: Icon(Icons.live_tv_outlined), label: '테스트중'),
                         BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: '마이'),
                       ],
                     ),

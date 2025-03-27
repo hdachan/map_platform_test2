@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../widgets/cutstom_appbar.dart';
+import '../utils/RouteFinderPage.dart'; // navigateToDestination이 정의된 파일 (필요 시)
 
 class FavoriteStoresScreen extends StatefulWidget {
   const FavoriteStoresScreen({Key? key}) : super(key: key);
@@ -20,7 +23,6 @@ class _FavoriteStoresScreenState extends State<FavoriteStoresScreen> {
     _loadFavoriteStores();
   }
 
-  // 관심 매장 불러오기 함수
   Future<List<Map<String, dynamic>>> _fetchFavoriteStores() async {
     final user = _supabase.auth.currentUser;
     if (user == null) {
@@ -37,12 +39,39 @@ class _FavoriteStoresScreenState extends State<FavoriteStoresScreen> {
     return response.map<Map<String, dynamic>>((item) => item as Map<String, dynamic>).toList();
   }
 
-  // 관심 매장 불러와서 상태 업데이트
   Future<void> _loadFavoriteStores() async {
     final stores = await _fetchFavoriteStores();
     setState(() {
       favoriteStores = stores;
     });
+  }
+
+  Future<void> navigateToDestination(double latitude, double longitude, String destinationName, {String? address}) async {
+    try {
+      // 간소화된 버전: API 호출 없이 바로 좌표 사용
+      double endLat = double.parse(latitude.toStringAsFixed(7));
+      double endLng = double.parse(longitude.toStringAsFixed(7));
+
+      final appUrl = Uri.parse(
+        "nmap://place?lat=$endLat&lng=$endLng&name=${Uri.encodeComponent(destinationName)}&appname=com.example.untitled114",
+      );
+
+      final webUrl = Uri.parse(
+        "https://map.naver.com/v5/search/$destinationName?lat=$endLat&lng=$endLng",
+      );
+
+      bool canLaunchApp = await canLaunchUrl(appUrl);
+      if (canLaunchApp) {
+        await launchUrl(appUrl);
+      } else {
+        bool canLaunchWeb = await canLaunchUrl(webUrl);
+        if (canLaunchWeb) {
+          await launchUrl(webUrl);
+        }
+      }
+    } catch (e) {
+      print('Error navigating to destination: $e');
+    }
   }
 
   @override
@@ -147,9 +176,31 @@ class _FavoriteStoresScreenState extends State<FavoriteStoresScreen> {
                                   _loadFavoriteStores();
                                 },
                               ),
-                              Icon(Icons.call_outlined, color: Colors.grey, size: 20),
-                              Icon(Icons.subdirectory_arrow_right_rounded, color: Colors.grey, size: 20),
-                              Icon(Icons.ios_share_outlined, color: Colors.grey, size: 20),
+                              GestureDetector(
+                                onTap: () {
+                                  // mapy와 mapx가 String일 경우 double로 변환
+                                  double latitude = double.tryParse(store['modir']['mapy'].toString()) ?? 0.0;
+                                  double longitude = double.tryParse(store['modir']['mapx'].toString()) ?? 0.0;
+                                  navigateToDestination(
+                                    latitude,
+                                    longitude,
+                                    store['modir']['title'],
+                                    address: store['modir']['address'],
+                                  );
+                                },
+                                child: Container(
+                                  width: 36.w,
+                                  height: 36.h,
+                                  child: Transform.rotate(
+                                    angle: -0.785,
+                                    child: Icon(
+                                      Icons.subdirectory_arrow_right_rounded,
+                                      color: Colors.grey,
+                                      size: 20.sp,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),
