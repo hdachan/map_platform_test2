@@ -4,19 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../services/auth_service.dart';
+import '../viewmodels/login_viewmodel.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
 import '../widgets/cutstom_appbar.dart';
 import 'home_mypage_Withdrawal_Screen.dart';
-import 'login_screen.dart';
 import 'login_selection_screen.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Flutter 엔진 초기화
-  runApp(MaterialApp(
-    home: Setting1(),
-  ));
-}
 
 class Setting1 extends StatefulWidget {
   @override
@@ -24,19 +17,15 @@ class Setting1 extends StatefulWidget {
 }
 
 class _Setting1 extends State<Setting1> with SingleTickerProviderStateMixin {
-  bool toggleValue = true; // 토글 상태를 관리하는 변수
-// Supabase 클라이언트 인스턴스 가져오기
-  final SupabaseClient supabase = Supabase.instance.client;
+  bool toggleValue = true;
 
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Color(0xFF242424), // 배경색 설정
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16), // 모서리 둥글게
-          ),
+          backgroundColor: Color(0xFF242424),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: Text(
             '로그아웃',
             style: TextStyle(
@@ -49,11 +38,11 @@ class _Setting1 extends State<Setting1> with SingleTickerProviderStateMixin {
             ),
           ),
           content: Column(
-            mainAxisSize: MainAxisSize.min, // 내용에 맞게 크기 조정
-            crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '정말 로그아웃 하시겠습니까 ?',
+                '정말 로그아웃 하시겠습니까?',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 12.sp,
@@ -68,11 +57,10 @@ class _Setting1 extends State<Setting1> with SingleTickerProviderStateMixin {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // 팝업 닫기
+                Navigator.of(context).pop();
               },
-              child:         Text(
+              child: Text(
                 '취소',
-                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Color(0xFF888888),
                   fontSize: 12.sp,
@@ -85,30 +73,29 @@ class _Setting1 extends State<Setting1> with SingleTickerProviderStateMixin {
             ),
             TextButton(
               onPressed: () async {
-                // 로그아웃 실행 후 완료될 때까지 기다림
+                final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
                 try {
-                  await Provider.of<AuthService>(context, listen: false).signOut();
-
-                  // 로그아웃 완료 후 로그인 화면으로 이동 (이전 스택 제거)
-                  if (!mounted) return; // 위젯이 dispose된 경우 실행 방지
-
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => login_total_screen()),
-                        (Route<dynamic> route) => false, // 모든 이전 화면 제거
-                  );
-
-                  // 화면 이동이 성공적으로 실행된 후 다이얼로그 닫기
-                  Navigator.of(context).pop();
+                  await authViewModel.signOut();
+                  // 빌드 후 화면 이동
+                  if (!mounted) return;
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => login_total_screen()),
+                          (Route<dynamic> route) => false,
+                    );
+                  });
+                  Navigator.of(context).pop(); // 다이얼로그 닫기
                 } catch (e) {
-                  // 로그아웃 실패 시 예외 처리
                   print('Logout failed: $e');
-                  // 다이얼로그는 닫히지 않고 유지됨
+                  if (!mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('로그아웃 실패: $e')),
+                  );
                 }
               },
               child: Text(
                 '확인',
-                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 12.sp,
@@ -118,17 +105,12 @@ class _Setting1 extends State<Setting1> with SingleTickerProviderStateMixin {
                   letterSpacing: -0.30,
                 ),
               ),
-            )
-
-
-
+            ),
           ],
         );
       },
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -166,19 +148,7 @@ class _Setting1 extends State<Setting1> with SingleTickerProviderStateMixin {
                     }
                   },
                 ),
-                // customButton(
-                //   '오픈 라이센스 확인하기',
-                //       () {
-                //     print('버튼이 클릭되었습니다!');
-                //   },
-                // ),
                 middleText('기타'),
-                // customButton(
-                //   '오류신고',
-                //       () {
-                //     print('버튼이 클릭되었습니다!');
-                //   },
-                // ),
                 customButton(
                   '로그아웃',
                       () => _showLogoutDialog(context),

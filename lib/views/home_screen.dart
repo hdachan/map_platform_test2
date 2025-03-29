@@ -8,10 +8,9 @@ import '../../viewmodels/setting_viewmodel.dart';
 import '../../utils/designSize.dart';
 import 'home_mypage.dart';
 import 'home_navermap_screen.dart';
-import 'test.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key}); // super.key 적용
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -19,9 +18,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final PageController _pageController = PageController();
-  final GlobalKey<MYPageState> _myPageKey = GlobalKey<MYPageState>();
 
-  DateTime? _lastBackPressed; // 이제 StatefulWidget이므로 변경 가능
+  DateTime? _lastBackPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -61,13 +59,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         physics: const NeverScrollableScrollPhysics(),
                         onPageChanged: (index) {
                           settingState.updateIndex(index);
-                          if (index != 4) {
-                            _myPageKey.currentState?.removeOverlay();
-                          }
                         },
                         children: [
                           kIsWeb ? WebMapScreen() : MapScreen(),
-                          MYPage(key: _myPageKey),
                           mmmm(),
                         ],
                       ),
@@ -77,9 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: (index) {
                         settingState.updateIndex(index);
                         _pageController.jumpToPage(index);
-                        if (index != 4) {
-                          _myPageKey.currentState?.removeOverlay();
-                        }
                       },
                       type: BottomNavigationBarType.fixed,
                       backgroundColor: const Color(0xFF1A1A1A),
@@ -87,7 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       unselectedItemColor: Colors.grey,
                       items: const [
                         BottomNavigationBarItem(icon: Icon(Icons.location_on_outlined), label: '지도'),
-                        BottomNavigationBarItem(icon: Icon(Icons.checkroom_outlined), label: '추천'),
                         BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: '마이'),
                       ],
                     ),
@@ -102,11 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-
-
-
-
-// 하단바 관리 툴_KeepAlive를 위한 래퍼 위젯 (사용시 메모리에 계속 유지)
+// 하단바 관리 툴_KeepAlive를 위한 래퍼 위젯 (사용 시 메모리에 계속 유지)
 class KeepAlivePage extends StatefulWidget {
   final Widget child;
 

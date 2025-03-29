@@ -295,14 +295,6 @@ class mmmm1 extends State<mmmm> with SingleTickerProviderStateMixin {
                       ),
                       // 여기 넣는거임
                       SizedBox(height: 24.h),
-                      // middleText('기록'),
-                      // customButton(
-                      //   '최근에 본 매장',
-                      //       () {
-                      //     // 버튼 클릭 시 수행할 작업을 여기에 작성하세요.
-                      //     print('버튼이 클릭되었습니다!');
-                      //   },
-                      // ),
                       middleText('관심'),
                       customButton(
                         '관심 매장',
@@ -333,13 +325,6 @@ class mmmm1 extends State<mmmm> with SingleTickerProviderStateMixin {
                           print('버튼22이 클릭되었습니다!');
                         },
                       ),
-                      // customButton(
-                      //   'FQA',
-                      //       () {
-                      //     // 버튼 클릭 시 수행할 작업을 여기에 작성하세요.
-                      //     print('버튼22이 클릭되었습니다!');
-                      //   },
-                      // ),
                       customButton(
                         '1:1 문의하기',
                             () async {

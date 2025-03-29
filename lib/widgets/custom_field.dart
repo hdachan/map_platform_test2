@@ -86,7 +86,7 @@ class _BirthdateTextFieldState extends State<BirthdateTextField> {
             children: [
               Container(
                 height: 56.h,
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                padding: EdgeInsets.only(left: 16.w,right: 4.w),
                 decoration: BoxDecoration(
                   color: Color(0xFF242424),
                   borderRadius: BorderRadius.circular(8),
@@ -128,7 +128,7 @@ class _BirthdateTextFieldState extends State<BirthdateTextField> {
                   padding: EdgeInsets.only(top: 4.h, left: 4.w),
                   child: Text(
                     _errorText!,
-                    style: TextStyle(color: Colors.red, fontSize: 12.sp),
+                    style: TextStyle(color: Colors.white, fontSize: 12.sp),
                   ),
                 ),
             ],

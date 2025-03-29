@@ -824,9 +824,9 @@ void showMarkerBottomSheet(
                             width: 36.w,
                             height: 36.h,
                             child: Transform.rotate(
-                              angle: -0.785, // 약 45도 반시계 방향 회전 (오른쪽에서 상단으로 꺾인 느낌)
+                              angle: 0.785, // 약 45도 반시계 방향 회전 (오른쪽에서 상단으로 꺾인 느낌)
                               child: Icon(
-                                Icons.subdirectory_arrow_right_rounded, // 꺾인 화살표 아이콘
+                                Icons.navigation , // 꺾인 화살표 아이콘
                                 color: Colors.grey,
                                 size: 20.sp,
                               ),
