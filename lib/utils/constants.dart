@@ -1,1 +1,1 @@
-const String appTitle = 'Todo App';
+const String appTitle = 'modir App';

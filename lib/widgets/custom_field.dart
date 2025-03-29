@@ -4,10 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../utils/designSize.dart';
 
-class BirthdateTextField extends StatelessWidget {
+class BirthdateTextField extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
-  final VoidCallback? onChanged; // 상태 갱신을 위한 콜백
+  final VoidCallback? onChanged;
 
   const BirthdateTextField({
     required this.controller,
@@ -16,65 +16,136 @@ class BirthdateTextField extends StatelessWidget {
   });
 
   @override
+  _BirthdateTextFieldState createState() => _BirthdateTextFieldState();
+}
+
+class _BirthdateTextFieldState extends State<BirthdateTextField> {
+  String? _errorText;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_formatInput);
+  }
+
+  void _formatInput() {
+    String text = widget.controller.text.replaceAll(RegExp(r'\D'), ''); // 숫자만 유지
+    if (text.length > 8) text = text.substring(0, 8); // 8자리 제한
+
+    String formattedText = _formatDateString(text);
+    if (widget.controller.text != formattedText) {
+      widget.controller.value = TextEditingValue(
+        text: formattedText,
+        selection: TextSelection.collapsed(offset: formattedText.length),
+      );
+    }
+
+    _validateInput(formattedText);
+  }
+
+  String _formatDateString(String input) {
+    if (input.length <= 4) return input; // 연도만 입력된 경우
+    if (input.length <= 6) return '${input.substring(0, 4)}-${input.substring(4)}'; // YYYY-MM
+
+    return '${input.substring(0, 4)}-${input.substring(4, 6)}-${input.substring(6, 8)}'; // YYYY-MM-DD
+  }
+
+  void _validateInput(String text) {
+    if (text.length == 10 && _isValidDateFormat(text)) {
+      setState(() => _errorText = null);
+    } else {
+      setState(() => _errorText = 'YYYY-MM-DD 형식으로 입력하세요');
+    }
+    if (widget.onChanged != null) widget.onChanged!();
+  }
+
+  bool _isValidDateFormat(String text) {
+    if (!RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(text)) return false;
+
+    final year = int.tryParse(text.substring(0, 4)) ?? 0;
+    final month = int.tryParse(text.substring(5, 7)) ?? 0;
+    final day = int.tryParse(text.substring(8, 10)) ?? 0;
+
+    if (year < 1900 || year > DateTime.now().year) return false;
+    if (month < 1 || month > 12) return false;
+    if (day < 1 || day > 31) return false;
+
+    return true;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         return Container(
-          width: ResponsiveUtils.getResponsiveWidth(360, 360, constraints),
-          height: 64.h, // 높이는 .h 단위 유지
-          padding: EdgeInsets.only(
-            left: 16.w,
-            right: 16.w,
-            bottom: 8, // 세로 패딩은 고정값 유지
-          ),
-          child: Container(
-            width: ResponsiveUtils.getResponsiveWidth(328, 360, constraints),
-            height: 56.h, // 높이는 .h 단위 유지
-            padding: EdgeInsets.only(left: 16,right: 16), // 패딩을 반응형으로 통일
-            decoration: ShapeDecoration(
-              color: Color(0xFF242424),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: controller,
-                    style: TextStyle(color: Colors.white, fontSize: 14.sp),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      LengthLimitingTextInputFormatter(8),
-                      BirthdateInputFormatter(),
-                    ],
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: hintText,
-                      hintStyle: TextStyle(color: Color(0xFF888888), fontSize: 14.sp),
-                    ),
-                    onChanged: (value) {
-                      if (onChanged != null) onChanged!();
-                    },
+          width: constraints.maxWidth,
+          height: _errorText == null ? 64.h : 80.h,
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 56.h,
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                decoration: BoxDecoration(
+                  color: Color(0xFF242424),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: Colors.transparent, // 빨간 테두리 제거
                   ),
                 ),
-                if (controller.text.isNotEmpty)
-                  IconButton(
-                    icon: Icon(Icons.cancel, color: Color(0xFF888888)),
-                    onPressed: () {
-                      controller.clear();
-                      if (onChanged != null) onChanged!();
-                    },
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: widget.controller,
+                        style: TextStyle(color: Colors.white, fontSize: 14.sp),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(10),
+                        ],
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: widget.hintText,
+                          hintStyle: TextStyle(color: Color(0xFF888888), fontSize: 14.sp),
+                        ),
+                      ),
+                    ),
+                    if (widget.controller.text.isNotEmpty)
+                      IconButton(
+                        icon: Icon(Icons.cancel, color: Color(0xFF888888)),
+                        onPressed: () {
+                          widget.controller.clear();
+                          _validateInput('');
+                        },
+                      ),
+                  ],
+                ),
+              ),
+              if (_errorText != null)
+                Padding(
+                  padding: EdgeInsets.only(top: 4.h, left: 4.w),
+                  child: Text(
+                    _errorText!,
+                    style: TextStyle(color: Colors.red, fontSize: 12.sp),
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
         );
       },
     );
   }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_formatInput);
+    super.dispose();
+  }
 }
+
+
 
 // BirthdateInputFormatter 클래스 (예시로 포함)
 class BirthdateInputFormatter extends TextInputFormatter {

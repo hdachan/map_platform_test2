@@ -100,67 +100,61 @@ Map<String, double> convertTMtoWGS84(double mapx, double mapy) {
   return {"lat": wgs84Lat, "lng": wgs84Lng};
 }
 
-/// 5️⃣ 네이버 길찾기 실행
-Future<void> navigateToDestination(double latitude, double longitude, String destinationName) async {
+/// 5️⃣ 네이버 지도에서 위치 표시
+Future<void> navigateToDestination(double latitude, double longitude, String destinationName, {String? address}) async {
   try {
-    // 현재 위치 가져오기
-    Position? currentPosition = await getCurrentLocation();
-    if (currentPosition == null) {
-      print("⚠️ 위치 정보를 가져올 수 없음");
-      return;
-    }
-
-    // 출발지 POI 검색
-    String startName = (await getPOIFromCoordinates(currentPosition.latitude, currentPosition.longitude)) ?? "현재 위치";
-
-// 네이버 장소 검색 API에서 도착지 정보 가져오기
-    final placeDetails = await getPlaceDetails(destinationName);
+    // 네이버 장소 검색 API에서 도착지 정보 가져오기 (이름으로 먼저 시도)
+    var placeDetails = await getPlaceDetails(destinationName);
     if (placeDetails != null) {
-      destinationName = removeHtmlTags(placeDetails['title'] ?? ""); // ✅ 기본값 "" 추가
-      double mapx = double.tryParse(placeDetails['mapx']) ?? 0.0;
-      double mapy = double.tryParse(placeDetails['mapy']) ?? 0.0;
+      destinationName = removeHtmlTags(placeDetails['title'] ?? "알 수 없는 장소");
+      double mapx = double.tryParse(placeDetails['mapx'] ?? "0.0") ?? 0.0;
+      double mapy = double.tryParse(placeDetails['mapy'] ?? "0.0") ?? 0.0;
       final converted = convertTMtoWGS84(mapx, mapy);
       latitude = converted["lat"]!;
       longitude = converted["lng"]!;
+    } else {
+      // 이름으로 검색 실패 시 주소로 재시도
+      if (address != null) {
+        placeDetails = await getPlaceDetails(address);
+        if (placeDetails != null) {
+          destinationName = removeHtmlTags(placeDetails['title'] ?? address);
+          double mapx = double.tryParse(placeDetails['mapx'] ?? "0.0") ?? 0.0;
+          double mapy = double.tryParse(placeDetails['mapy'] ?? "0.0") ?? 0.0;
+          final converted = convertTMtoWGS84(mapx, mapy);
+          latitude = converted["lat"]!;
+          longitude = converted["lng"]!;
+        }
+      }
     }
+
     // 좌표 값 포맷팅
-    double startLat = double.parse(currentPosition.latitude.toStringAsFixed(7));
-    double startLng = double.parse(currentPosition.longitude.toStringAsFixed(7));
     double endLat = double.parse(latitude.toStringAsFixed(7));
     double endLng = double.parse(longitude.toStringAsFixed(7));
 
-    print("🚀 출발지: $startName ($startLat, $startLng)");
-    print("🏁 도착지: $destinationName ($endLat, $endLng)");
-
-    // 네이버 지도 앱 URL (도보 모드)
+    // 네이버 지도 앱 URL
     final appUrl = Uri.parse(
-      "navermap://route/walk?"
-          "slat=$startLat&slng=$startLng&"
-          "sname=${Uri.encodeComponent(startName)}&"
-          "dlat=$endLat&dlng=$endLng&"
-          "dname=${Uri.encodeComponent(destinationName)}&"
+      "nmap://place?"
+          "lat=$endLat&lng=$endLng&"
+          "name=${Uri.encodeComponent(destinationName)}&"
           "appname=com.example.untitled114",
     );
 
-    print("🔗 네이버 지도 앱 URL: $appUrl");
-
-    // 네이버 지도 웹 URL (앱 실행 실패 시)
+    // 네이버 지도 웹 URL
     final webUrl = Uri.parse(
-        "https://map.naver.com/v5/directions/"
-            "$startLat,$startLng,${Uri.encodeComponent(startName)}/"
-            "$endLat,$endLng,${Uri.encodeComponent(destinationName)}"
+      "https://map.naver.com/v5/search/$destinationName?lat=$endLat&lng=$endLng",
     );
 
-    // 네이버 지도 앱 실행 시도, 불가능하면 웹으로 이동
-    if (await canLaunchUrl(appUrl)) {
+    // 네이버 지도 앱 실행 시도
+    bool canLaunchApp = await canLaunchUrl(appUrl);
+    if (canLaunchApp) {
       await launchUrl(appUrl);
     } else {
-      print("⚠️ 네이버 지도 앱 실행 실패, 웹 브라우저로 이동");
-      await launchUrl(webUrl);
+      bool canLaunchWeb = await canLaunchUrl(webUrl);
+      if (canLaunchWeb) {
+        await launchUrl(webUrl);
+      }
     }
   } catch (e) {
-    print("🚨 길찾기 실행 오류: $e");
+    // 예외 처리 유지 (필요 시 별도 로깅 추가 가능)
   }
 }
-
-

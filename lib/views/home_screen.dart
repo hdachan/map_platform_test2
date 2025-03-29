@@ -1,28 +1,51 @@
+import 'dart:io'; // exit(0) 사용을 위해 추가
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // SystemNavigator.pop() 사용을 위해 추가
 import 'package:provider/provider.dart';
-import 'package:flutter/foundation.dart' show kIsWeb; // kIsWeb를 사용하기 위해 추가
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:untitled114/views/web/home_navermap_wevscreen.dart';
 import '../../viewmodels/setting_viewmodel.dart';
 import '../../utils/designSize.dart';
-import 'home_main.dart'; // HomeMain1이 포함된 파일
 import 'home_mypage.dart';
 import 'home_navermap_screen.dart';
-import 'web/home_web_main.dart';
 import 'test.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key}); // super.key 적용
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final PageController _pageController = PageController();
   final GlobalKey<MYPageState> _myPageKey = GlobalKey<MYPageState>();
 
+  DateTime? _lastBackPressed; // 이제 StatefulWidget이므로 변경 가능
+
   @override
   Widget build(BuildContext context) {
-    initScreenUtil(context); // 디자인 사이즈 초기화
-    return WillPopScope(
-      onWillPop: () async {
-        // 뒤로 가기를 막고 앱을 종료
-        return false; // 뒤로 가기 방지
+    initScreenUtil(context);
+    return PopScope(
+      canPop: false, // 뒤로 가기 기본 차단
+      onPopInvokedWithResult: (didPop, _) async {
+        if (!didPop) {
+          final now = DateTime.now();
+          if (_lastBackPressed == null ||
+              now.difference(_lastBackPressed!) > const Duration(seconds: 2)) {
+            _lastBackPressed = now;
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("한 번 더 누르면 앱이 종료됩니다.")),
+            );
+          } else {
+            // 앱 완전 종료 (안드로이드/iOS 대응)
+            if (Platform.isAndroid) {
+              SystemNavigator.pop(); // 안드로이드에서 앱 종료
+            } else if (Platform.isIOS) {
+              exit(0); // iOS에서도 강제 종료
+            }
+          }
+        }
       },
       child: Consumer<SettingState>(
         builder: (context, settingState, child) {
@@ -45,8 +68,6 @@ class HomeScreen extends StatelessWidget {
                         children: [
                           kIsWeb ? WebMapScreen() : MapScreen(),
                           MYPage(key: _myPageKey),
-                          //kIsWeb ? HomeMain2() : HomeMain1(),
-                          //const Center(child: Text("탭 4")),
                           mmmm(),
                         ],
                       ),
@@ -67,8 +88,6 @@ class HomeScreen extends StatelessWidget {
                       items: const [
                         BottomNavigationBarItem(icon: Icon(Icons.location_on_outlined), label: '지도'),
                         BottomNavigationBarItem(icon: Icon(Icons.checkroom_outlined), label: '추천'),
-                        //BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: '홈'),
-                        //BottomNavigationBarItem(icon: Icon(Icons.live_tv_outlined), label: '테스트중'),
                         BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: '마이'),
                       ],
                     ),
@@ -85,11 +104,13 @@ class HomeScreen extends StatelessWidget {
 
 
 
+
+
 // 하단바 관리 툴_KeepAlive를 위한 래퍼 위젯 (사용시 메모리에 계속 유지)
 class KeepAlivePage extends StatefulWidget {
   final Widget child;
 
-  const KeepAlivePage({required this.child});
+  const KeepAlivePage({super.key, required this.child});
 
   @override
   State<KeepAlivePage> createState() => _KeepAlivePageState();
