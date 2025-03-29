@@ -9,6 +9,7 @@ import 'package:untitled114/viewmodels/login_viewmodel.dart';
 import 'package:untitled114/viewmodels/map_viewmodel.dart';
 import 'package:untitled114/viewmodels/profile_view_model.dart';
 import 'package:untitled114/viewmodels/setting_viewmodel.dart';
+import 'package:untitled114/viewmodels/withdrawal_view_model.dart';
 import 'package:untitled114/views/home_screen.dart';
 import 'package:untitled114/views/login_selection_screen.dart';
 
@@ -18,9 +19,7 @@ void main() async {
   await Supabase.initialize(
     url: SupabaseConfig.supabaseUrl,
     anonKey: SupabaseConfig.supabaseAnonKey,
-    authOptions: FlutterAuthClientOptions(
-      autoRefreshToken: true, // 세션 자동 갱신 활성화
-    ),
+    authOptions: FlutterAuthClientOptions(autoRefreshToken: true),
   );
 
   await AppConfig.initializeApp();
@@ -35,7 +34,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider(create: (_) => AuthService()), // AuthService 제공
+        Provider(create: (_) => AuthService()),
         ChangeNotifierProvider(
           create: (context) => AuthViewModel(
             Provider.of<AuthService>(context, listen: false),
@@ -45,6 +44,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MapProvider()),
         ChangeNotifierProvider(create: (_) => DataViewModel()),
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => WithdrawalViewModel()), // ✅ 추가
       ],
       child: MaterialApp(
         title: appTitle,
@@ -70,16 +70,9 @@ class AuthWrapper extends StatelessWidget {
           return Scaffold(body: Center(child: Text('오류: ${snapshot.error}')));
         }
         if (snapshot.hasData && snapshot.data == true) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => HomeScreen()),
-                  (Route<dynamic> route) => false,
-            );
-          });
-          return SizedBox();
+          return HomeScreen(); // 바로 HomeScreen 반환
         }
-        return login_total_screen();
+        return login_total_screen(); // 바로 로그인 화면 반환
       },
     );
   }

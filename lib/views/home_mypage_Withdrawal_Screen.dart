@@ -1,60 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:untitled114/views/login_selection_screen.dart';
+import 'package:provider/provider.dart';
 
+import '../viewmodels/withdrawal_view_model.dart';
 import '../widgets/cutstom_appbar.dart';
 
-class WithdrawalScreen extends StatefulWidget {
-  @override
-  _WithdrawalScreenState createState() => _WithdrawalScreenState();
-}
 
-class _WithdrawalScreenState extends State<WithdrawalScreen> {
-  List<String> reasons = [
-    '잘 안사용하게 되는 것 같아요',
-    '서비스 지연이 너무 심해요',
-    '매장 찾는게 불편해요',
-    '필요없는 내용이 너무 많아요',
-    '기타'
-  ];
-
-  Set<int> selectedIndexes = {}; // 선택된 체크박스 저장
-  TextEditingController otherReasonController = TextEditingController(); // 기타 입력 필드 컨트롤러
-
-  Future<void> saveWithdrawalReason() async {
-    final supabase = Supabase.instance.client;
-    final user = supabase.auth.currentUser;
-
-    if (user == null) {
-      print("사용자가 로그인되어 있지 않습니다.");
-      return;
-    }
-
-    try {
-      List<String> selectedReasonsList = selectedIndexes.map((index) => reasons[index]).toList();
-      String? otherText = selectedIndexes.contains(reasons.length - 1) ? otherReasonController.text.trim() : null;
-
-      for (String reason in selectedReasonsList) {
-        await supabase.from('withdrawal_reasons').insert({
-          'user_id': user.id,
-          'reason': reason == '기타' ? otherText : reason,
-        });
-      }
-      print("탈퇴 사유가 성공적으로 저장되었습니다.");
-
-      // 탈퇴 후 로그인 화면으로 이동
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => login_total_screen()), // Mmmm4는 이동할 화면의 위젯입니다.
-      );
-    } catch (e) {
-      print("탈퇴 사유 저장 중 오류 발생: $e");
-    }
-  }
-
+class WithdrawalScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<WithdrawalViewModel>(context);
+
     return Scaffold(
       backgroundColor: const Color(0xFF1A1A1A),
       body: SafeArea(
@@ -103,29 +59,20 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                   width: 360.w,
                   padding: EdgeInsets.symmetric(vertical: 16),
                   child: Column(
-                    children: List.generate(reasons.length, (index) {
-                      bool isSelected = selectedIndexes.contains(index);
-                      bool isOther = index == reasons.length - 1; // '기타' 옵션 체크 확인
+                    children: List.generate(viewModel.reasons.length, (index) {
+                      bool isSelected = viewModel.selectedIndexes.contains(index);
+                      bool isOther = index == viewModel.reasons.length - 1;
 
                       return Column(
                         children: [
                           GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                if (isSelected) {
-                                  selectedIndexes.remove(index);
-                                } else {
-                                  selectedIndexes.add(index);
-                                }
-                              });
-                            },
+                            onTap: () => viewModel.toggleReason(index),
                             child: Container(
                               width: 360.w,
                               height: 36.h,
                               padding: EdgeInsets.symmetric(horizontal: 16),
                               child: Row(
                                 children: [
-                                  // 체크박스
                                   Container(
                                     width: 20.w,
                                     height: 20.h,
@@ -144,11 +91,10 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                                     ),
                                   ),
                                   SizedBox(width: 8.w),
-                                  // 텍스트
                                   Container(
                                     width: 300.w,
                                     child: Text(
-                                      reasons[index],
+                                      viewModel.reasons[index],
                                       style: TextStyle(
                                         color: isSelected ? Colors.white : Color(0xFF888888),
                                         fontSize: 14.sp,
@@ -162,12 +108,11 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                               ),
                             ),
                           ),
-                          // 기타 옵션 선택 시 텍스트 필드 표시
                           if (isOther && isSelected)
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                               child: TextField(
-                                controller: otherReasonController,
+                                controller: viewModel.otherReasonController,
                                 style: TextStyle(color: Colors.white, fontSize: 14.sp),
                                 decoration: InputDecoration(
                                   hintText: "기타 사유를 입력해주세요",
@@ -188,7 +133,7 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                 ),
                 SizedBox(height: 24.h),
                 ElevatedButton(
-                  onPressed: saveWithdrawalReason,
+                  onPressed: () => viewModel.saveWithdrawalReason(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                     shape: RoundedRectangleBorder(
@@ -201,7 +146,6 @@ class _WithdrawalScreenState extends State<WithdrawalScreen> {
                     style: TextStyle(color: Colors.white, fontSize: 16.sp, fontWeight: FontWeight.bold),
                   ),
                 ),
-                SizedBox(height: 16.h),
               ],
             ),
           ),
