@@ -1,101 +1,100 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:untitled114/services/supabase_service.dart';
 
-class AuthService extends ChangeNotifier {
-  final SupabaseService _supabaseService = SupabaseService();
-  // 이메일 형식 유효성 검사
-  bool isValidEmail(String email) {
-    final RegExp emailRegExp = RegExp(
-      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-    );
-    return emailRegExp.hasMatch(email);
-  }
+class AuthService {
+  final _supabaseService = SupabaseService();
+  final _emailCache = <String, bool>{};
 
-  // 이메일 중복 검사
-  Future<bool> checkEmailAvailability(String email) async {
+
+  Future<bool> validateAndCheckEmail(String email) async {
+    email = email.trim().toLowerCase();
+    if (email.isEmpty) {
+      throw Exception('이메일 주소를 입력하세요.');
+    }
+    if (email.length > 254) {
+      throw Exception('이메일은 254자를 넘을 수 없습니다.');
+    }
+
+    final emailRegExp = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    if (!emailRegExp.hasMatch(email)) {
+      throw Exception('유효한 이메일 주소를 입력하세요.');
+    }
+
+    if (_emailCache.containsKey(email)) {
+      if (!_emailCache[email]!) {
+        throw Exception('이미 등록된 이메일입니다.');
+      }
+      return true;
+    }
+
     try {
       final response = await Supabase.instance.client
           .from('userinfo')
           .select('id')
           .eq('email', email)
-          .maybeSingle();
+          .maybeSingle()
+          .timeout(Duration(seconds: 10));
 
-      return response == null; // null이면 중복되지 않음
-    } catch (error) {
-      print('Error checking email availability: $error');
-      return false;
+      final isAvailable = response == null;
+      _emailCache[email] = isAvailable;
+      if (!isAvailable) {
+        throw Exception('이미 등록된 이메일입니다.');
+      }
+      return true;
+    } catch (e) {
+      if (e is TimeoutException) {
+        throw Exception('네트워크가 느립니다.');
+      } else if (e is PostgrestException) {
+        throw Exception('서버 오류: ${e.message}');
+      } else {
+        throw Exception('이메일 확인에 실패했습니다.');
+      }
     }
   }
-  bool _isLoading = false;
-  String? _errorMessage;
-  User? _currentUser; // 현재 사용자 정보 저장
 
-  bool get isLoading => _isLoading;
-  String? get errorMessage => _errorMessage;
-  User? get currentUser => _currentUser;
-
-  // 앱 시작 시 세션 복원 및 사용자 상태 확인
-  Future<bool> checkSession() async {
+  Future<User?> checkSession() async {
     try {
       final session = Supabase.instance.client.auth.currentSession;
       if (session != null) {
-        _currentUser = Supabase.instance.client.auth.currentUser;
-        notifyListeners();
-        return true; // 세션이 유효함
+        return Supabase.instance.client.auth.currentUser;
       }
-      return false; // 세션이 없음
-    } catch (error) {
-      print('Error checking session: $error');
-      return false;
+      return null;
+    } catch (e) {
+      throw Exception('세션 확인 오류: $e');
     }
   }
 
-  Future<String?> signIn(String email, String password) async {
+  Future<User?> signIn(String email, String password) async {
+    email = email.trim();
     if (email.isEmpty || password.isEmpty) {
-      return '이메일과 비밀번호를 모두 입력해주세요.';
+      throw Exception('이메일과 비밀번호를 입력하세요.');
     }
 
-    final emailRegex = RegExp(
+    final emailRegExp = RegExp(
       r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@"
       r"[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?"
       r"(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$",
     );
-    if (!emailRegex.hasMatch(email)) {
-      return '유효한 이메일 주소를 입력해주세요.';
+    if (!emailRegExp.hasMatch(email)) {
+      throw Exception('유효한 이메일 주소를 입력해주세요.');
     }
-
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners();
 
     try {
       final user = await _supabaseService.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-
-      _isLoading = false;
       if (user == null) {
-        _errorMessage = '로그인 실패: 사용자 정보를 확인할 수 없습니다.';
-        notifyListeners();
-        return _errorMessage;
+        throw Exception('로그인 실패: 사용자 정보를 확인할 수 없습니다.');
       }
-      _currentUser = user; // 로그인 성공 시 사용자 정보 저장
-      notifyListeners();
-      return null; // 로그인 성공
-    } catch (error) {
-      _isLoading = false;
-      _errorMessage = error.toString().replaceFirst('Exception: ', '');
-      notifyListeners();
-      return _errorMessage;
+      return user;
+    } catch (e) {
+      throw Exception('$e'.replaceFirst('Exception: ', ''));
     }
   }
 
-  // 로그아웃 메서드 추가 (필요 시)
   Future<void> signOut() async {
     await Supabase.instance.client.auth.signOut();
-    _currentUser = null;
-    notifyListeners();
   }
 }

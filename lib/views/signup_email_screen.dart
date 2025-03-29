@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../services/auth_service.dart'; // AuthService 임포트
-import '../utils/designSize.dart';
+import 'package:provider/provider.dart'; // Provider 임포트 추가
+import '../viewmodels/login_viewmodel.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_field.dart';
 import '../widgets/custom_text.dart';
@@ -10,22 +10,22 @@ import '../widgets/cutstom_appbar.dart';
 import 'signup_password_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
+
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderStateMixin {
-  bool _isTextFieldEmpty = true;
-  final TextEditingController _emailController = TextEditingController();
-  final AuthService _authService = AuthService(); // AuthService 인스턴스 생성
+class _SignUpScreenState extends State<SignUpScreen> {
+  final _emailController = TextEditingController();
+  bool _isButtonEnabled = false;
 
   @override
   void initState() {
     super.initState();
     _emailController.addListener(() {
-      setState(() {
-        _isTextFieldEmpty = _emailController.text.isEmpty;
-      });
+      setState(
+              () => _isButtonEnabled = _emailController.text.trim().isNotEmpty);
     });
   }
 
@@ -35,30 +35,13 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
     super.dispose();
   }
 
-  Future<void> _navigateToPasswordScreen(BuildContext context) async {
+  Future<void> _checkEmailAndNavigate(BuildContext context) async {
+    final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
     final email = _emailController.text.trim();
 
-    // 이메일 빈 칸 검사
-    if (email.isEmpty) {
+    if (!await authViewModel.validateAndCheckEmail(email)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('이메일 주소를 입력하세요.')),
-      );
-      return;
-    }
-
-    // 이메일 형식 검사
-    if (!_authService.isValidEmail(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('유효한 이메일 주소를 입력하세요.')),
-      );
-      return;
-    }
-
-    // 이메일 중복 검사
-    final isAvailable = await _authService.checkEmailAvailability(email);
-    if (!isAvailable) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('이미 등록된 이메일입니다.')),
+        SnackBar(content: Text(authViewModel.errorMessage ?? '오류가 발생했습니다.')),
       );
       return;
     }
@@ -71,14 +54,13 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    initScreenUtil(context); // 디자인 사이즈 기준 초기화
     return Scaffold(
       backgroundColor: const Color(0xFF1A1A1A),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 600), // 최대 너비 600px 제한
+              constraints: const BoxConstraints(maxWidth: 600),
               child: Column(
                 children: [
                   CustomAppBar(title: '모디랑 회원가입', context: context),
@@ -90,8 +72,10 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
                   if (kIsWeb)
                     LoginButton(
                       buttonText: '다음',
-                      onTap: () => _navigateToPasswordScreen(context),
-                    ),
+                      onTap: _isButtonEnabled
+                          ? () => _checkEmailAndNavigate(context)
+                          : () {},
+                    )
                 ],
               ),
             ),
@@ -101,7 +85,9 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
       bottomNavigationBar: !kIsWeb
           ? LoginButton(
         buttonText: '다음',
-        onTap: () => _navigateToPasswordScreen(context),
+        onTap: _isButtonEnabled
+            ? () => _checkEmailAndNavigate(context)
+            : () {},
       )
           : null,
     );

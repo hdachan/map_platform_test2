@@ -10,6 +10,7 @@ import '../widgets/custom_text.dart';
 import '../widgets/cutstom_appbar.dart';
 import 'home_screen.dart';
 
+
 class InformationScreen extends StatelessWidget {
   final String email;
   final String password;
@@ -91,26 +92,26 @@ class InformationScreen extends StatelessWidget {
                         SizedBox(height: 32.h),
 
                         if (kIsWeb)
-                        Consumer<InformationViewModel>(
-                          builder: (context, viewModel, child) {
-                            return LoginButton(
-                              buttonText: '완료',
-                              onTap: () async {
-                                final errorMessage = await viewModel.signUp(email, password);
-                                if (errorMessage == null) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => HomeScreen()),
-                                  );
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(errorMessage)),
-                                  );
-                                }
-                              },
-                            );
-                          },
-                        ),
+                          Consumer<InformationViewModel>(
+                            builder: (context, viewModel, child) {
+                              return LoginButton(
+                                buttonText: '완료',
+                                onTap: () async {
+                                  final errorMessage = await viewModel.signUp(email, password);
+                                  if (errorMessage == null) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(errorMessage)),
+                                    );
+                                  }
+                                },
+                              );
+                            },
+                          ),
                       ],
                     );
                   },

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../utils/designSize.dart';
 import '../widgets/login_item.dart';
-import 'home_mypage_edit.dart';
 import 'login_password_find_screen.dart';
 import 'login_screen.dart';
 import 'signup_agree_screen.dart';
@@ -16,7 +15,7 @@ class _login_totalscreen extends State<login_total_screen>
     with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    initScreenUtil(context); // 디자인 사이즈 기준
+    initScreenUtil(context);
     return Scaffold(
       backgroundColor: Color(0xFF1A1A1A),
       body: SafeArea(
@@ -41,12 +40,6 @@ class _login_totalscreen extends State<login_total_screen>
                           imagePath: 'assets/image/goole_icon.svg',
                           targetScreen: password_findScreen(), // LoginScreen으로 이동
                         ),
-                        SizedBox(height: 16.h),
-                        // CustomInkWell(
-                        //   context: context, // 현재 context를 전달
-                        //   imagePath: 'assets/image/kakaoh_icon.svg',
-                        //   targetScreen: ProfileEditScreen(), // LoginScreen으로 이동
-                        // ),
                         SizedBox(height: 16.h),
                         CustomInkWell(
                           context: context, // 현재 context를 전달

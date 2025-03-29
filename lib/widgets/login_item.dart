@@ -49,7 +49,7 @@ Widget HomeScreenAppBar() {
           width: 328.w,
           height: 40.h,
           child: Text(
-            '실시간으로 업데이트 되는 매장 입고 브랜드와 함께\n팝업 스토어 정보까지 확인하세요',
+            '나만의 분위기 , 라이프스타일 , 스타일링에 따라 \n매장을 추천받아보세요',
             style: TextStyle(
               color: Colors.white,
               fontSize: 14.sp,

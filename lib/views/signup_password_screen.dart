@@ -11,51 +11,42 @@ import '../widgets/cutstom_appbar.dart';
 class PasswordScreen extends StatefulWidget {
   final String email;
 
-  const PasswordScreen({required this.email});
+  const PasswordScreen({required this.email, super.key});
 
   @override
-  _PasswordScreenState createState() => _PasswordScreenState();
+  State<PasswordScreen> createState() => _PasswordScreenState();
 }
 
 class _PasswordScreenState extends State<PasswordScreen> {
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   late final PasswordViewModel _viewModel;
 
   @override
   void initState() {
     super.initState();
     _viewModel = PasswordViewModel();
-    _passwordController.addListener(() {
-      _viewModel.updatePassword(_passwordController.text);
-    });
+    _passwordController.addListener(() => _viewModel.updatePassword(_passwordController.text));
+    _confirmPasswordController.addListener(() => _viewModel.updateConfirmPassword(_confirmPasswordController.text));
   }
 
   @override
   void dispose() {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    _viewModel.dispose(); // ChangeNotifier의 dispose 호출
+    _viewModel.dispose();
     super.dispose();
   }
 
   void _handleSubmit() {
-    _viewModel.navigateToNextScreen(
-      widget.email,
-      _passwordController.text,
-      _confirmPasswordController.text,
-      context,
-    );
+    _viewModel.navigateToNextScreen(widget.email, _passwordController.text, _confirmPasswordController.text, context);
     if (_viewModel.errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_viewModel.errorMessage!)),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(_viewModel.errorMessage!)));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    initScreenUtil(context); // 디자인 사이즈 초기화
     return Scaffold(
       backgroundColor: const Color(0xFF1A1A1A),
       body: SafeArea(
@@ -72,7 +63,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                   CustomPasswordField(controller: _passwordController),
                   SizedBox(height: 16.h),
                   AnimatedBuilder(
-                    animation: _viewModel, // ViewModel의 변경 감지
+                    animation: _viewModel,
                     builder: (context, child) {
                       return LayoutBuilder(
                         builder: (context, constraints) {
@@ -106,23 +97,11 @@ class _PasswordScreenState extends State<PasswordScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  _buildPasswordHint(
-                                    constraints,
-                                    '영문, 숫자, 특수문자 조합하기',
-                                    _viewModel.hasCombination(),
-                                  ),
+                                  _buildPasswordHint(constraints, '영문, 숫자, 특수문자 조합하기', _viewModel.hasCombination()),
                                   SizedBox(height: 16.h),
-                                  _buildPasswordHint(
-                                    constraints,
-                                    '8자 이상 입력하기',
-                                    _viewModel.isLongEnough(),
-                                  ),
+                                  _buildPasswordHint(constraints, '8자 이상 입력하기', _viewModel.isLongEnough()),
                                   SizedBox(height: 16.h),
-                                  _buildPasswordHint(
-                                    constraints,
-                                    '연속된 문자 사용하지 않기',
-                                    _viewModel.hasNoConsecutiveChars(),
-                                  ),
+                                  _buildPasswordHint(constraints, '연속된 문자 사용하지 않기', _viewModel.hasNoConsecutiveChars()),
                                 ],
                               ),
                             ),
@@ -136,23 +115,14 @@ class _PasswordScreenState extends State<PasswordScreen> {
                   SizedBox(height: 8.h),
                   CustomPasswordField(controller: _confirmPasswordController),
                   SizedBox(height: 16.h),
-                  if (kIsWeb)
-                    LoginButton(
-                      buttonText: '다음',
-                      onTap: () => _handleSubmit(),
-                    ),
+                  if (kIsWeb) LoginButton(buttonText: '다음', onTap: _handleSubmit),
                 ],
               ),
             ),
           ),
         ),
       ),
-      bottomNavigationBar: !kIsWeb
-          ? LoginButton(
-        buttonText: '정보입력',
-        onTap: () => _handleSubmit(),
-      )
-          : null,
+      bottomNavigationBar: !kIsWeb ? LoginButton(buttonText: '정보입력', onTap: _handleSubmit) : null,
     );
   }
 
@@ -178,14 +148,11 @@ class _PasswordScreenState extends State<PasswordScreen> {
             ),
           ),
           Spacer(),
-          if (isValid) // 조건이 충족될 때만 이미지 표시
+          if (isValid)
             Container(
               width: ResponsiveUtils.getResponsiveWidth(24, 360, constraints),
               height: ResponsiveUtils.getResponsiveWidth(24, 360, constraints),
-              child: Image.asset(
-                'assets/image/check_icon.png',
-                fit: BoxFit.contain,
-              ),
+              child: Image.asset('assets/image/check_icon.png', fit: BoxFit.contain),
             ),
         ],
       ),

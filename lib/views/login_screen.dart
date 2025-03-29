@@ -20,7 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // 로그인 버튼 클릭 시 뷰모델의 로그인 메서드를 호출
   Future<void> _handleSignIn() async {
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
     final errorMessage = await authViewModel.signIn(
@@ -30,7 +29,6 @@ class _LoginScreenState extends State<LoginScreen> {
     if (errorMessage == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('로그인 성공!')),
-
       );
       Navigator.pushReplacement(
         context,
@@ -52,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    initScreenUtil(context); // designSize.dart의 초기화 함수
+    initScreenUtil(context);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: const Color(0xFF1A1A1A),
