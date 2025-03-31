@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class FavoriteService {
   final SupabaseClient _supabase = Supabase.instance.client;
 
-  // 관심 등록 여부 확인
   Future<bool> isFavoriteStore(String userId, int storeId) async {
     try {
       final response = await _supabase
@@ -14,14 +14,13 @@ class FavoriteService {
           .eq('user_id', userId)
           .eq('store_id', storeId);
 
-      return response.isNotEmpty; // 결과가 있으면 true, 없으면 false
+      return response.isNotEmpty;
     } catch (e) {
       print('❌ 관심 등록 여부 확인 실패: $e');
-      return false; // 오류 발생 시 기본값 false 반환
+      return false;
     }
   }
 
-  // 관심 매장 등록
   Future<bool> addFavorite(String userId, int storeId) async {
     try {
       await _supabase.from('favorites').insert({
@@ -37,19 +36,15 @@ class FavoriteService {
     }
   }
 
-  // 관심 매장 해제
   Future<void> removeFavorite(String userId, int storeId) async {
     try {
       print('🗑 삭제 요청: user_id = $userId, store_id = $storeId');
-
       final response = await _supabase
           .from('favorites')
           .delete()
-          .eq('user_id', userId)  // ← UUID로 변환 필요할 수도 있음
+          .eq('user_id', userId)
           .eq('store_id', storeId);
-
       print('🔍 DELETE Response: $response');
-
       if (response == null || response.isEmpty) {
         print('❌ 삭제 실패: 응답이 없음');
       } else {
@@ -60,71 +55,59 @@ class FavoriteService {
     }
   }
 
-
-}
-
-
-class FavoriteButton extends StatefulWidget {
-  final int storeId;
-
-  const FavoriteButton({Key? key, required this.storeId}) : super(key: key);
-
-  @override
-  _FavoriteButtonState createState() => _FavoriteButtonState();
-}
-
-class _FavoriteButtonState extends State<FavoriteButton> {
-  bool isFavorite = false; // 관심 등록 여부
-  final favoriteService = FavoriteService();
-
-  @override
-  void initState() {
-    super.initState();
-    _loadFavoriteStatus();
-  }
-
-  // 관심 등록 여부 불러오기
-  Future<void> _loadFavoriteStatus() async {
-    final user = Supabase.instance.client.auth.currentUser;
-    if (user == null) return;
-
-    bool favorite = await favoriteService.isFavoriteStore(user.id, widget.storeId);
-    setState(() {
-      isFavorite = favorite;
-    });
-  }
-
-  // 관심 매장 추가/삭제
-  Future<void> _toggleFavorite() async {
-    final user = Supabase.instance.client.auth.currentUser;
+  // private에서 public으로 변경
+  Future<List<Map<String, dynamic>>> fetchFavoriteStores() async {
+    final user = _supabase.auth.currentUser;
     if (user == null) {
       print("로그인이 필요합니다.");
-      return;
+      return [];
     }
 
-    if (isFavorite) {
-      await favoriteService.removeFavorite(user.id, widget.storeId);
-      print("관심 매장에서 제거되었습니다.");
-    } else {
-      await favoriteService.addFavorite(user.id, widget.storeId);
-      print("관심 매장으로 등록되었습니다.");
-    }
+    final response = await _supabase
+        .from('favorites')
+        .select('store_id, modir(id, title, address, roadAddress, mapx, mapy)')
+        .eq('user_id', user.id)
+        .order('created_at', ascending: false);
 
-    // 상태 업데이트 (UI 반영)
-    setState(() {
-      isFavorite = !isFavorite;
-    });
+    return response.map<Map<String, dynamic>>((item) => item as Map<String, dynamic>).toList();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(
-        isFavorite ? Icons.favorite : Icons.favorite_outline, // 상태에 따라 아이콘 변경
-        color: isFavorite ? Colors.red : Colors.grey, // 상태에 따라 색상 변경
-        size: 20.sp,
-      ),
-      onPressed: _toggleFavorite,
-    );
+  Future<List<String>> fetchImagesForModir(int modirId) async {
+    try {
+      final response = await _supabase
+          .from('modir_images')
+          .select('image_url')
+          .eq('modir_id', modirId);
+      return response.isNotEmpty
+          ? response.map((row) => row['image_url'] as String).toList()
+          : [];
+    } catch (e) {
+      print('Error fetching images for modir $modirId: $e');
+      return [];
+    }
+  }
+
+  Future<void> navigateToDestination(double latitude, double longitude, String destinationName, {String? address}) async {
+    try {
+      double endLat = double.parse(latitude.toStringAsFixed(7));
+      double endLng = double.parse(longitude.toStringAsFixed(7));
+      final appUrl = Uri.parse(
+        "nmap://place?lat=$endLat&lng=$endLng&name=${Uri.encodeComponent(destinationName)}&appname=com.example.untitled114",
+      );
+      final webUrl = Uri.parse(
+        "https://map.naver.com/v5/search/$destinationName?lat=$endLat&lng=$endLng",
+      );
+      bool canLaunchApp = await canLaunchUrl(appUrl);
+      if (canLaunchApp) {
+        await launchUrl(appUrl);
+      } else {
+        bool canLaunchWeb = await canLaunchUrl(webUrl);
+        if (canLaunchWeb) {
+          await launchUrl(webUrl);
+        }
+      }
+    } catch (e) {
+      print('Error navigating to destination: $e');
+    }
   }
 }

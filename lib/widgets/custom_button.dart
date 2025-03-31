@@ -6,9 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../services/FavoriteService.dart';
 import '../utils/RouteFinderPage.dart';
 import '../utils/designSize.dart';
+import '../viewmodels/FavoriteStoresViewModel.dart';
 
 ///로그인
 //로그인 버튼
@@ -953,4 +953,52 @@ void showMarkerBottomSheet(
     print("showMarkerBottomSheet closed");
     if (onClosed != null) onClosed(); // 닫힘 시 콜백 호출
   });
+}
+
+
+/// 관심등록버튼
+
+
+class FavoriteButton extends StatefulWidget {
+  final int storeId;
+
+  const FavoriteButton({Key? key, required this.storeId}) : super(key: key);
+
+  @override
+  _FavoriteButtonState createState() => _FavoriteButtonState();
+}
+
+class _FavoriteButtonState extends State<FavoriteButton> {
+  final FavoriteButtonViewModel _viewModel = FavoriteButtonViewModel();
+
+  @override
+  void initState() {
+    super.initState();
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user != null) {
+      _viewModel.loadFavoriteStatus(user.id, widget.storeId);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _viewModel,
+      builder: (context, _) {
+        return IconButton(
+          icon: Icon(
+            _viewModel.isFavorite ? Icons.favorite : Icons.favorite_outline,
+            color: _viewModel.isFavorite ? Colors.red : Colors.grey,
+            size: 20.sp,
+          ),
+          onPressed: () {
+            final user = Supabase.instance.client.auth.currentUser;
+            if (user != null) {
+              _viewModel.toggleFavorite(user.id, widget.storeId);
+            }
+          },
+        );
+      },
+    );
+  }
 }

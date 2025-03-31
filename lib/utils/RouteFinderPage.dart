@@ -27,7 +27,6 @@ Future<Position?> getCurrentLocation() async {
   );
 }
 
-/// 2️⃣ POI 검색 (현재 위치에서 가까운 건물명 가져오기)
 /// 2️⃣ POI 검색 (현재 위치에서 가까운 건물명 또는 도로명 주소 가져오기)
 Future<String?> getPOIFromCoordinates(double lat, double lng) async {
   final url = Uri.parse(
@@ -64,9 +63,6 @@ Future<String?> getPOIFromCoordinates(double lat, double lng) async {
   }
   return "현재 위치";
 }
-
-
-
 
 
 /// 3️⃣ 네이버 장소 검색 (도착지 POI 정보 가져오기)
