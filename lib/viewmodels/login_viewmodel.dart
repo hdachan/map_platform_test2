@@ -57,20 +57,38 @@ class AuthViewModel extends ChangeNotifier {
 
   Future<String?> signIn(String email, String password) async {
     _isLoading = true;
-    _errorMessage = null;
+    _errorMessage = null; // 오류 초기화
     notifyListeners();
 
     try {
       final user = await _authService.signIn(email, password);
       _isLoading = false;
       _currentUser = user;
+      _errorMessage = null; // 성공 시 오류 메시지 제거
       notifyListeners();
-      return null;
+      return null; // 성공 시 null 반환
     } catch (e) {
       _isLoading = false;
+      // 뷰모델에서 오류 메시지 관리
       _errorMessage = e.toString().replaceFirst('Exception: ', '');
+      switch (_errorMessage) {
+        case 'Invalid login credentials':
+          _errorMessage = '이메일 또는 비밀번호가 잘못되었습니다.';
+          break;
+        case '이메일과 비밀번호를 입력하세요.':
+          _errorMessage = '이메일과 비밀번호를 모두 입력해주세요.';
+          break;
+        case '유효한 이메일 주소를 입력해주세요.':
+          _errorMessage = '올바른 이메일 형식을 입력해주세요.';
+          break;
+        case '로그인 실패: 사용자 정보를 확인할 수 없습니다.':
+          _errorMessage = '로그인에 실패했습니다. 다시 시도해주세요.';
+          break;
+        default:
+          _errorMessage = '알 수 없는 오류: $_errorMessage';
+      }
       notifyListeners();
-      return _errorMessage;
+      return _errorMessage; // UI에 전달
     }
   }
 

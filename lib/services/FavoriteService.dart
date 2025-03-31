@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'dart:developer';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -16,7 +15,7 @@ class FavoriteService {
 
       return response.isNotEmpty;
     } catch (e) {
-      print('❌ 관심 등록 여부 확인 실패: $e');
+      log('❌ 관심 등록 여부 확인 실패: $e');
       return false;
     }
   }
@@ -28,30 +27,30 @@ class FavoriteService {
         'store_id': storeId,
         'created_at': DateTime.now().toIso8601String(),
       });
-      print('✅ 관심 매장 등록 성공: storeId = $storeId');
+      log('✅ 관심 매장 등록 성공: storeId = $storeId');
       return true;
     } catch (e) {
-      print('❌ 관심 매장 등록 실패: $e');
+      log('❌ 관심 매장 등록 실패: $e');
       return false;
     }
   }
 
   Future<void> removeFavorite(String userId, int storeId) async {
     try {
-      print('🗑 삭제 요청: user_id = $userId, store_id = $storeId');
+      log('🗑 삭제 요청: user_id = $userId, store_id = $storeId');
       final response = await _supabase
           .from('favorites')
           .delete()
           .eq('user_id', userId)
           .eq('store_id', storeId);
-      print('🔍 DELETE Response: $response');
+      log('🔍 DELETE Response: $response');
       if (response == null || response.isEmpty) {
-        print('❌ 삭제 실패: 응답이 없음');
+        log('❌ 삭제 실패: 응답이 없음');
       } else {
-        print('✅ 관심 매장 삭제 성공: storeId = $storeId');
+        log('✅ 관심 매장 삭제 성공: storeId = $storeId');
       }
     } catch (e) {
-      print('❌ 관심 매장 삭제 중 오류 발생: $e');
+      log('❌ 관심 매장 삭제 중 오류 발생: $e');
     }
   }
 
@@ -59,7 +58,7 @@ class FavoriteService {
   Future<List<Map<String, dynamic>>> fetchFavoriteStores() async {
     final user = _supabase.auth.currentUser;
     if (user == null) {
-      print("로그인이 필요합니다.");
+      log("로그인이 필요합니다.");
       return [];
     }
 
@@ -69,7 +68,7 @@ class FavoriteService {
         .eq('user_id', user.id)
         .order('created_at', ascending: false);
 
-    return response.map<Map<String, dynamic>>((item) => item as Map<String, dynamic>).toList();
+    return List<Map<String, dynamic>>.from(response);
   }
 
   Future<List<String>> fetchImagesForModir(int modirId) async {
@@ -82,7 +81,7 @@ class FavoriteService {
           ? response.map((row) => row['image_url'] as String).toList()
           : [];
     } catch (e) {
-      print('Error fetching images for modir $modirId: $e');
+      log('Error fetching images for modir $modirId: $e');
       return [];
     }
   }
@@ -107,7 +106,7 @@ class FavoriteService {
         }
       }
     } catch (e) {
-      print('Error navigating to destination: $e');
+      log('Error navigating to destination: $e');
     }
   }
 }

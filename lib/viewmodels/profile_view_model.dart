@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../services/ProfileService.dart';
 
-///사용자 정보 수정하기
+
 class ProfileViewModel extends ChangeNotifier {
+  final ProfileService _profileService = ProfileService();
+
   bool _isLoading = false;
   String? _errorMessage;
   int _selectedGenderIndex = -1;
@@ -41,25 +44,14 @@ class ProfileViewModel extends ChangeNotifier {
       return;
     }
 
-    try {
-      final response = await Supabase.instance.client
-          .from('userinfo')
-          .select()
-          .eq('id', user.id)
-          .single();
-
-      if (response != null) {
-        _nicknameController.text = response['username'] ?? '';
-        _birthdateController.text = response['birthdate'] ?? '';
-        _selectedGenderIndex = response['gender'] == true ? 0 : (response['gender'] == false ? 1 : -1);
-        _selectedCategoryIndex = response['category'] == ''
-            ? 0
-            : (response['category'] == '아메카지' ? 1 : -1);
-      } else {
-        _errorMessage = '사용자 정보를 찾을 수 없습니다.';
-      }
-    } catch (e) {
-      _errorMessage = '정보 조회 중 오류 발생: $e';
+    final response = await _profileService.fetchUserInfo(user.id);
+    if (response != null) {
+      _nicknameController.text = response['username'] ?? '';
+      _birthdateController.text = response['birthdate'] ?? '';
+      _selectedGenderIndex = response['gender'] == true ? 0 : (response['gender'] == false ? 1 : -1);
+      _selectedCategoryIndex = response['category'] == '빈티지' ? 0 : (response['category'] == '아메카지' ? 1 : -1);
+    } else {
+      _errorMessage = '사용자 정보를 찾을 수 없습니다.';
     }
 
     _isLoading = false;
@@ -69,12 +61,17 @@ class ProfileViewModel extends ChangeNotifier {
   Future<void> updateUserInfo() async {
     final user = Supabase.instance.client.auth.currentUser;
     if (user != null) {
-      await Supabase.instance.client.from('userinfo').update({
+      final success = await _profileService.updateUserInfo(user.id, {
         'username': _nicknameController.text.trim(),
         'birthdate': _birthdateController.text.trim(),
         'gender': _selectedGenderIndex == 0 ? true : (_selectedGenderIndex == 1 ? false : null),
         'category': _selectedCategoryIndex == 0 ? '빈티지' : (_selectedCategoryIndex == 1 ? '아메카지' : null),
-      }).eq('id', user.id);
+      });
+
+      if (!success) {
+        _errorMessage = '업데이트 실패';
+      }
+      notifyListeners();
     }
   }
 

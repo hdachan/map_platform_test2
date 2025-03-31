@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../services/auth_service.dart'; // AuthService 임포트
 import '../utils/designSize.dart';
 import '../widgets/custom_field.dart';

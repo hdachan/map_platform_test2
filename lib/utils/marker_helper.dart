@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import '../models/modir.dart';
@@ -44,7 +46,6 @@ Future<void> updateMarkers(
 
   try {
     final bounds = await mapController.getContentBounds();
-    if (bounds == null) return;
 
     final filteredData = dataProvider.dataList.where((modir) {
       return modir.latitude >= bounds.southWest.latitude &&
@@ -55,14 +56,15 @@ Future<void> updateMarkers(
 
     final newMarkers = buildMarkersFromList(filteredData, selectedMarkerTitle, onMarkerTap);
 
-    /// ✅ 기존 마커 삭제 후 새 마커 추가
-    await mapController.clearOverlays();  // ✅ overlays 제거
+    // ✅ 기존 마커 삭제 후 새 마커 추가
+    await mapController.clearOverlays();
     if (newMarkers.isEmpty) {
       showSnackbar();
     } else {
       await mapController.addOverlayAll(newMarkers);
     }
   } catch (e) {
-    print("마커 업데이트 중 오류 발생: $e");
+    log("마커 업데이트 중 오류 발생: $e");
   }
 }
+

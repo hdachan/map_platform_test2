@@ -52,79 +52,9 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   return Column(
                     children: [
                       CustomAppBar(title: '프로필 수정', context: context),
-                      Container(
-                        width: 360.w,
-                        height: 104.h,
-                        child: Center(
-                          child: Container(
-                            width: 80.w,
-                            height: 80.h,
-                            decoration: ShapeDecoration(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                            ),
-                            child: Stack(
-                              children: [
-                                Container(
-                                  width: 80.w,
-                                  height: 80.h,
-                                  decoration: ShapeDecoration(
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  right: 0,
-                                  bottom: 0,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text("알림"),
-                                            content: Text("아직 준비 중입니다."),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop(); // 팝업 닫기
-                                                },
-                                                child: Text("확인"),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: Container(
-                                      width: 24,
-                                      height: 24,
-                                      padding: EdgeInsets.all(4),
-                                      decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Icon(
-                                        Icons.camera_alt_outlined,
-                                        color: Colors.white,
-                                        size: 16,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                        ),
-                      ),
                       SizedBox(height: 16.h),
 
-                      // 닉네임 입력 (✅ 수정된 부분)
+                      // 닉네임 입력
                       LayoutBuilder(builder: (context, constraints) {
                         return Subtext('닉네임', constraints);
                       }),

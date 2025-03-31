@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../services/auth_service.dart';
 import '../viewmodels/login_viewmodel.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
