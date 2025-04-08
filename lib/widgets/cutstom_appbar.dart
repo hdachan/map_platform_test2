@@ -164,12 +164,13 @@ Widget CustomAppBar({required String title, required BuildContext context}) {
             Container(
               width: ResponsiveUtils.getResponsiveWidth(280, 360, constraints),
               height: 56.h,
-              padding: const EdgeInsets.only(left: 14, top: 14),
+              color: Colors.cyan,
+              padding: const EdgeInsets.only(top: 14,bottom: 14),
               child: Text(
                 title,
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20.sp,
+                  fontSize: 20,
                   fontFamily: 'Pretendard',
                   fontWeight: FontWeight.w700,
                   height: 1.40,

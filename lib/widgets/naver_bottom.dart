@@ -184,7 +184,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                         child: Center(
                                           child: Icon(
                                             Icons.keyboard_arrow_down_outlined,
-                                            size: 16.sp,
+                                            size: 16,
                                             color: Colors.white,
                                           ),
                                         ),
@@ -249,7 +249,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                         child: Center(
                                           child: Icon(
                                             Icons.keyboard_arrow_down_outlined,
-                                            size: 16.sp,
+                                            size: 16,
                                             color: Colors.white,
                                           ),
                                         ),
@@ -313,7 +313,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                         child: Center(
                                           child: Icon(
                                             Icons.keyboard_arrow_down_outlined,
-                                            size: 16.sp,
+                                            size: 16,
                                             color: Colors.white,
                                           ),
                                         ),
@@ -411,7 +411,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                         },
                         child: Container(
                           width: 360.w,
-                          height: 226.h,
+                          height: 228.h,
                           decoration: ShapeDecoration(
                             color: Color(0xFF1A1A1A),
                             shape: RoundedRectangleBorder(
@@ -530,6 +530,8 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                 padding: EdgeInsets.only(left: 16, right: 16),
                                 child: Text(
                                   modir.description,
+                                  maxLines: 2, // 최대 2줄까지 표시
+                                  overflow: TextOverflow.ellipsis, // 넘칠 경우 ... 으로 표시
                                   style: TextStyle(
                                     color: Color(0xFFE7E7E7),
                                     fontSize: 10.sp,
@@ -540,6 +542,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
                                   ),
                                 ),
                               ),
+
                               SizedBox(height: 8.h),
                               Container(
                                 width: 360.w,
