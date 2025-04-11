@@ -224,7 +224,7 @@ Widget customPushButton(String title, VoidCallback onPressed, {required bool tog
               Container(
                 width: ResponsiveUtils.getResponsiveWidth(48, 360, constraints),
                 height: 48.h,
-                padding: const EdgeInsets.all(12), // Switch 크기에 맞게 패딩 조정
+                padding:  EdgeInsets.only(right: 16,top: 16,bottom: 16),
                 child: Switch(
                   value: toggleValue,
                   onChanged: onToggleChanged,
@@ -249,13 +249,10 @@ class RefreshButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: 20,
-      left: 0,
-      right: 0,
-      child: Center(
-        child: GestureDetector(
-          onTap: onTap,
+    return Center(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Center(
           child: Container(
             width: 141.w,
             height: 36.h,
@@ -276,7 +273,7 @@ class RefreshButton extends StatelessWidget {
             ),
             child: Row(
               children: [
-                SizedBox(
+                Container(
                   width: 20.w,
                   height: 20.h,
                   child: Center(
@@ -288,18 +285,20 @@ class RefreshButton extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 4.w),
-                SizedBox(
+                Container(
                   width: 89.w,
                   height: 20.h,
-                  child: Text(
-                    '현 지도에서 검색',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14.sp,
-                      fontFamily: 'Pretendard',
-                      fontWeight: FontWeight.w700,
-                      height: 1.40.h,
-                      letterSpacing: -0.35,
+                  child: Center(
+                    child: Text(
+                      '현 지도에서 검색',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.sp,
+                        fontFamily: 'Pretendard',
+                        fontWeight: FontWeight.w700,
+                        height: 1.40.h,
+                        letterSpacing: -0.35,
+                      ),
                     ),
                   ),
                 ),

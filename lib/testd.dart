@@ -16,7 +16,8 @@ class _FeedAppState extends State<FeedApp> {
   String? message;
   bool isLoading = true;
 
-  final String baseUrl = "http://localhost:8080/api/feed"; // ⚠ 실제 IP로 교체
+  final String baseUrl = "http://localhost:8080/api/feed"; // 실제 IP로 교체
+  final String uuid = "123"; // 테스트용 UUID
 
   TextEditingController titleController = TextEditingController();
   TextEditingController contentController = TextEditingController();
@@ -27,12 +28,17 @@ class _FeedAppState extends State<FeedApp> {
     });
 
     try {
-      final response = await http.get(Uri.parse(baseUrl));
+      final response = await http.get(Uri.parse("$baseUrl?uuid=$uuid")); // uuid 포함 요청
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setState(() {
           feeds = data["resultData"];
           message = data["resultMessage"];
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          message = "서버 오류: ${response.statusCode}";
           isLoading = false;
         });
       }
@@ -44,6 +50,7 @@ class _FeedAppState extends State<FeedApp> {
     }
   }
 
+
   Future<void> postFeed() async {
     final response = await http.post(
       Uri.parse(baseUrl),
@@ -51,7 +58,7 @@ class _FeedAppState extends State<FeedApp> {
       body: jsonEncode({
         "title": titleController.text,
         "content": contentController.text,
-        "uuid": "123" // 테스트용 UUID
+        "uuid": uuid
       }),
     );
     if (response.statusCode == 200) {
@@ -85,6 +92,19 @@ class _FeedAppState extends State<FeedApp> {
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("삭제 완료")));
       await fetchFeeds();
+    }
+  }
+
+  Future<void> toggleLike(int feedId) async {
+    final response = await http.get(
+      Uri.parse("http://localhost:8080/api/like?feedId=$feedId&uuid=$uuid"),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final message = data["resultMessage"];
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+      await fetchFeeds(); // 상태 갱신
     }
   }
 
@@ -163,11 +183,23 @@ class _FeedAppState extends State<FeedApp> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () => showFeedDialog(feedId: feed["feedId"])),
+                  icon: Icon(
+                    feed["liked"] == true
+                        ? Icons.favorite
+                        : Icons.favorite_border,
+                    color:
+                    feed["liked"] == true ? Colors.red : null,
+                  ),
+                  onPressed: () => toggleLike(feed["feedId"]),
+                ),
                 IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () => deleteFeed(feed["feedId"])),
+                  icon: Icon(Icons.edit),
+                  onPressed: () => showFeedDialog(feedId: feed["feedId"]),
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () => deleteFeed(feed["feedId"]),
+                ),
               ],
             ),
           );
