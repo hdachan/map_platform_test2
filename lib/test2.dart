@@ -43,12 +43,13 @@ class _Test1State extends State<Test2> {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 600),
           child: Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16, top: 48),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
                   height: 148,
+                  padding: EdgeInsets.only(top: 48),
                   color: const Color(0xFF1A1A1A),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,7 +93,7 @@ class _Test1State extends State<Test2> {
                         height: 56,
                         decoration: BoxDecoration(
                           color: const Color(0xFF242424),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: TextField(

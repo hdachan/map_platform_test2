@@ -286,7 +286,7 @@ class _PasswordFieldState extends State<PasswordField> {
             contentPadding: const EdgeInsets.symmetric(vertical: 20),
             suffixIcon: IconButton(
               icon: Icon(
-                _obscureText ? Icons.visibility_off : Icons.visibility,
+                _obscureText ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                 color: const Color(0xFF888888),
                 size: 24,
               ),
