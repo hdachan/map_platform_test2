@@ -57,7 +57,7 @@ class _Test1State extends State<Test1> {
       body: Column(
         children: [
           customTopBar(),
-          const Divider(color: Color(0xFFE7E7E7), thickness: 1, height: 0.5),
+          _buildTopDivider(), // 상단바 아래 디바이더
           Expanded(
             child: SingleChildScrollView(
               child: Center(
@@ -167,6 +167,30 @@ class _Test1State extends State<Test1> {
     );
   }
 
+  // 상단바 아래의 디바이더
+  Widget _buildTopDivider() {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 600), // 최대 너비 600 적용
+      child: Divider(
+        color: Color(0xFFE7E7E7),
+        thickness: 1,  // 두께 1로 설정
+        height: 0.5,   // 높이 0.5로 설정
+      ),
+    );
+  }
+
+  // 나머지 디바이더는 여전히 thickness: 0.1, height: 0.1로 적용
+  Widget _buildDivider() {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 600), // 최대 너비 600 적용
+      child: Divider(
+        color: Color(0xFFE7E7E7),
+        thickness: 0.1,  // 두께 0.1로 설정
+        height: 0.1,     // 높이 0.1로 설정
+      ),
+    );
+  }
+
   Widget _buildAddBox({
     required String label,
     required int count,
@@ -255,7 +279,7 @@ class _Test1State extends State<Test1> {
             ),
           ),
         ),
-        const Divider(color: Color(0xFFE7E7E7), thickness: 0.1, height: 0.1),
+        _buildDivider(), // 여기에 일반 디바이더를 사용
       ],
     );
   }
