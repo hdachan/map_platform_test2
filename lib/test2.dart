@@ -130,11 +130,11 @@ class _Test1State extends State<Test2> {
 
 //상단 바 위젯
 PreferredSizeWidget customAppBar(
-    BuildContext context,
-    String title,
-    Color completeButtonColor,
-    VoidCallback onCompletePressed,
-    ) {
+  BuildContext context,
+  String title,
+  Color completeButtonColor,
+  VoidCallback onCompletePressed,
+) {
   return PreferredSize(
     preferredSize: const Size.fromHeight(56),
     child: Container(

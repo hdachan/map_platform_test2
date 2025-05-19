@@ -10,11 +10,27 @@ class Screen2 extends StatefulWidget {
 }
 
 class _Screen2State extends State<Screen2> {
-  List<String> curationItems = [];
+  String? selectedCategory;
+  final Map<String, List<String>> curationMap = {};
   static const int maxCuration = 10;
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.categoryItems.isNotEmpty) {
+      selectedCategory = widget.categoryItems.first;
+      for (var cat in widget.categoryItems) {
+        curationMap[cat] = [];
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final currentCurationList = selectedCategory != null
+        ? curationMap[selectedCategory] ?? []
+        : [];
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(56),
@@ -81,73 +97,38 @@ class _Screen2State extends State<Screen2> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    _buildCategorySelector(),
+                    _buildDivider(),
                     _buildAddBox(
                       label: '큐레이션 리스트',
-                      count: curationItems.length,
+                      count: currentCurationList.length,
                       max: maxCuration,
                       onAdd: () {
-                        if (curationItems.length < maxCuration) {
-                          setState(() =>
-                              curationItems.add('큐레이션 리스트 ${curationItems.length + 1}'));
+                        if (selectedCategory != null &&
+                            currentCurationList.length < maxCuration) {
+                          setState(() {
+                            curationMap[selectedCategory!]!
+                                .add('큐레이션 ${currentCurationList.length + 1}');
+                          });
                         }
                       },
                     ),
                     _buildDivider(),
-                    if (widget.categoryItems.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: widget.categoryItems.map((cat) {
-                              final isAdded = curationItems.contains(cat);
-                              return GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    if (isAdded) {
-                                      curationItems.remove(cat);
-                                    } else if (curationItems.length < maxCuration) {
-                                      curationItems.add(cat);
-                                    }
-                                  });
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.only(right: 8),
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                  decoration: BoxDecoration(
-                                    color: isAdded
-                                        ? const Color(0xFFF6F6F6)
-                                        : const Color(0xFFFFFFFF),
-                                    border: Border.all(color: Colors.transparent),
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: Text(
-                                    cat,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: Color(0xFF3D3D3D),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ),
-                    _buildDivider(),
-                    for (int i = 0; i < curationItems.length; i++) ...[
+                    for (int i = 0; i < currentCurationList.length; i++) ...[
                       _buildEditableBox(
-                        text: curationItems[i],
+                        text: currentCurationList[i],
                         onEdit: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => Screen3(itemName: curationItems[i])),
+                              builder: (_) => Screen3(itemName: currentCurationList[i]),
+                            ),
                           );
                         },
                         onDelete: () {
-                          setState(() => curationItems.removeAt(i));
+                          setState(() {
+                            currentCurationList.removeAt(i);
+                          });
                         },
                       ),
                     ],
@@ -159,6 +140,46 @@ class _Screen2State extends State<Screen2> {
         ],
       ),
       backgroundColor: const Color(0xFFFFFFFF),
+    );
+  }
+
+  Widget _buildCategorySelector() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: widget.categoryItems.map((cat) {
+            final isSelected = selectedCategory == cat;
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  selectedCategory = cat;
+                });
+              },
+              child: Container(
+                margin: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? const Color(0xFFF6F6F6)
+                      : const Color(0xFFFFFFFF),
+                  border: Border.all(color: Colors.transparent),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Text(
+                  cat,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF3D3D3D),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 
