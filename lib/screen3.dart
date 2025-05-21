@@ -84,21 +84,21 @@ class _Screen3State extends State<Screen3> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: SizedBox(
-                  height: 200,
+                  height: 140,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
                         const SizedBox(width: 16),
-                        _buildImageBox('assets/doisy.png'),
+                        _buildImageBox('assets/image/cat.png'),
                         const SizedBox(width: 8),
-                        _buildImageBox('assets/doisy.png'),
+                        _buildImageBox('assets/image/cat.png'),
                         const SizedBox(width: 8),
-                        _buildImageBox('assets/doisy.png'),
+                        _buildImageBox('assets/image/cat.png'),
                         const SizedBox(width: 8),
-                        _buildImageBox('assets/doisy.png'),
+                        _buildImageBox('assets/image/cat.png'),
                         const SizedBox(width: 8),
-                        _buildImageBox('assets/doisy.png'),
+                        _buildImageBox('assets/image/cat.png'),
                         const SizedBox(width: 16),
                       ],
                     ),
