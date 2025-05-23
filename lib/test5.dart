@@ -1,3 +1,5 @@
+/// 모디랑 채팅  프론트
+
 import 'package:flutter/material.dart';
 
 void main() {

@@ -1,3 +1,4 @@
+/// 모디랑 회원가입 이메일 프론트 ( 완 )
 import 'package:flutter/material.dart';
 
 void main() {
