@@ -22,7 +22,7 @@ class _Test5State extends State<Test5> {
     return Scaffold(
       appBar: customAppBar(
         context,
-        "탈퇴하기",
+        "모디챗",
         const Color(0xFFFFFFFF),
         () => print('Complete Pressed'),
       ),
@@ -197,6 +197,8 @@ class _ChatBoxState extends State<ChatBox> {
                 fontWeight: FontWeight.w400,
               ),
             ),
+
+
           ),
 
         Container(
