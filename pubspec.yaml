@@ -73,6 +73,12 @@ flutter:
     - assets/image/test02.png
     - assets/image/test03.png
     - assets/image/store_test01.png
+
+    - assets/image/cat.png
+    - assets/image/QuickShare.png
+    - assets/image/bgimage.png
+    - assets/image/bgimage.jpg
+
   fonts:
     - family: Pretendard
       fonts:
