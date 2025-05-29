@@ -218,6 +218,7 @@ Widget buildIconTextButton2({
           Text(
             label,
             style: const TextStyle(
+              fontFamily: 'Pretendard',
               fontSize: 10,
               color: Colors.black,
               fontWeight: FontWeight.w500,

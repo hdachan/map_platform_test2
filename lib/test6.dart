@@ -26,10 +26,12 @@ class _Test1State extends State<Test1> {
             child: Column(
               children: [
                 Stack(
+                  clipBehavior: Clip.none,
                   children: [
                     Container(
                       height: 202,
-                      padding: EdgeInsets.only(top: 8, left: 16, right: 16, bottom: 8),
+                      padding: EdgeInsets.only(
+                          top: 8, left: 16, right: 16, bottom: 8),
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage('assets/image/bgimage.jpg'),
@@ -40,6 +42,78 @@ class _Test1State extends State<Test1> {
                             BlendMode.srcOver,
                           ),
                         ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 16,
+                      bottom: -18,
+                      child: Container(
+                        height: 80,
+                        width: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          image: DecorationImage(
+                            image: AssetImage('assets/image/cat.png'),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 104,
+                      right: 16, // 오른쪽 여백 추가
+                      bottom: 8,
+                      child: Row(
+                        children: [
+                          Text(
+                            '정주영',
+                            style: TextStyle(
+                              fontFamily: 'Pretendard',
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              height: 1.3,
+                            ),
+                          ),
+                          Spacer(), // 텍스트와 버튼 사이 간격 밀어줌
+                          GestureDetector(
+                            onTap: () {
+                              print("설정 버튼 클릭");
+                            },
+                            child: Container(
+                              width: 32,
+                              height: 32,
+                              margin: EdgeInsets.only(right: 8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: Color(0xff403F3F),
+                              ),
+                              child: const Icon(
+                                Icons.settings,
+                                size: 13,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              print("공유 버튼 클릭");
+                            },
+                            child: Container(
+                              width: 32,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: Color(0xff403F3F),
+                              ),
+                              child: const Icon(
+                                Icons.ios_share,
+                                size: 13,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
 
