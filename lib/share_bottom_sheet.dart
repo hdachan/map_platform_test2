@@ -37,8 +37,8 @@ void showEmptyBoxBottomSheet(BuildContext context) {
             ), //상단 버튼
             Divider(
               color: Color(0xFFE7E7E7),
-              thickness: 1, // 두께 0.1로 설정
-              height: 1, // 높이 0.1로 설정
+              thickness: 1,
+              height: 1,
             ),
             Container(
               height: 108,
